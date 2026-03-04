@@ -1,0 +1,487 @@
+﻿@page
+@model barberShop.Pages.Account.FodraszFeluletModel
+@{
+    ViewData["Title"] = "Fodrász adminfelület";
+}
+
+<div class="container py-4">
+    
+
+    @if (string.IsNullOrEmpty(Model.Section))
+    {
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Adataim</div>
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <p class="ezustFont">Profilodhoz tartozó adatok megtekintése és szerkesztése</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/FodraszFelulet" asp-route-section="adataim" class="btn egyGomb aranyFont btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Időpontjaim</div>
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <p class="ezustFont">Lefoglalható időpontok beállítása és szerkesztése</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/FodraszFelulet" asp-route-section="idopontjaim" class="btn egyGomb aranyFont btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Foglalásaim</div>
+                    <div class="card-body d-flex flex-column flex-grow-1">
+                        <p class="ezustFont">Lefoglalt időpontjaid megtekintése</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/FodraszFelulet" asp-route-section="foglalasaim" class="btn egyGomb aranyFont btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model.Section == "adataim")
+    {
+        <p class="mb-3">
+            <a asp-page="/Account/FodraszFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+        </p>
+
+        @if (Model.FodraszProfil == null)
+        {
+            <p class="text-warning ezustFont">Nincs hozzád rendelt fodrász profil.</p>
+        }
+        else
+        {
+            <div class="card egyszolgaltatas szolg-kartya">
+                <div class="card-header aranyFont">Profilomhoz tartozó adatok</div>
+                <div class="card-body">
+                    <form method="post" asp-page-handler="SaveAdataim">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label asp-for="EditNev" class="form-label fw-bold ezustFont">Név</label>
+                                <input asp-for="EditNev" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EditEmail" class="form-label fw-bold ezustFont">E-mail</label>
+                                <input asp-for="EditEmail" class="form-control" type="email" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EditTelefon" class="form-label fw-bold ezustFont">Telefon</label>
+                                <input asp-for="EditTelefon" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="EditSpecializacio" class="form-label fw-bold ezustFont">Specializáció</label>
+                                <input asp-for="EditSpecializacio" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="UjJelszo" class="form-label ezustFont"><span class="fw-bold">Új jelszó </span> (hagyd üresen, ha nem változtatod)</label>
+                                <input asp-for="UjJelszo" class="form-control" type="password" />
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label fw-bold ezustFont">Vállalt szolgáltatások</label>
+                                <br />
+                                <div class="w-auto d-inline-flex align-items-center form-control">
+                                    @foreach (var sz in Model.OsszesSzolgaltatas)
+                                    {
+                                        var checkedAttr = Model.SelectedSzolgaltatasIds?.Contains(sz.Id) == true ? "checked" : "";
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" name="SelectedSzolgaltatasIds" value="@sz.Id" class="form-check-input" id="sz_@sz.Id" @checkedAttr />
+                                            <label class="form-check-label" for="sz_@sz.Id">@sz.Nev</label>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-12 mt-3">
+                                <button type="submit" class="btn egyGomb aranyFont">mentés</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    }
+    else if (Model.Section == "idopontjaim")
+    {
+        <p class="mb-2">
+            <a asp-page="/Account/FodraszFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+        </p>
+        @if (TempData["Info"] is string info && !string.IsNullOrWhiteSpace(info))
+        {
+            <div class="alert alert-info mb-3">@Html.Raw(info)</div>
+        }
+        @if (TempData["Error"] is string err && !string.IsNullOrWhiteSpace(err))
+        {
+            <div class="alert alert-danger mb-3">@err</div>
+        }
+        @if (TempData["Success"] is string ok && !string.IsNullOrWhiteSpace(ok))
+        {
+            <div class="alert alert-success mb-3">@Html.Raw(ok)</div>
+        }
+
+        <div class="card egyszolgaltatas szolg-kartya">
+            <div class="card-body">
+
+                <div class="mb-4">
+                    <div class="calendar-widget border rounded p-3" style="max-width: 320px;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span class="fw-bold ezustFont" id="calendarMonthYear">@DateTime.Now.ToString("yyyy. MMMM")</span>
+                            <div class="btn-group btn-group-sm">
+                                <button type="button" class="btn egyGomb aranyFont" id="calPrev" title="Előző hónap">↑</button>
+                                <button type="button" class="btn egyGomb aranyFont" id="calNext" title="Következő hónap">↓</button>
+                            </div>
+                        </div>
+                        <table class="table table-bordered table-sm mb-2 small">
+                            <thead>
+                                <tr>
+                                    <th class="text-center" style="width:14%">H</th>
+                                    <th class="text-center" style="width:14%">K</th>
+                                    <th class="text-center" style="width:14%">Sze</th>
+                                    <th class="text-center" style="width:14%">Cs</th>
+                                    <th class="text-center" style="width:14%">P</th>
+                                    <th class="text-center" style="width:14%">Szo</th>
+                                    <th class="text-center" style="width:14%">V</th>
+                                </tr>
+                            </thead>
+                            <tbody id="calendarBody"></tbody>
+                        </table>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <button type="button" class="btn btn-sm egyGomb aranyFont" id="calToday">Ma</button>
+                        </div>
+                        <input type="hidden" id="naptarDatum" name="NaptarDatum" value="@Model.NaptarDatum" />
+                    </div>
+                </div>
+
+                <form method="post">
+                    <input type="hidden" name="NaptarDatum" value="@Model.NaptarDatum" />
+
+                    <div class="mb-3">
+                        <button type="submit" asp-page-handler="Szabadnap" class="btn egyGomb aranyFont">
+                            Aznap nem dolgozok
+                        </button>
+                    </div>
+
+                    <p class="mb-3">
+                        <a asp-page="/Account/FodraszFelulet"
+                           asp-route-section="idopontjaim"
+                           asp-route-naptarDatum="@Model.NaptarDatum"
+                           asp-page-handler="CopyPrevDay"
+                           class="btn egyGomb aranyFont">
+                            Legutóbbi órák másolása
+                        </a>
+                    </p>
+
+                    <div class="card mb-3 szolg-kartya"
+                         style="border: solid 1px #D4AF37; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px);">
+                        <div class="card-header fst-italic aranyFont">Munkaidő és szünet/szünetek megadása</div>
+                        <div class="card-body">
+
+                            @* Munkaidő *@
+                            <div class="row g-3 mb-4">
+                                <div class="col-md-3">
+                                    <label asp-for="MunkaidoKezdete" class="form-label ezustFont">Munkaidő kezdete</label>
+                                    <input type="time" asp-for="MunkaidoKezdete" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label asp-for="MunkaidoVege" class="form-label ezustFont">Munkaidő vége</label>
+                                    <input type="time" asp-for="MunkaidoVege" class="form-control" />
+                                </div>
+                            </div>
+
+                            
+                            <div class="row g-3 align-items-end mb-3">
+                                <div class="col-md-3">
+                                    <label asp-for="SzunetKezdete" class="form-label ezustFont">Szünet kezdete</label>
+                                    <input type="time" asp-for="SzunetKezdete" class="form-control" />
+                                </div>
+                                <div class="col-md-3">
+                                    <label asp-for="SzunetVege" class="form-label ezustFont">Szünet vége</label>
+                                    <input type="time" asp-for="SzunetVege" class="form-control" />
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="submit" asp-page-handler="AddSzunet" class="btn egyGomb aranyFont">
+                                        Szünet hozzáadása
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <p class="form-label ezustFont">Szüneteim listája</p>
+                                <div class="border rounded">
+                                    @if (Model.BetoltSzunetek?.Count > 0)
+                                    {
+                                        <ul class="list-group list-group-flush">
+                                            @foreach (var s in Model.BetoltSzunetek)
+                                            {
+                                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                    @s.KezdoIdo.ToString(@"hh\:mm") – @s.ZaroIdo.ToString(@"hh\:mm")
+                                                    <button type="submit"
+                                                            asp-page-handler="DeleteSzunet"
+                                                            asp-route-id="@s.ID"
+                                                            class="btn dangerGomb btn-sm">
+                                                        Törlés
+                                                    </button>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                    else
+                                    {
+                                        <p class="ezustFont mb-0">Nincs szünet megadva.</p>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    @* LEGALUL EGY DARAB MENTÉS GOMB A MUNKAIDŐHÖZ *@
+                    <div class="mt-4">
+                        <button type="submit" asp-page-handler="Mentes" class="btn egyGomb aranyFont">
+                            mentés
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    }
+    else if (Model.Section == "foglalasaim")
+    {
+        <p class="mb-3"><a asp-page="/Account/FodraszFelulet" class="btn egyGomb aranyFont px-4">Vissza</a></p>
+        @if (!Model.MaiFoglalasok.Any() && !Model.JovobeliFoglalasok.Any() && !Model.Regifoglalasok.Any())
+        {
+            <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
+        }
+        else
+        {
+            <div class="card egyszolgaltatas szolg-kartya">
+                <div class="card-header">Mai</div>
+                <div class="card-body">
+                    @if (Model.MaiFoglalasok.Any())
+                    {
+                        foreach (var ip in Model.MaiFoglalasok)
+                        {
+                            <div>
+                                <div>
+                                    <span class="aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</span>
+                                    <span class="">@ip.Szolgaltatas.Nev</span>
+                                    <span class="">@ip.CustomerNeve</span>
+                                </div>
+
+                                <div class="rejtett">
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
+                    }
+                </div>
+            </div>
+                
+               
+               
+            
+
+            <div>Jövőbeli</div>
+
+            <div>Régi</div>
+        }
+
+    }
+</div>
+
+<style>
+    .ezustFont {
+        color: #eeeeee;
+    }
+
+    .aranyFont {
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .vilagosBarna {
+        background: rgba(245, 238, 225, 0.9);
+        background: transparent;
+    }
+
+    .egyszolgaltatas {
+        border-radius: 20px;
+        border-top: 4px solid #bfa27a;
+        border-bottom: 4px solid #bfa27a;
+        border-top: 4px solid #D4AF37;
+        border-bottom: 4px solid #D4AF37;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+    }
+
+    .egyGomb {
+        background: #bfa27a;
+        background: black;
+        color: #D4AF37;
+        border: solid 0.5px #D4AF37;
+        transition: transform 0.5s ease;
+    }
+
+        .egyGomb:hover {
+            background: black;
+            color: #D4AF37;
+            border: solid 0.5px #D4AF37;
+            transform: scale(1.08);
+        }
+
+    .dangerGomb {
+        color: darkorange;
+        border: solid 1px darkorange;
+    }
+
+    .feherBorder {
+        border: solid 2px white;
+    }
+
+
+    .szoveg_3d {
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .szolg-kartya {
+        transform-origin: center;
+        opacity: 0;
+        animation: szetnyilik 0.9s ease-out forwards;
+    }
+
+    @@keyframes szetnyilik {
+        from {
+            transform: scaleX(0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scaleX(1);
+            opacity: 1;
+        }
+    }
+
+    .table td,
+    .table th {
+        background: black !important;
+        color: #eeeeee !important;
+    }
+
+    tr.table-warning label {
+        color: #eeeeee;
+    }
+
+    .table-hover tbody tr.table-warning:hover > * {
+        background-color: black !important;
+    }
+
+    .table {
+        border-radius: 20px !important;
+    }
+</style>
+
+<script>
+    (function () {
+        var calYear = @DateTime.Now.Year;
+        var calMonth = @(DateTime.Now.Month - 1);
+        var selectedDate = null;
+        var monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
+
+        // Kezdő dátum beállítása a Model.NaptarDatum alapján (ha van)
+        var initialDate = '@Model.NaptarDatum';
+        if (initialDate) {
+            var p = initialDate.split('-');
+            if (p.length === 3) {
+                calYear = parseInt(p[0], 10);
+                calMonth = parseInt(p[1], 10) - 1;
+                selectedDate = new Date(calYear, calMonth, parseInt(p[2], 10));
+            }
+        }
+
+        function render() {
+            var first = new Date(calYear, calMonth, 1);
+            var last = new Date(calYear, calMonth + 1, 0);
+            var startPad = (first.getDay() + 6) % 7;
+            var days = last.getDate();
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            document.getElementById('calendarMonthYear').textContent = calYear + '. ' + monthNames[calMonth];
+            var tbody = document.getElementById('calendarBody');
+            tbody.innerHTML = '';
+            var row = document.createElement('tr');
+
+            for (var i = 0; i < startPad; i++) {
+                var cell = document.createElement('td');
+                cell.className = 'text-muted';
+                cell.textContent = '';
+                row.appendChild(cell);
+            }
+
+            for (var d = 1; d <= days; d++) {
+                if (row.children.length === 7) {
+                    tbody.appendChild(row);
+                    row = document.createElement('tr');
+                }
+                var cell = document.createElement('td');
+                cell.className = 'text-center';
+                cell.style.cursor = 'pointer';
+                cell.textContent = d;
+
+                var dObj = new Date(calYear, calMonth, d);
+                if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
+                    cell.classList.add('bg-dark', 'text-white');
+                }
+                if (dObj.getTime() === today.getTime()) {
+                    cell.classList.add('border-primary');
+                }
+
+                cell.addEventListener('click', function () {
+                    var day = parseInt(this.textContent, 10);
+                    var dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                    window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
+                });
+
+                row.appendChild(cell);
+            }
+
+            while (row.children.length > 0 && row.children.length < 7) {
+                var emptyCell = document.createElement('td');
+                emptyCell.className = 'text-muted';
+                row.appendChild(emptyCell);
+            }
+            if (row.children.length) tbody.appendChild(row);
+        }
+
+        document.getElementById('calPrev').addEventListener('click', function () {
+            calMonth--;
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            render();
+        });
+
+        document.getElementById('calNext').addEventListener('click', function () {
+            calMonth++;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            render();
+        });
+
+        document.getElementById('calToday').addEventListener('click', function () {
+            var t = new Date();
+            var dateStr = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+            window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
+        });
+
+        render();
+    })();
+</script>

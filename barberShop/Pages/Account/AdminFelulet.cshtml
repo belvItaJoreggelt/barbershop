@@ -1,0 +1,534 @@
+﻿@page
+@model barberShop.Pages.Account.AdminFeluletModel
+@{
+    ViewData["Title"] = "Admin felület";
+}
+<div class="container py-4">
+    <h1 class="mb-4 ezustFont">Admin felület</h1>
+
+    @if (string.IsNullOrEmpty(Model.Section))
+    {
+        <div class="row g-3">
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style="animation-delay: 0.00s;">
+                    <div class="card-header fw-bold aranyFont">Szolgáltatásaink</div>
+                    <div class="card-body ezustFont d-flex flex-column flex-grow-1">
+                        <p class="card-text">foglaláskor megjelenő szolgáltatások részadatainak szerkesztése.</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/AdminFelulet" asp-route-section="szolgaltatasok" class="btn egyGomb btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style=" animation-delay: 0.80s;">
+                    <div class="card-header fw-bold aranyFont">Fodrászaink</div>
+                    <div class="card-body ezustFont d-flex flex-column flex-grow-1">
+                        <p class="card-text">foglaláskor megjelenő fodrászok adatainak szerkesztése</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" class="btn egyGomb btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style=" animation-delay: 1.6s;">
+                    <div class="card-header fw-bold aranyFont">Felhasználóink</div>
+                    <div class="card-body ezustFont d-flex flex-column flex-grow-1">
+                        <p class="card-text">admin / fodrász / felhasználói profilok felvétele szerkesztése.</p>
+                        <div class="mt-auto text-end">
+                            <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" class="btn egyGomb btn-sm">tovább</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }else if (Model.Section =="szolgaltatasok")
+    {
+        <p class="mb-3">
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+        </p>
+
+        <div class="card mb-4 egyszolgaltatas szolg-kartya">
+            <div class="card-header aranyFont">Új szolgáltatás</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="Create" class="row g-3">
+                    <div class="col-md-3">
+                        <label asp-for="CreateNev" class="form-label ezustFont">Név</label>
+                        <input asp-for="CreateNev" class="form-control" placeholder="pl. Férfi hajvágás" />
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="CreateIdotartam" class="form-label ezustFont">Időtartam (perc)</label>
+                        <input asp-for="CreateIdotartam" class="form-control" type="number" min="1" />
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="CreateAr" class="form-label ezustFont">Ár (Ft)</label>
+                        <input asp-for="CreateAr" class="form-control" type="number" min="0" step="1" />
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="CreateLeiras" class="form-label ezustFont">Leírás</label>
+                        <input asp-for="CreateLeiras" class="form-control" placeholder="Rövid leírás" />
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <button type="submit" class="btn egyGomb aranyFont w-100">Hozzáad</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card egyszolgaltatas szolg-kartya">
+            <div class="card-header aranyFont">Szolgáltatások listája</div>
+            <div class="card-body p-3">
+                <table class="table table-bordered table-hover mb-0 table-rounded">
+                    <thead class="">
+                        <tr>
+                            <th>Név</th>
+                            <th>Időtartam</th>
+                            <th>Ár</th>
+                            <th>Leírás</th>
+                            <th class="text-center" style="width:90px">Sorrend</th>
+                            <th style="width: 160px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var s in Model.SzolgaltatasLista)
+                        {
+                            @if (Model.EditId == s.Id)
+                            {
+                                <tr class="table-warning">
+                                    <td colspan="6" class="p-3">
+                                        <form method="post" asp-page-handler="Update">
+                                            <input type="hidden" name="Id" value="@s.Id" />
+                                            <div class="row g-2 align-items-end">
+                                                <div class="col-md-2"><label class="form-label ezustFont small">Név</label><input name="EditNev" class="form-control form-control-sm" value="@s.Nev" /></div>
+                                                <div class="col-md-1"><label class="form-label ezustFont small">Perc</label><input name="EditIdotartam" class="form-control form-control-sm" type="number" min="1" value="@s.Idotartam" /></div>
+                                                <div class="col-md-1"><label class="form-label ezustFont small">Ár</label><input name="EditAr" class="form-control form-control-sm" type="number" min="0" value="@s.Ar" /></div>
+                                                <div class="col-md-4"><label class="form-label ezustFont small">Leírás</label><input name="EditLeiras" class="form-control form-control-sm" value="@(s.Leiras ?? "")" /></div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label small">Sorrend</label>
+                                                    <select name="EditSorszam" class="form-select form-select-sm">
+                                                        @for (var i = 1; i <= Model.SzolgaltatasLista.Count+1; ++i)
+                                                        {
+                                                            <option value="@i" selected="@(i==s.Sorszam)">@i</option>
+                                                        }
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn egyGomb aranyFont btn-primary">Mentés</button>
+                                                    <a asp-page="/Account/AdminFelulet" asp-route-section="szolgaltatasok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@s.Nev</td>
+                                    <td>@s.Idotartam perc</td>
+                                    <td>@s.Ar.ToString("N0") Ft</td>
+                                    <td>@(s.Leiras?.Length > 50 ? s.Leiras.Substring(0, 50) + "…" : (s.Leiras ?? ""))</td>
+                                    <td class="text-center">@s.Sorszam</td>
+                                    <td>
+                                        <a asp-page="/Account/AdminFelulet" asp-route-editId="@s.Id" asp-route-section="szolgaltatasok" class="btn btn-sm btn-outline-primary">Szerkeszt</a>
+                                        <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" class="d-inline" onsubmit="return confirm('Törölni szeretnéd?');">
+                                            <button type="submit" class="btn btn-sm dangerGomb">Töröl</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                @if (Model.SzolgaltatasLista.Count == 0)
+                {
+                    <p class="text-muted p-3 mb-0">Még nincs szolgáltatás. Add hozzá az elsőt fent.</p>
+                }
+            </div>
+        </div>
+    }else if (Model.Section =="fodraszok")
+    {
+        <p class="mb-3">
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+        </p>
+        <div class="card egyszolgaltatas szolg-kartya">
+            <div class="card-header aranyFont">Fodrászok listája</div>
+            <div class="card-body p-3">
+                <table class="table table-bordered table-hover mb-0">
+                    <thead class="">
+                        <tr>
+                            <th>Név</th>
+                            <th>E-mail</th>
+                            <th>Telefon</th>
+                            <th>Specializáció</th>
+                            <th>Vállalt szolgáltatások</th>
+                            <th style="width: 160px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var f in Model.FodraszLista)
+                        {
+                            @if (Model.EditId == f.ID)
+                            {
+                                <tr class="table-warning">
+                                    <td colspan="6" class="p-3">
+                                        <form method="post" asp-page-handler="UpdateFodrasz">
+                                            <input type="hidden" name="Id" value="@f.ID" />
+                                            <div class="row g-2 align-items-center">
+                                                <div class="col-md-2"><label class="form-label ezustFont small">Név</label><input name="EditFodraszNev" class="form-control form-control-sm" value="@f.Nev" /></div>
+                                                <div class="col-md-2"><label class="form-label ezustFont small">E-mail</label><input name="EditFodraszEmail" class="form-control form-control-sm" value="@f.Email" /></div>
+                                                <div class="col-md-2"><label class="form-label ezustFont small">Telefon</label><input name="EditFodraszTelefon" class="form-control form-control-sm" value="@f.Telefon" /></div>
+                                                <div class="col-md-2"><label class="form-label ezustFont small">Specializáció</label><input name="EditFodraszSpecializacio" class="form-control form-control-sm" value="@(f.Specializacio ?? "")" /></div>
+                                                <div class="col-md-2">
+                                                    <label class="form-label ezustFont small">Szolgáltatások</label>
+                                                    @foreach (var sz in Model.SzolgaltatasLista)
+                                                    {
+                                                        var checkedAttr = f.VallaltSzolgaltatasok?.Any(v => v.Id == sz.Id) == true ? "checked" : "";
+                                                        <div class="form-check form-check-inline">
+                                                            <input type="checkbox" name="SelectedSzolgaltatasIds" value="@sz.Id" class="form-check-input" id="edit_@(f.ID)_@(sz.Id)" @checkedAttr />
+                                                            <label class="form-check-label ezustFont" for="edit_@(f.ID)_@(sz.Id)">@sz.Nev</label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <button type="submit" class="btn btn-sm egyGomb aranyFont">Mentés</button>
+                                                    <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>@f.Nev</td>
+                                    <td>@f.Email</td>
+                                    <td>@f.Telefon</td>
+                                    <td>@(f.Specializacio ?? "")</td>
+                                    <td>@(f.VallaltSzolgaltatasok != null ? string.Join(", ", f.VallaltSzolgaltatasok.Select(s => s.Nev)) : "")</td>
+                                    <td class="text-center align-middle">
+                                        <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" asp-route-editId="@f.ID" class="btn btn-sm btn-outline-primary">Szerkeszt</a>
+                                        
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+                @if (Model.FodraszLista.Count == 0)
+                {
+                    <p class="text-muted p-3 mb-0">Még nincs fodrász. Add hozzá az elsőt fent.</p>
+                }
+            </div>
+        </div>
+        
+    }
+    else if (Model.Section == "felhasznalok")
+    {
+        <p class="mb-3">
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+        </p>
+        @if (TempData["UserError"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["UserError"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["UserSuccess"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["UserSuccess"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <div class="card mb-4  egyszolgaltatas szolg-kartya">
+            <div class="card-header aranyFont">Új felhasználó felvétele</div>
+            <div class="card-body">
+                <form method="post" asp-page-handler="CreateUser" id="formUjUser"class="row g-3">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-2">
+                            <label asp-for="CreateUserRole" class="form-label ezustFont">Jogkör</label>
+                            <select asp-for="CreateUserRole" class="form-select" id="selJogkor">
+                                <option value="Admin">Admin</option>
+                                <option value="Fodrasz">Fodrász</option>
+                                <option value="Mugli">Felhasználó</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="CreateUserEmail" class="form-label ezustFont">E-mail (felhasználónév)</label>
+                            <input asp-for="CreateUserEmail" class="form-control" type="email" />
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="CreateUserPassword" class="form-label ezustFont">Jelszó</label>
+                            <input asp-for="CreateUserPassword" class="form-control" type="password" />
+                        </div>
+                        
+                        <div id="fodraszMezok" class="col-12 row g-2 p-3" style="display:none;">
+                            <div class="col-md-2">
+                                <label asp-for="CreateFodraszNev" class="form-label ezustFont">Név</label>
+                                <input asp-for="CreateFodraszNev" class="form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="CreateFodraszTelefon" class="form-label ezustFont">Telefon</label>
+                                <input asp-for="CreateFodraszTelefon" class="form-control" />
+                            </div>
+                            <div class="col-md-2">
+                                <label asp-for="CreateFodraszSpecializacio" class="form-label ezustFont">Specializáció</label>
+                                <input asp-for="CreateFodraszSpecializacio" class="form-control" />
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label d-block  ezustFont">Vállalt szolgáltatások</label>
+                                @foreach (var szolg in Model.SzolgaltatasLista)
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input type="checkbox" name="SelectedSzolgaltatasIds" value="@szolg.Id" class="form-check-input" id="userNew_@szolg.Id" />
+                                        <label class="form-check-label ezustFont" for="userNew_@szolg.Id">@szolg.Nev</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn egyGomb aranyFont w-100">Mentés</button>
+                        </div>
+                    </div>
+                    
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-12 mb-3">
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Admin</div>
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
+                            <div class="col-6 py-2 px-3 text-center fw-bold ezustFont">új jelszó beállítása</div>
+                        </div>
+                        @foreach (var user in Model.Adminok)
+                        {
+                            <div class="row g-0 border-top">
+                                <div class="col-6 py-2 px-3 ezustFont">@(user.Email ?? user.UserName)</div>
+                                <div class="col-6 py-2 px-3 text-center">
+                                    @if (Model.ResetPasswordUserId == user.Id)
+                                    {
+                                        <form method="post" asp-page-handler="SetPassword" class="d-inline-flex gap-1 align-items-center">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="password" name="NewPassword" class="form-control form-control-sm ezustFont" placeholder="Új jelszó" style="max-width: 140px;" required minlength="6" />
+                                            <button type="submit" class="btn btn-sm btn-success">Mentés</button>
+                                            <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" asp-route-resetPasswordUserId="@user.Id" class="btn btn-outline-danger btn-sm">Új jelszó</a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Adminok.Count == 0)
+                        {
+                            <p class="ezustFont p-3 mb-0">Nincs elmentett admin profil.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mb-3">
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Fodrász</div>
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
+                            <div class="col-6 py-2 px-3 text-center fw-bold ezustFont">új jelszó beállítása</div>
+                        </div>
+                        @foreach (var user in Model.Fodraszok)
+                        {
+                            <div class="row g-0 border-top">
+                                <div class="col-6 py-2 px-3 ezustFont">@(user.Email ?? user.UserName)</div>
+                                <div class="col-6 py-2 px-3 text-center">
+                                    @if (Model.ResetPasswordUserId == user.Id)
+                                    {
+                                        <form method="post" asp-page-handler="SetPassword" class="d-inline-flex gap-1 align-items-center">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="password" name="NewPassword" class="form-control form-control-sm" placeholder="Új jelszó" style="max-width: 140px;" required minlength="6" />
+                                            <button type="submit" class="btn btn-sm btn-success">Mentés</button>
+                                            <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" asp-route-resetPasswordUserId="@user.Id" class="btn btn-outline-danger btn-sm">Új jelszó</a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Fodraszok.Count == 0)
+                        {
+                            <p class="ezustFont p-3 mb-0">Nincs elmentett fodrász profil.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mb-3">
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont fw-bold">Felhasználó</div>
+                    <div class="card-body p-0">
+                        <div class="row g-0">
+                            <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
+                            <div class="col-6 py-2 px-3 text-center fw-bold ezustFont">új jelszó beállítása</div>
+                        </div>
+                        @foreach (var user in Model.Muglik)
+                        {
+                            <div class="row g-0 border-top">
+                                <div class="col-6 py-2 px-3 ezustFont">@(user.Email ?? user.UserName)</div>
+                                <div class="col-6 py-2 px-3 text-center">
+                                    @if (Model.ResetPasswordUserId == user.Id)
+                                    {
+                                        <form method="post" asp-page-handler="SetPassword" class="d-inline-flex gap-1 align-items-center">
+                                            <input type="hidden" name="userId" value="@user.Id" />
+                                            <input type="password" name="NewPassword" class="form-control form-control-sm ezustFont" placeholder="Új jelszó" style="max-width: 140px;" required minlength="6" />
+                                            <button type="submit" class="btn btn-sm btn-success">Mentés</button>
+                                            <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <a asp-page="/Account/AdminFelulet" asp-route-section="felhasznalok" asp-route-resetPasswordUserId="@user.Id" class="btn btn-outline-danger btn-sm">Új jelszó</a>
+                                    }
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Muglik.Count == 0)
+                        {
+                            <p class="ezustFont p-3 mb-0">Nincs elmentett felhasználói profil.</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    
+
+    
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            var sel = document.getElementById('selJogkor');
+            var div = document.getElementById('fodraszMezok');
+            function toggle() { div.style.display = sel.value === 'Fodrasz' ? 'flex' : 'none'; }
+            toggle();
+            sel.addEventListener('change', toggle);
+        })();
+    </script>
+}
+<style>
+    .ezustFont {
+        color: #eeeeee;
+    }
+
+    .aranyFont {
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .vilagosBarna {
+        background: rgba(245, 238, 225, 0.9);
+        background: transparent;
+    }
+
+    .egyszolgaltatas {
+        border-radius: 20px;
+        border-top: 4px solid #bfa27a;
+        border-bottom: 4px solid #bfa27a;
+        border-top: 4px solid #D4AF37;
+        border-bottom: 4px solid #D4AF37;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+    }
+
+    .egyGomb {
+        background: #bfa27a;
+        background: black;
+        color: #D4AF37;
+        border: solid 0.5px #D4AF37;
+        transition: transform 0.5s ease;
+    }
+
+        .egyGomb:hover {
+            background: black;
+            color: #D4AF37;
+            border: solid 0.5px #D4AF37;
+            transform: scale(1.08);
+        }
+
+    .dangerGomb{
+        color: darkorange;
+        border: solid 1px darkorange;
+    }
+
+    .feherBorder {
+        border: solid 2px white;
+    }
+
+
+    .szoveg_3d {
+        
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .szolg-kartya {
+        transform-origin: center;
+        opacity: 0;
+        animation: szetnyilik 0.9s ease-in-out forwards
+    }
+
+    @@keyframes szetnyilik {
+        0% {
+            opacity: 0;
+        }
+
+        25% {
+            opacity: 0.25; 
+        }
+
+        50%{
+            opacity: 0.5;
+        }
+
+        75%{
+            opacity:0.75;
+        }
+
+        100% {
+            opacity: 1; 
+        }
+    }
+
+    .table td,
+    .table th {
+        background: black !important;
+        color: #eeeeee !important;
+    }
+
+    tr.table-warning label{
+        color: #eeeeee;
+    }
+
+    .table-hover tbody tr.table-warning:hover > * {
+        background-color: black !important;
+    }
+
+    .table{
+        border-radius: 20px !important;
+    }
+</style>

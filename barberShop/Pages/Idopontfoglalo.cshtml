@@ -1,0 +1,129 @@
+﻿@page
+@model barberShop.Pages.IdopontfoglaloModel
+@{
+    ViewData["Title"] = "Időpont foglalása";
+}
+
+<div class="container py-4">
+    <h1 class="mb-4 ezustFont">Időpont foglalása</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card shadow-sm mb-4 egyszolgaltatas szolg-kartya">
+                <div class="card-body">
+                    
+                    <p class="ezustFont">Fodrász: <span class="aranyFont">@Model.Fodrasz.Nev</span></p>
+                    <p class="ezustFont">Szolgáltatás:<span class="aranyFont">@Model.Szolgaltatas.Nev</span> — @($"{Model.Szolgaltatas.Idotartam}perc") </p>
+                    <p class="ezustFont">Ár: <span class="aranyFont">@Model.Szolgaltatas.Ar.ToString("N0") Ft</span></p>
+                    <form method="post">
+                        <input type="hidden" asp-for="Input.FodraszId" />
+                        <input type="hidden" asp-for="Input.SzolgaltatasId" />
+
+                        <div class="mb-3">
+                            <label asp-for="Input.FoglalasDatum" class="form-label ezustFont">Dátum</label>
+                            <input asp-for="Input.FoglalasDatum" type="date" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.FoglalasIdo" class="form-label ezustFont">Idő (pl. 10:00)</label>
+                            <input asp-for="Input.FoglalasIdo" type="time" class="form-control" />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.UgyfelNev" class="form-label ezustFont">Név *</label>
+                            <input asp-for="Input.UgyfelNev" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.UgyfelEmail" class="form-label ezustFont">E-mail *</label>
+                            <input asp-for="Input.UgyfelEmail" type="email" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.UgyfelTelefon" class="form-label ezustFont">Telefon *</label>
+                            <input asp-for="Input.UgyfelTelefon" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label asp-for="Input.Megjegyzes" class="form-label ezustFont">Megjegyzés</label>
+                            <textarea asp-for="Input.Megjegyzes" class="form-control" rows="2"></textarea>
+                        </div>
+
+                        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                        <button type="submit" class="btn egyGomb aranyFont">Foglalás elküldése</button>
+                        <a href="/" class="btn btn-outline-secondary ms-2">Mégse</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .ezustFont {
+        color: #eeeeee;
+    }
+
+    .aranyFont {
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .vilagosBarna {
+        background: rgba(245, 238, 225, 0.9);
+        background: transparent;
+    }
+
+    .egyszolgaltatas {
+        border-radius: 20px;
+        border-top: 4px solid #bfa27a;
+        border-bottom: 4px solid #bfa27a;
+        border-top: 4px solid #D4AF37;
+        border-bottom: 4px solid #D4AF37;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+    }
+
+    .egyGomb {
+        background: #bfa27a;
+        background: black;
+        color: #D4AF37;
+        border: solid 0.5px #D4AF37;
+        transition: transform 0.5s ease;
+    }
+
+        .egyGomb:hover {
+            background: black;
+            color: #D4AF37;
+            border: solid 0.5px #D4AF37;
+            transform: scale(1.08);
+        }
+
+    .feherBorder {
+        border: solid 2px white;
+    }
+
+    .szoveg_3d {
+        /*color: #1a1a1a;*/
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .szolg-kartya {
+        transform-origin: center;
+        opacity: 0;
+        animation: szetnyilik 0.9s ease-out forwards;
+    }
+
+    @@keyframes szetnyilik {
+        from {
+            transform: scaleX(0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scaleX(1);
+            opacity: 1;
+        }
+    }
+
+</style>

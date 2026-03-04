@@ -1,0 +1,540 @@
+﻿@page
+@model IndexModel
+
+<div class="py-4">
+    @if (Model.Section == "szolgaltatasok")
+    {
+        ViewData["Title"] = "Szolgáltatások";
+        <h1 class="mb-4 ezustFont">Szolgáltatásaink</h1>
+
+        var index = 0;
+        @foreach (var szolg in Model.Szolgaltatasok)
+        {
+            <div class="row egyszolgaltatas vilagosBarna shadow-sm mb-4 py-1 px-3 overflow-hidden szolg-kartya"
+                style="animation-delay: @(index * 0.750)s;">
+                <div class="col-md-5 col-lg-4 position-relative overflow-hidden" style="min-height: 200px; background: transparent;">
+                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                    {
+                        <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
+                             alt="@szolg.Nev"
+                             class="position-absolute top-0 start-0 w-100 h-100 vilagosBarna"
+                             style="object-fit: contain; object-position:top; display: block; background: transparent;" />
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
+                    }
+                </div>
+                <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column">
+                    <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>@szolg.Nev</strong></h3>
+                    <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
+                    <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
+                    <div class="d-flex mt-auto">
+                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                    </div>
+                </div>
+                @{
+                    index++; 
+                }
+            </div>
+        }
+    }
+    else if(Model.Section =="fodraszok")
+    {
+        ViewData["Title"] = "Fodrászaink";
+        <h1 class="mb-4 ezustFont">Fodrász kiválasztása</h1>
+
+        <div class="mb-4 p-3">
+            <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn egyGomb btn-sm mb-3">Vissza a szolgáltatásokhoz</a>
+            <p class="ezustFont mb-3">Szolgáltatás: <strong>@Model.KivalasztottSzolgaltatas.Nev</strong></p>
+
+
+            @if (Model.Fodraszok.Count == 0)
+            {
+                <p class="ezustFont mb-0">Ehhez a szolgáltatáshoz jelenleg nincs elérhető fodrász.</p>
+            }
+            else
+            {
+                var fodraszIndex = 0;
+                @foreach (var fodrasz in Model.Fodraszok)
+                {
+                    var legkorabbi = Model.FodraszLegkorabbiSzabadIdopontok.GetValueOrDefault(fodrasz.ID);
+
+                    <div class="row egyszolgaltatas shadow-sm mb-3 p-0 overflow-hidden szolg-kartya"
+                         style="animation-delay: @(fodraszIndex * 0.40)s;">
+
+                        <div class="col-md-5 col-lg-4 py-3 d-flex align-items-center justify-content-center">
+                            @if (!string.IsNullOrEmpty(fodrasz.ProfilkepFajlNeve))
+                            {
+                                <div class="fodrasz-kep-wrap">
+                                    <img src="~/kepek/fodraszok/@fodrasz.ProfilkepFajlNeve"
+                                         alt="@fodrasz.Nev"
+                                         class="fodraszProfilkep" />
+                                </div>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Kép</span>
+                            }
+                        </div>
+
+                        <div class="col-md-7 col-lg-8 py-3 px-3 d-flex flex-column justify-content-center">
+                            <h3 class="h5 align-self-center aranyFont">@fodrasz.Nev</h3>
+
+                            <div class="mt-2 d-flex flex-column align-items-center justify-content-center">
+                                @if (legkorabbi != null && legkorabbi.Count > 0)
+                                {
+                                    <p class="ezustFont small">Legkorábbi időpontok:</p>
+                                    <div class="d-flex flex-wrap gap-2 mb-3">
+                                        @foreach (var ido in legkorabbi)
+                                        {
+                                            <a asp-page="/Index"
+                                               asp-route-section="foglalas"
+                                               asp-route-FodraszId="@fodrasz.ID"
+                                               asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                               asp-route-foglalasDatum="@ido.ToString("yyyy-MM-dd")"
+                                               asp-route-foglalasIdo="@ido.ToString("HH:mm")"
+                                               class="btn egyGomb aranyFont btn-sm text-nowrap">@ido.ToString("MM.dd.") @ido.ToString("HH:mm")</a>
+                                        }
+                                    </div>
+                                }
+                                <a asp-page="/Index"
+                                   asp-route-section="osszesIdopont"
+                                   asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                   asp-route-FodraszId="@fodrasz.ID"
+                                   asp-route-naptarDatum="@(legkorabbi != null && legkorabbi.Count > 0
+                                                                      ? legkorabbi[0].ToString("yyyy-MM-dd")
+                                                                      : DateTime.Today.ToString("yyyy-MM-dd"))"
+                                   class="btn aranyFont egyGomb btn-sm align-self-center mt-1">
+                                    Összes időpont
+                                </a>
+                            </div>
+
+                        </div>
+                    </div>
+                    fodraszIndex++;
+                }
+            }
+        </div>
+    }
+    else if (Model.Section == "osszesIdopont")
+    {
+        ViewData["Title"] = "Időpont kiválasztása";
+        <h1 class="mb-4 ezustFont">Időpont kiválasztása</h1>
+
+        <div class="p-4">
+            <p>
+                <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn px-4 egyGomb aranyFont">Vissza a fodrászokhoz</a>
+            </p>
+
+            <div class="card p-2 egyszolgaltatas szolg-kartya d-flex flex-column align-items-center gap-5">
+                <div class="card-body">
+
+                    <div class="text-center">
+                        <div class="fodrasz-kep-wrap mx-auto">
+                            <img src="~/kepek/fodraszok/@Model.KivalasztottF.ProfilkepFajlNeve" alt="@Model.KivalasztottF.Nev" class="fodraszProfilkep" />
+                        </div>
+                    </div>
+                
+                    <div class="text-center w-100 gap-2">
+                        <p class="h4 mt-2 mx-auto aranyFont">@Model.KivalasztottF.Nev</p>
+                        <p class="h6 mt-2 ezustFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</p>
+                    </div>
+
+                    <div class="d-flex justify-content-center w-100 mt-3">
+                        <div class="calendar-widget border rounded p-3 w-100" style="max-width: 320px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold ezustFont" id="calendarMonthYear">@DateTime.Now.ToString("yyyy. MMMM")</span>
+                                <div class="btn-group btn-group-sm">
+                                    <button type="button" class="btn egyGomb aranyFont" id="calPrev" title="Előző hónap">↑</button>
+                                    <button type="button" class="btn egyGomb aranyFont" id="calNext" title="Következő hónap">↓</button>
+                                </div>
+                            </div>
+                            <table class="table table-bordered table-sm mb-2 small">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" style="width:14%">H</th>
+                                        <th class="text-center" style="width:14%">K</th>
+                                        <th class="text-center" style="width:14%">Sze</th>
+                                        <th class="text-center" style="width:14%">Cs</th>
+                                        <th class="text-center" style="width:14%">P</th>
+                                        <th class="text-center" style="width:14%">Szo</th>
+                                        <th class="text-center" style="width:14%">V</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="calendarBody"></tbody>
+                            </table>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <button type="button" class="btn btn-sm egyGomb aranyFont" id="calToday">Ma</button>
+                            </div>
+                            <input type="hidden" id="naptarDatum" name="NaptarDatum" value="@Model.NaptarDatum" />
+                        </div>
+                    </div>
+
+                    <div class="col-md-4 mt-2 mx-auto gap-4">
+                        @if (!Model.ReggeliIdopontok.Any() &&!Model.DelutaniIdopontok.Any() && !Model.EstiIdopontok.Any())
+                        {
+                            <p class="ezustFont text-center small">Erre a napra nincs szabad időpont.</p>
+                        }
+                        else
+                        {
+                            @if (Model.ReggeliIdopontok.Any())
+                            {
+                                <span class="aranyFont small">Délelőtt</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var idpont in Model.ReggeliIdopontok)
+                                    {
+                                        <a asp-page="/Index"
+                                           asp-route-section="foglalas"
+                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                           asp-route-foglalasDatum="@idpont.ToString("yyyy-MM-dd")"
+                                           asp-route-foglalasIdo="@idpont.ToString("HH:mm")"
+                                           class="btn ezustGomb btn-sm text-nowrap">
+                                            @idpont.ToString("HH:mm")
+                                        </a>
+                                    }
+                                </div>
+                            
+                            }
+                            @if (Model.DelutaniIdopontok.Any())
+                            {
+                                <span class="aranyFont small">Délután</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var idopont in Model.DelutaniIdopontok)
+                                    {
+                                        <a asp-page="/Index"
+                                           asp-route-section="foglalas"
+                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                           asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                           asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                           class="btn ezustGomb btn-sm text-nowrap">
+                                            @idopont.ToString("HH:mm")
+                                        </a>
+                                    }
+                                </div>
+                            }
+                            @if (Model.EstiIdopontok.Any())
+                            {
+                                <span class="aranyFont small">Este</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach (var idopont in Model.EstiIdopontok)
+                                    {
+                                        <a asp-page="/Index"
+                                           asp-route-section="foglalas"
+                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                           asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                           asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                           class="btn ezustGomb btn-sm text-nowrap">
+                                            @idopont.ToString("HH:mm")
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (Model.Section=="foglalas")
+    {
+        ViewData["Title"] = "Foglalás";
+
+        <div class="p-4">
+            <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn egyGomb aranyFont px-4">Vissza a fodrászokhoz </a>
+
+            <div class="mt-4">
+                <p class="ezustFont">Fodrász: <span class="aranyFont">@Model.KivalasztottF.Nev</span></p>
+                <p class="ezustFont">Szolgáltatás: <span class="aranyFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
+                <p class="ezustFont">Ár: <span class="aranyFont">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
+                <p class="ezustFont">Dátum: <span class="aranyFont">@Model.FoglalasDatum </span><span class="ezustFont"> @Model.FoglalasIdo</span></p>
+                
+                <form method="post" asp-page-handler="Foglalas">
+                    <input type="hidden" asp-for="FodraszId" />
+                    <input type="hidden" asp-for="SzolgaltatasId" />
+                    <input type="hidden" asp-for="FoglalasDatum" />
+                    <input type="hidden" asp-for="FoglalasIdo" />
+
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <p>
+                        <label asp-for="UgyfelNev" class="form-label ezustFont">Név:</label>
+                        <input asp-for="UgyfelNev" class="form-control" />
+                        <span asp-validation-for="UgyfelNev" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <label asp-for="UgyfelEmail" class="form-label ezustFont">E-mail cím:</label>
+                        <input asp-for="UgyfelEmail" class="form-control" />
+                        <span asp-validation-for="UgyfelEmail" class="text-danger"></span>
+                    </p>
+                    <p>
+                        <label asp-for="UgyfelTelefon" class="form-label ezustFont">Telefonszám:</label>
+                        <input asp-for="UgyfelTelefon" class="form-control" />
+                        <span asp-validation-for="UgyfelTelefon" class="text-danger"></span>
+                    </p>
+
+                    <p>
+                        <label asp-for="UgyfelMegjegyzes" class="form-label ezustFont">Megjegyzés:</label>
+                        <input asp-for="UgyfelMegjegyzes" class="form-control" />
+                    </p>
+
+                    <button type="submit" class="btn egyGomb aranyFont">Foglalás elküldése</button>
+                    <a href="/" class="btn btn-outline-secondary ms-2">Mégse</a>
+                </form>
+            </div>
+        </div>
+
+        
+    }
+    else if(Model.Section=="koszi")
+    {
+        <p>
+            <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn mx-4 egyGomb aranyFont">Új foglalás megkezdése</a>
+        </p>
+        <div class="p-4 mt-4 egyszolgaltatas szolg-kartya d-flex flex-column justify-content-center align-items-center">
+            <p class="ezustFont h4 mt-1 text-center">Időpontodat sikeresen rögzítettük!</p>
+            <p class="ezustFont h3 mt-3 text-center">Mi gondoskodunk a stílusról, te csak érkezz pontosan!</p>
+            <img src="~/kepek//backgrounds/logo.png" alt="logo" class="mt-2" style="object-fit:contain; max-height:300px;" />
+        </div>
+    }
+</div>
+
+<style>
+    .ezustFont{
+        color: #eeeeee;   
+    }
+
+    .aranyFont{
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        
+    }
+    .vilagosBarna{
+        background: rgba(245, 238, 225, 0.9);
+        background: transparent;
+    }
+
+    .egyszolgaltatas{
+        border-radius: 20px;
+        border-top: 4px solid #bfa27a;
+        border-bottom: 4px solid #bfa27a;
+        border-top: 4px solid #D4AF37;
+        border-bottom: 4px solid #D4AF37;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(8px);
+    }
+
+    .egyGomb{
+        background: #bfa27a;
+        background: black;
+        color: #D4AF37;
+        border: solid 0.5px #D4AF37;
+        transition: transform 0.5s ease;
+    }
+    .egyGomb:hover {
+        background: black;
+        color: #D4AF37;
+        border: solid 0.5px #D4AF37;
+        transform: scale(1.08);
+    }
+
+    .ezustGomb {
+        background: black;
+        color: #eeeeee;
+        border: solid 0.5px #eeeeee;
+        transition: transform 0.5s ease;
+    }
+
+        .ezustGomb:hover {
+        background: black;
+            color: #eeeeee;
+            border: solid 0.5px #eeeeee;
+        transform: scale(1.08);
+    }
+
+    .feherBorder{
+        border: solid 2px white;
+    }
+    .szoveg_3d {
+        /*color: #1a1a1a;*/
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        
+    }
+
+    .szolg-kartya{
+        transform-origin: center;
+        opacity:0;
+        animation: szetnyilik 0.9s ease-out forwards;
+    }
+
+    @@keyframes szetnyilik{
+        from{
+            transform: scaleX(0);
+            opacity:0;
+        }
+        to{
+            transform: scaleX(1);
+            opacity:1;
+        }
+    }
+
+    
+    .row.egyszolgaltatas {
+        align-items: stretch;
+    }
+
+    
+    .fodrasz-kep-wrap {
+        height: 100%;
+        max-height: 140px;
+        aspect-ratio: 1 / 1;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid #D4AF37;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    
+    .fodraszProfilkep {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    /* Mobilon legyen kisebb a kör, de ugyanúgy működik */
+    @@media (max-width: 768px) {
+        .fodrasz-kep-wrap {
+            max-height: 70px;
+        }
+    }
+
+    .table td,
+    .table th {
+        background: black !important;
+        color: #eeeeee !important;
+    }
+
+    tr.table-warning label {
+        color: #eeeeee;
+    }
+
+    .table-hover tbody tr.table-warning:hover > * {
+        background-color: black !important;
+    }
+
+    .table {
+        border-radius: 20px !important;
+        border: solid 0.5px #D4AF37;
+    }
+    
+    .calendar-widget{
+        border: none !important;
+    }
+</style>
+<script>
+    (function () {
+        var calYear = @DateTime.Now.Year;
+        var calMonth = @(DateTime.Now.Month - 1);
+        var selectedDate = null;
+        var monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
+
+        // Kezdő dátum beállítása a Model.NaptarDatum alapján (ha van)
+        var initialDate = '@Model.NaptarDatum';
+        if (initialDate) {
+            var p = initialDate.split('-');
+            if (p.length === 3) {
+                calYear = parseInt(p[0], 10);
+                calMonth = parseInt(p[1], 10) - 1;
+                selectedDate = new Date(calYear, calMonth, parseInt(p[2], 10));
+            }
+        }
+
+        function render() {
+            var first = new Date(calYear, calMonth, 1);
+            var last = new Date(calYear, calMonth + 1, 0);
+            var startPad = (first.getDay() + 6) % 7;
+            var days = last.getDate();
+            var today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            document.getElementById('calendarMonthYear').textContent = calYear + '. ' + monthNames[calMonth];
+            var tbody = document.getElementById('calendarBody');
+            tbody.innerHTML = '';
+            var row = document.createElement('tr');
+
+            for (var i = 0; i < startPad; i++) {
+                var cell = document.createElement('td');
+                cell.className = 'text-muted';
+                cell.textContent = '';
+                row.appendChild(cell);
+            }
+
+            for (var d = 1; d <= days; d++) {
+                if (row.children.length === 7) {
+                    tbody.appendChild(row);
+                    row = document.createElement('tr');
+                }
+                var cell = document.createElement('td');
+                cell.className = 'text-center';
+                cell.style.cursor = 'pointer';
+                cell.textContent = d;
+
+                var dObj = new Date(calYear, calMonth, d);
+                if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
+                    cell.classList.add('bg-dark', 'text-white');
+                }
+                if (dObj.getTime() === today.getTime()) {
+                    cell.classList.add('border-primary');
+                }
+
+                cell.addEventListener('click', function () {
+                    var day = parseInt(this.textContent, 10);
+                    var dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
+                    window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
+                });
+
+                row.appendChild(cell);
+            }
+
+            while (row.children.length > 0 && row.children.length < 7) {
+                var emptyCell = document.createElement('td');
+                emptyCell.className = 'text-muted';
+                row.appendChild(emptyCell);
+            }
+            if (row.children.length) tbody.appendChild(row);
+        }
+
+        document.getElementById('calPrev').addEventListener('click', function () {
+            calMonth--;
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            render();
+        });
+
+        document.getElementById('calNext').addEventListener('click', function () {
+            calMonth++;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            render();
+        });
+
+        document.getElementById('calToday').addEventListener('click', function () {
+            var t = new Date();
+            var dateStr = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+            window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
+        });
+
+        render();
+    })();
+</script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
