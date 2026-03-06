@@ -12,8 +12,8 @@ using barberShop;
 namespace barberShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260301174112_AddSorszamToSzolgaltatas")]
-    partial class AddSorszamToSzolgaltatas
+    [Migration("20260306114931_InitialCreateAzure")]
+    partial class InitialCreateAzure
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -255,6 +255,9 @@ namespace barberShop.Migrations
 
                     b.Property<string>("Nev")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ProfilkepFajlNeve")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Specializacio")

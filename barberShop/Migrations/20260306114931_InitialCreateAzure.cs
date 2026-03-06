@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace barberShop.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreateAzure : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -30,6 +30,7 @@ namespace barberShop.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FodraszId = table.Column<int>(type: "int", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -59,7 +60,8 @@ namespace barberShop.Migrations
                     Specializacio = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Nev = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Telefon = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilkepFajlNeve = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -75,7 +77,9 @@ namespace barberShop.Migrations
                     Nev = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Idotartam = table.Column<int>(type: "int", nullable: false),
                     Ar = table.Column<decimal>(type: "decimal(18,1)", precision: 18, scale: 1, nullable: false),
-                    Leiras = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Leiras = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    KepFajlNeve = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Sorszam = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -189,6 +193,50 @@ namespace barberShop.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FodraszMunkaidok",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FodraszId = table.Column<int>(type: "int", nullable: false),
+                    Datum = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Kezdoido = table.Column<TimeSpan>(type: "time", nullable: false),
+                    ZaroIdo = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FodraszMunkaidok", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_FodraszMunkaidok_Fodraszok_FodraszId",
+                        column: x => x.FodraszId,
+                        principalTable: "Fodraszok",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FodraszSzunetek",
+                columns: table => new
+                {
+                    ID = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FodraszId = table.Column<int>(type: "int", nullable: false),
+                    Datum = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    KezdoIdo = table.Column<TimeSpan>(type: "time", nullable: false),
+                    ZaroIdo = table.Column<TimeSpan>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FodraszSzunetek", x => x.ID);
+                    table.ForeignKey(
+                        name: "FK_FodraszSzunetek_Fodraszok_FodraszId",
+                        column: x => x.FodraszId,
+                        principalTable: "Fodraszok",
+                        principalColumn: "ID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "FodraszSzolgaltatas",
                 columns: table => new
                 {
@@ -284,9 +332,20 @@ namespace barberShop.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FodraszMunkaidok_FodraszId_Datum",
+                table: "FodraszMunkaidok",
+                columns: new[] { "FodraszId", "Datum" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FodraszSzolgaltatas_VallaltSzolgaltatasokId",
                 table: "FodraszSzolgaltatas",
                 column: "VallaltSzolgaltatasokId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FodraszSzunetek_FodraszId",
+                table: "FodraszSzunetek",
+                column: "FodraszId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Idopontok_FodraszId",
@@ -318,7 +377,13 @@ namespace barberShop.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "FodraszMunkaidok");
+
+            migrationBuilder.DropTable(
                 name: "FodraszSzolgaltatas");
+
+            migrationBuilder.DropTable(
+                name: "FodraszSzunetek");
 
             migrationBuilder.DropTable(
                 name: "Idopontok");

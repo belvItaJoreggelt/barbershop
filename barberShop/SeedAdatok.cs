@@ -15,14 +15,16 @@ namespace barberShop
                         Nev = "Kovács Titusz",
                         Email = "kovacstitusz@gmail.com",
                         Telefon = "+36 30 4533 345",
-                        Specializacio = "Féfi hajvágás"
+                        Specializacio = "Féfi hajvágás",
+                        ProfilkepFajlNeve="kovacsTitusz.png"
                     },
                     new Fodrasz
                     {
-                        Nev = "Kis Tímea",
-                        Email = "kistim@gmail.com",
+                        Nev = "Német Tibériusz\r\n",
+                        Email = "ntiberiusz@gmail.com\r\n",
                         Telefon = "+36 20 7879 454",
-                        Specializacio = "Női hajvágás"
+                        Specializacio = "Hajvágás",
+                        ProfilkepFajlNeve="nemetTiberiusz.png"
                     }
                 };
                 context.Fodraszok.AddRange(fodraszok);
@@ -38,27 +40,33 @@ namespace barberShop
                         Nev = "Férfi hajvágás",
                         Ar = 7000,
                         Idotartam = 45,
-                        Leiras = "Legyen szó klasszikus úriember stílusról vagy modern átmenetről, nálunk a precizitás az alap. Szolgáltatásunk során profi hajvágóeszközökkel " +
-                            "a kívánt formára igazítjuk a hajadat, ezt követően pedig alapos öblítéssel kimossuk a frissen levágott hajszálakat. A folyamatot egy egyénre szabott " +
-                            "hajformázással (styling) zárjuk, hogy ne csak a székből felállva, hanem egész nap magabiztosnak érezd magad."
+                        Leiras = "Legyen szó klasszikus fazonról vagy modern átmenetről, nálunk a precizitás az alap. A hajvágást alapos hajmosással és egyénre szabott stylinggal zárjuk, hogy egész nap magabiztos maradj.",
+                        KepFajlNeve="hajvagasFekvo.png"
                     },
                     new Szolgaltatas
                     {
                         Nev = "Szakáll igazítás",
                         Ar = 3000,
                         Idotartam = 15,
-                        Leiras = "Egy igényesen formázott szakáll sokat hozzáad a megjelenéshez, ezért nálunk minden igazítás a részletekről szól. A kezelés során a szakáll hosszát és formáját az arc karakteréhez igazítjuk, " +
-                            "éles, rendezett vonalakat alakítunk ki az arcon és a nyakon, majd eltávolítjuk a felesleges szőrszálakat. A szolgáltatás végén ápoló és formázó termékekkel tesszük teljessé az eredményt, " +
-                            "hogy szakállad frissen igazított, rendezett és tartósan stílusos maradjon a nap folyamán."
+                        Leiras = "Az ápolt szakáll meghatározza az arc karakterét, nálunk pedig minden a részletekről szól. A precíz formázást prémium " +
+                                            "ápolók használatával tesszük teljessé, hogy megjelenésed markáns, stílusod pedig kifogástalan legyen.",
+                        KepFajlNeve="szakallFekvo.png"
                     },
                     new Szolgaltatas
                     {
-                        Nev = "Férfi hajvágás + szakáll igazítás",
+                        Nev = "Hajvágás + szakáll igazítás",
                         Ar = 9500,
                         Idotartam = 60,
-                        Leiras = "Komplett frissítés egy alkalom alatt: a hajvágás és a szakáll igazítása együtt biztosít rendezett, harmonikus megjelenést. A frizurát a kívánt stílus szerint alakítjuk ki, majd " +
-                            "szakálladat az arcformádhoz igazítva formázzuk, tiszta kontúrokat és egységes összképet kialakítva. A szolgáltatást hajformázással és szakállápoló termékek alkalmazásával zárjuk, " +
-                            "hogy ne csak frissen vágva, hanem egész nap ápolt és magabiztos megjelenéssel távozz."
+                        Leiras = "Hozd összhangba a megjelenésed egyetlen látogatással, ahol a karakteres hajvágás és a tűpontos szakállformázás találkozik.",
+                        KepFajlNeve="hajEsSzakallFekvo.png"
+                    },
+                    new Szolgaltatas
+                    {
+                        Nev = "Kreatív hajvágás",
+                        Ar = 8000,
+                        Idotartam = 60,
+                        Leiras = "Extrém skin fade, precíz hajtetoválás vagy teljesen egyedi, aszimmetrikus formára vágysz? Nálunk valóra válnak a legmerészebb elképzeléseidet is!",
+                        KepFajlNeve="kreativFekvo.png"
                     }
                 };
                 context.Szolgaltatasok.AddRange(szolgaltatasok);

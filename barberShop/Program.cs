@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using barberShop;
 
@@ -113,7 +113,7 @@ using (var scope = app.Services.CreateScope())
             }
             else
             {
-                // Ha valami hiba volt (pl. gyenge jelszó), logoljuk a hibákat.
+                // pl. gyenge jelszó), logoljuk a hibákat
                 var logger = services.GetRequiredService<ILogger<Program>>();
                 logger.LogError("Nem sikerült az admin felhasználó létrehozása: {Errors}",
                     string.Join("; ", createResult.Errors.Select(e => e.Description)));
