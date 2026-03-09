@@ -11,7 +11,7 @@
 
         @foreach (var szolg in Model.Szolgaltatasok)
         {
-            <div class="row egyszolgaltatas szolgLayout shadow-sm mb-4 py-1 px-3 overflow-hidden szolg-kartya"
+            <div class="row egyszolgaltatas szolgLayout shadow-sm mb-4 py-1 px-3 px-sm-0 overflow-hidden szolg-kartya"
                 style="animation-delay: @(index * 0.750)s;">
 
                 <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
@@ -468,8 +468,8 @@
             grid-template-columns: 50% 50%;
             grid-template-rows: 50% 50%;
             position: relative;
-            width: 90vw;
-            padding-bottom: 25px;
+            width: 100vw;
+            
         }
 
         .szolgKep_Nagy {
@@ -512,7 +512,7 @@
             grid-column: 1;
             grid-row: 1;
             align-items: center;
-           
+            
         }
 
         .szolgLeiras {
