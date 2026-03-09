@@ -65,7 +65,7 @@
                     </h3>
                 </div>
                 <div class="szolgLeiras">
-                    <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
+                    <p class="mt-2 ezustFont">@(szolg.Leiras ?? "")</p>
                     <h3 class="mt-2 ps-2 h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
                     <div class="d-flex fodrKiv">
                         <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
