@@ -50,7 +50,16 @@
                         <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
                     }
                 </div>
-                <div class="szolgNev"><h3 class="szoveg_3d h5 ps-3 aranyFont"><strong>@szolg.Nev</strong></h3></div>
+                <div class="szolgNev"><h3 class="szoveg_3d h5 ps-3 aranyFont"><strong>
+                            @if (szolg.Nev == "Hajvágás + szakáll igazítás")
+                            {
+                                @:Hajvágás +<br>szakáll igazítás
+                            }
+                            else
+                            {
+                                @szolg.Nev
+                            }
+                </strong></h3></div>
                 <div class="szolgLeiras">
                     <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
                     <h3 class="mt-2 ps-3 h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
@@ -506,8 +515,8 @@
             left: 0;
             width: 45%;
             height: 100%;
-            background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, transparent 100%);
-        }
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.85) 25%, rgba(0, 0, 0, 0.5) 60%, transparent 100% );
+            }
 
         .szolgNev {
             display: flex;
