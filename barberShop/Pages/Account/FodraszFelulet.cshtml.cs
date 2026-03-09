@@ -129,15 +129,15 @@ namespace barberShop.Pages.Account
                     .ToListAsync();
 
                 MaiFoglalasok = osszes
-                    .Where(i => i.EsedekessegiIdopont == today)
+                    .Where(i => i.EsedekessegiIdopont.Date == today)
                     .ToList();
 
                 JovobeliFoglalasok = osszes
-                    .Where(i => i.EsedekessegiIdopont > today)
+                    .Where(i => i.EsedekessegiIdopont.Date > today)
                     .ToList();
 
                 Regifoglalasok = osszes
-                    .Where(i => i.EsedekessegiIdopont < today)
+                    .Where(i => i.EsedekessegiIdopont.Date < today)
                     .OrderByDescending(i=>i.EsedekessegiIdopont)
                     .ToList();
             }

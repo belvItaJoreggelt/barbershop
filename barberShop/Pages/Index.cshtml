@@ -8,16 +8,18 @@
         <h1 class="mb-4 ezustFont">Szolgáltatásaink</h1>
 
         var index = 0;
+
         @foreach (var szolg in Model.Szolgaltatasok)
         {
-            <div class="row egyszolgaltatas vilagosBarna shadow-sm mb-4 py-1 px-3 overflow-hidden szolg-kartya"
+            <div class="row egyszolgaltatas szolgLayout shadow-sm mb-4 py-1 px-3 overflow-hidden szolg-kartya"
                 style="animation-delay: @(index * 0.750)s;">
-                <div class="col-md-5 col-lg-4 position-relative overflow-hidden" style="min-height: 200px; background: transparent;">
+
+                <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
                     @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
                     {
                         <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
                              alt="@szolg.Nev"
-                             class="position-absolute top-0 start-0 w-100 h-100 vilagosBarna"
+                             class="position-absolute top-0 start-0 w-100 h-100"
                              style="object-fit: contain; object-position:top; display: block; background: transparent;" />
                     }
                     else
@@ -25,11 +27,34 @@
                         <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
                     }
                 </div>
-                <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column">
+                <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column szolgReszletekNagy">
                     <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>@szolg.Nev</strong></h3>
                     <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
                     <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
-                    <div class="d-flex mt-auto">
+                    <div class="d-flex mt-auto fodrKiv">
+                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                    </div>
+                </div>
+
+
+
+                <div class="col-md-5 col-lg-4 overflow-hidden szolgKep">
+                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                    {
+                        <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
+                             alt="@szolg.Nev"
+                             class="w-100 h-100"/>
+                    }
+                    else
+                    {
+                        <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
+                    }
+                </div>
+                <div class="szolgNev"><h3 class="szoveg_3d h5 ps-3 aranyFont"><strong>@szolg.Nev</strong></h3></div>
+                <div class="szolgLeiras">
+                    <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
+                    <h3 class="mt-2 ps-3 h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
+                    <div class="d-flex fodrKiv">
                         <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
                     </div>
                 </div>
@@ -411,10 +436,96 @@
         display: block;
     }
 
-    /* Mobilon legyen kisebb a kör, de ugyanúgy működik */
+    
+    .szolgKep {
+        display: none;
+    }
+
+    .szolgNev {
+        display: none;
+    }
+
+    .szolgLeiras {
+        display: none;
+    }
+
+
+    .szolgKep_Nagy {
+        display: flex;
+    }
+
+    .szolgReszletekNagy{
+        display: flex;
+    }
+
     @@media (max-width: 768px) {
         .fodrasz-kep-wrap {
             max-height: 70px;
+        }
+
+        .szolgLayout {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            grid-template-rows: 50% 50%;
+            position: relative;
+            width: 90vw;
+            padding-bottom: 25px;
+        }
+
+        .szolgKep_Nagy {
+            display: none !important;
+        }
+
+        .szolgReszletekNagy {
+            display: none !important;
+        }
+        
+        .szolgKep {
+            display: flex;
+            height: 100%;
+            width: 100%;
+            grid-column: 2;
+            grid-row: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .szolgKep img{
+            object-fit: cover;
+            object-position: top;
+            display: block;
+            background: transparent;
+        }
+
+        .szolgKep::after{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 35%;
+            height: 100%;
+            background-image: radial-gradient(#1f1f1f 0.5px, transparent 0.5px);
+        }
+
+        .szolgNev {
+            display: flex;
+            grid-column: 1;
+            grid-row: 1;
+            align-items: center;
+           
+        }
+
+        .szolgLeiras {
+            display: flex;
+            grid-column: 1 / 3;
+            grid-row: 2;
+            flex-direction: column;
+        }
+
+        .fodrKiv {
+            position: absolute;
+            right: 15px;
+            bottom: 15px;
         }
     }
 

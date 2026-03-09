@@ -258,39 +258,81 @@
         }
         else
         {
-            <div class="card egyszolgaltatas szolg-kartya">
-                <div class="card-header">Mai</div>
-                <div class="card-body">
-                    @if (Model.MaiFoglalasok.Any())
-                    {
-                        foreach (var ip in Model.MaiFoglalasok)
+
+            <div class="d-flex gap-4 flex-column">
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont">Mai</div>
+                    <div class="card-body">
+                        @if (Model.MaiFoglalasok.Any())
                         {
-                            <div>
-                                <div>
-                                    <span class="aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</span>
-                                    <span class="">@ip.Szolgaltatas.Nev</span>
-                                    <span class="">@ip.CustomerNeve</span>
-                                </div>
-
-                                <div class="rejtett" style="display:none;">
-                                </div>
-                            </div>
+                            <table class="table-borderless foglTabla">
+                                <tbody>
+                                    @foreach (var ip in Model.MaiFoglalasok)
+                                    {
+                                        <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
+                                            <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                            <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
+                                            <td class="text-center ezustFont">@ip.CustomerNeve</td>
+                                            <td class="text-center aranyFont">ᐯ</td>
+                                        </tr>
+                                        <tr class="rejtett"  style="display:none !important;">
+                                            <td colspan="4" class="p-3">
+                                                <span class="ezustFont d-block">@ip.CustomerPhone</span>
+                                                <span class="ezustFont d-block">@ip.CustomerEmail</span>
+                                                <span class="ezustFont d-block">@ip.CustomerNotes</span>
+                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         }
-                    }
-                    else
-                    {
-                        <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
-                    }
+                        else
+                        {
+                            <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
+                        }
+                    </div>
                 </div>
-            </div>
+
+
+
+
+
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont">Jövőbeli</div>
+                    <div class="card-body gap-4">
+                        @if (Model.JovobeliFoglalasok.Any())
+                        {
+                            foreach (var ip in Model.JovobeliFoglalasok)
+                            {
+                                <div class="py-4 px-2" style="height:auto;">
+                                    <div class="lathato d-flex justify-content-between align-items-center" data-toggle-id="foglalas-@ip.ID">
+                                        <span class="aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</span>
+                                        <span class="ezustFont">@ip.Szolgaltatas.Nev</span>
+                                        <span class="ezustFont">@ip.CustomerNeve</span>
+                                        <span class="aranyFont lenyitoGomb" role="button" tabindex="0">▼</span>
+                                    </div>
+
+                                    <div class="rejtett d-flex flex-column" id="foglalas-@ip.ID" style="display:none !important">
+                                        <span class="ezustFont">@ip.CustomerPhone</span>
+                                        <span class="ezustFont">@ip.CustomerEmail</span>
+                                        <span class="ezustFont">@ip.CustomerNotes</span>
+                                        <div class="btn btn-sm dangerGomb w-auto p-3">törlés</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
+                        }
+                    </div>
+                </div>
+
+
                 
-               
-               
+            </div>
             
-
-            <div>Jövőbeli</div>
-
-            <div>Régi</div>
         }
 
     }
@@ -322,6 +364,7 @@
         border-bottom: 4px solid #D4AF37;
         background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(8px);
+        overflow: auto;
     }
 
     .egyGomb {
@@ -332,16 +375,22 @@
         transition: transform 0.5s ease;
     }
 
-        .egyGomb:hover {
+    .egyGomb:hover {
             background: black;
             color: #D4AF37;
             border: solid 0.5px #D4AF37;
             transform: scale(1.08);
-        }
+    }
 
     .dangerGomb {
         color: darkorange;
         border: solid 1px darkorange;
+    }
+
+    .dangerGomb:hover {
+        color: darkorange;
+        border: solid 1px darkorange;
+        transform: scale(1.08);
     }
 
     .feherBorder {
@@ -388,6 +437,16 @@
 
     .table {
         border-radius: 20px !important;
+    }
+
+    .foglTabla {
+        border-collapse: separate;
+        border-spacing: 12px 8px;
+    }
+
+    .elohivas {
+        display: flex;
+        flex-direction: column;
     }
 </style>
 
@@ -484,4 +543,9 @@
 
         render();
     })();
+
+    document.querySelectorAll('.lenyitoGomb').forEach(m => m.addEventListener('click', function() {
+        const rejtett = this.nextElementSibling;  // tr → következő tr
+        if (rejtett) rejtett.style.display = rejtett.style.display === 'none' ? 'table-row' : 'none';
+    }));
 </script>
