@@ -248,12 +248,14 @@ namespace barberShop.Pages
 
 Foglalásodat sikeresen rögzítettük.
 
+Várunk szerettel a lentebb feltüntetett időpontra!
+
 Fodrász: {fodr.Nev}
 Szolgáltatás: {szolg.Nev}
 Időpont: {kezdes:yyyy.MM.dd HH:mm}
 
 Tengermély tisztelettel:
-BestBarberShop";
+BestBarberShop csapata";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
 
