@@ -31,6 +31,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 {
     options.LoginPath = "/Account/Login";
     options.LogoutPath = "/Account/Logout";
+    options.ExpireTimeSpan = TimeSpan.FromHours(7);
+    options.SlidingExpiration = true;   //cookie expire reset minden bejelentkezésnél
+    options.Cookie.SameSite = SameSiteMode.Lax;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always; //https nél van csak cooki
 });
 
 builder.Services.Configure<EmailBeallitasok>(
