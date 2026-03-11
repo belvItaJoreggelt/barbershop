@@ -5,7 +5,11 @@
 }
 
 <div class="container py-4">
-    <h1 class="mb-4 ezustFont">Bejelentkezés</h1>
+    <div class="d-flex" style="justify-content:space-evenly">
+        <h1 class="mb-4 ezustFont">Bejelentkezés</h1>
+        <h1 class="mb-4 ezustFont">Regisztrálás</h1>
+    </div>
+    
 
     <div class="row">
         <div class="col-md-5">
@@ -31,7 +35,7 @@
                 </div>
 
                 <button type="submit egyGomb" class="btn btn-primary">Belépés</button>
-                <a asp-asp-page="/Index" class="btn btn-outline-secondary">Mégse</a>
+                <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
             </form>
         </div>
     </div>

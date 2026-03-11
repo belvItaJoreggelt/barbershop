@@ -65,14 +65,17 @@ app.MapStaticAssets();
 app.MapRazorPages()
    .WithStaticAssets();
 
-using (var scope = app.Services.CreateScope())
+// Háttérben fut – nem blokkolja az app indulását
+_ = Task.Run(async () =>
 {
-    var services = scope.ServiceProvider;
-	try
-	{
-		var context = services.GetRequiredService<AppDbContext>();
+    try
+    {
+        await Task.Delay(2000); // Kis késleltetés, hogy az app már tudjon válaszolni
+        using var scope = app.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<AppDbContext>();
 
-        //await context.Database.MigrateAsync();
+        // await context.Database.MigrateAsync(); // ha kell – vagy maradjon commentelve
 
         SeedAdatok.Initialize(context);
 
@@ -81,25 +84,18 @@ using (var scope = app.Services.CreateScope())
         const string adminRoleName = "Admin";
 
         if (!await roleManager.RoleExistsAsync(adminRoleName))
-        {
             await roleManager.CreateAsync(new IdentityRole(adminRoleName));
-        }
 
         const string fodraszRole = "Fodrasz";
         if (!await roleManager.RoleExistsAsync(fodraszRole))
-        {
             await roleManager.CreateAsync(new IdentityRole(fodraszRole));
-        }
 
         const string felhasznaloRole = "Mugli";
         if (!await roleManager.RoleExistsAsync(felhasznaloRole))
-        {
             await roleManager.CreateAsync(new IdentityRole(felhasznaloRole));
-        }
-        var adminEmail = "kerberosz@kerberosz.com";
-        // Megnézzük, van-e már ilyen e-mailű user (duplikátum elkerülés).
-        var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
+        var adminEmail = "kerberosz@kerberosz.com";
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
         {
             adminUser = new Felhasznalo
@@ -108,33 +104,21 @@ using (var scope = app.Services.CreateScope())
                 Email = adminEmail,
                 EmailConfirmed = true
             };
-
             var createResult = await userManager.CreateAsync(adminUser, "%20kerberosz02%");
-
             if (createResult.Succeeded)
-            {
                 await userManager.AddToRoleAsync(adminUser, adminRoleName);
-            }
             else
-            {
-                // pl. gyenge jelszó), logoljuk a hibákat
-                var logger = services.GetRequiredService<ILogger<Program>>();
-                logger.LogError("Nem sikerült az admin felhasználó létrehozása: {Errors}",
-                    string.Join("; ", createResult.Errors.Select(e => e.Description)));
-            }
+                services.GetRequiredService<ILogger<Program>>()
+                    .LogError("Nem sikerült az admin létrehozása: {Errors}",
+                        string.Join("; ", createResult.Errors.Select(e => e.Description)));
         }
 
-        var fodraszEmail = "szaszak@gmail.com";
-        var fodraszUser = await userManager.FindByEmailAsync(fodraszEmail);
-        if (fodraszUser == null)
-        {
-            
-        }
+        // fodraszEmail logika – ha kell, marad
     }
-	catch (Exception ex)
-	{
-		var logger = services.GetRequiredService<ILogger<Program>>();
-		logger.LogError(ex, "Hiba Seed adatok inicializálásánál!");
-	}
-}
+    catch (Exception ex)
+    {
+        app.Services.GetRequiredService<ILogger<Program>>()
+            .LogError(ex, "Hiba Seed adatok inicializálásánál!");
+    }
+});
 app.Run();
