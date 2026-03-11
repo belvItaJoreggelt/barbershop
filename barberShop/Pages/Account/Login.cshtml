@@ -10,35 +10,49 @@
         <h1 class="mb-4 ezustFont">Regisztrálás</h1>
     </div>
     
+    @if (Model.Section == "bejelentkezes")
+    {
+        <div class="row">
+            <div class="col-md-5">
+                <form method="post">
 
-    <div class="row">
-        <div class="col-md-5">
-            <form method="post">
+                    <div asp-asp-validation-summary="All" class="text-danger mb-3"> </div>
 
-                <div asp-asp-validation-summary="All" class="text-danger mb-3"> </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.EmailAddress" class="form-label ezustFont">E-mail</label>
+                        <input asp-for="Input.EmailAddress" class="form-control" type="email" />
+                        <span asp-validation-for="Input.EmailAddress" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Input.EmailAddress" class="form-label ezustFont">E-mail</label>
-                    <input asp-for="Input.EmailAddress" class="form-control" type="email" />
-                    <span asp-validation-for="Input.EmailAddress" class="text-danger"></span>
-                </div>
+                    <div class="mb-3">
+                        <label asp-for="Input.Password" class="form-label ezustFont">Jelszó</label>
+                        <input asp-for="Input.Password" class="form-control" type="password" />
+                        <span asp-validation-for="Input.Password" class="text-danger"></span>
+                    </div>
 
-                <div class="mb-3">
-                    <label asp-for="Input.Password" class="form-label ezustFont">Jelszó</label>
-                    <input asp-for="Input.Password" class="form-control" type="password" />
-                    <span asp-validation-for="Input.Password" class="text-danger"></span>
-                </div>
+                    <div class="mb-3 form-check">
+                        <input asp-for="Input.RememberMe" class="form-check-input" />
+                        <label asp-for="Input.RememberMe" class="form-check-label ezustFont">emlékezz rám</label>
+                    </div>
 
-                <div class="mb-3 form-check">
-                    <input asp-for="Input.RememberMe" class="form-check-input" />
-                    <label asp-for="Input.RememberMe" class="form-check-label ezustFont">emlékezz rám</label>
-                </div>
-
-                <button type="submit egyGomb" class="btn btn-primary">Belépés</button>
-                <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
-            </form>
+                    <button type="submit egyGomb" class="btn btn-primary">Belépés</button>
+                    <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
+                </form>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-5">
+                <form method="post">
+
+                </form>
+            </div>
+        </div>
+
+    }
+
 </div>
 
 @section Scripts {

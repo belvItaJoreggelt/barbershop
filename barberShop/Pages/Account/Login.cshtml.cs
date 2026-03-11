@@ -20,6 +20,7 @@ namespace barberShop.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
+        public string Section { get; set; } = "bejelentkezes";
         public class InputModel
         {
             [Required(ErrorMessage = "e-mail megadása kötelező")]

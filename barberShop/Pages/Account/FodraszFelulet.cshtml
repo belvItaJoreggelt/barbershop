@@ -47,8 +47,11 @@
     }
     else if (Model.Section == "adataim")
     {
+        <script>
+            (function(){setTimeout(function(){var e=document.activeElement;if(e&&/^(INPUT|TEXTAREA|SELECT)$/.test(e.tagName))e.blur();},300);})();
+        </script>
         <p class="mb-3">
-            <a asp-page="/Account/FodraszFelulet" class="btn egyGomb aranyFont px-4" autofocus>Vissza</a>
+            <a asp-page="/Account/FodraszFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
         </p>
 
         @if (Model.FodraszProfil == null)
