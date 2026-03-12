@@ -37,7 +37,7 @@ namespace barberShop.Pages.Account
         {
             if (User.Identity?.IsAuthenticated == true)
             {
-                return RedirectToPage("/Index");
+                //return RedirectToPage("/Index");
             }
             return Page();
         }
