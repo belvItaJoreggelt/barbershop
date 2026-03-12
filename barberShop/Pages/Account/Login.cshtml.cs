@@ -20,7 +20,8 @@ namespace barberShop.Pages.Account
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
-        public string Section { get; set; } = "bejelentkezes";
+        [BindProperty(SupportsGet =true)]
+        public string? Section { get; set; } = "bejelentkezes";
         public class InputModel
         {
             [Required(ErrorMessage = "e-mail megadása kötelező")]
@@ -44,6 +45,9 @@ namespace barberShop.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
+            Section = "bejelentkezes";
+            ModelState.Remove("Section");
+
             if (!ModelState.IsValid)
                 return Page();
 
@@ -71,6 +75,14 @@ namespace barberShop.Pages.Account
             ModelState.AddModelError(string.Empty, "Hibás e-mail vagy jelszó");
             return Page();
         }
+
+        public async Task<IActionResult> OnPostRegisztracioAsnyc()
+        {
+            Section = "regisztracio";
+            return Page();
+
+        }
+        //vége
 
     }
 }

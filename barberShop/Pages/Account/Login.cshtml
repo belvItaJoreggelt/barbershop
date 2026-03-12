@@ -5,18 +5,14 @@
 }
 
 <div class="container py-4">
-    <div class="row">
-        <div style="display:flex;gap:25px;align-items:center;">
-            <svg viewBox="0 0 420 120" style="width:420px;height:120px;display:block;">
-                <polygon points="2,2 398,2 338,118 2,118" fill="black" stroke="white" stroke-width="2" />
-                <text x="190" y="60" fill="white" font-size="22" font-weight="700" text-anchor="middle" dominant-baseline="middle">Bejelentkezés</text>
-            </svg>
+    <div class="row gap-3">
+        <a asp-page="/Account/Login" asp-route-section="bejelentkezes" class="valaszto btn @(Model.Section == "bejelentkezes" ? "aktiv" : "inaktiv")" id="valaszto1">
+            <h3> Bejelentkezés</h3>
+        </a>
 
-            <svg viewBox="0 0 420 120" style="width:420px;height:120px;display:block;">
-                <polygon points="62,2 418,2 418,118 2,118" fill="black" stroke="white" stroke-width="2" />
-                <text x="225" y="60" fill="white" font-size="22" font-weight="700" text-anchor="middle" dominant-baseline="middle">Regisztrálás</text>
-            </svg>
-        </div>
+        <a asp-page="/Account/Login" asp-route-section="regisztracio" class="valaszto btn @(Model.Section=="regisztracio" ? "aktiv" : "inaktiv")" id="valaszto2">
+            <h3> Regisztrálás</h3>
+        </a>
     </div>
    
     
@@ -25,7 +21,7 @@
         <div class="row">
             <div class="col-md-5">
                 <form method="post">
-
+                   
                     <div asp-validation-summary="All" class="text-danger mb-3"> </div>
 
                     <div class="mt-3">
@@ -45,7 +41,7 @@
                         <label asp-for="Input.RememberMe" class="form-check-label ezustFont">emlékezz rám</label>
                     </div>
                     <div class="mt-3">
-                        <button type="submit egyGomb" class="btn btn-primary">Belépés</button>
+                        <button type="submit" class="btn btn-primary egyGomb">Belépés</button>
                         <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
                     </div>
                     
@@ -57,10 +53,30 @@
     {
         <div class="row">
             <div class="col-5">
-                <form method="post">
-                    <div class="">
-                        <label class="form-label">Név</label>
+                <form method="post" asp-page-handler="Regisztracio">
+                   
+                    <div class="mt-3">
+                        <label class="form-label ezustFont">E-mail cím</label>
                         <input class="form-control" />
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label ezustFont">Jelszó</label>
+                        <input class="form-control" />
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label ezustFont">Név</label>
+                        <input class="form-control" />
+                    </div>
+
+                    <div class="mt-3">
+                        <label class="form-label ezustFont">Telefonszám</label>
+                        <input class="form-control" />
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary egyGomb">Regisztráció</button>
+                        <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
                     </div>
                 </form>
             </div>
@@ -75,6 +91,26 @@
 }
 
 <style>
+    .valaszto{
+        height: fit-content;
+        width: fit-content;
+        padding: 10px 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: border-top-color 0.3s ease-in, color 0.3s ease-in;
+    }
+
+    .aktiv {
+        border-top: solid 1px #D4AF37;
+        color:white;
+    }
+
+    .inaktiv {
+        border-top: solid 1px gray;
+        color: gray;
+    }
+
     .ezustFont {
         color: #eeeeee;
     }
@@ -146,4 +182,5 @@
     }
 
 </style>
-                
+            
+ 
