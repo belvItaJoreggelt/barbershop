@@ -264,7 +264,8 @@ namespace barberShop.Pages.Account
                 {
                     UserName = CreateUserEmail,
                     Email = CreateUserEmail,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    Nev = ""
                 };
             }
 

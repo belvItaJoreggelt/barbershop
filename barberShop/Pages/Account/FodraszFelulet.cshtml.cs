@@ -21,6 +21,10 @@ namespace barberShop.Pages.Account
         [BindProperty(SupportsGet = true)]
         public string Section { get; set; } = "";
 
+
+
+
+
         #region Adataim
         public Fodrasz? FodraszProfil { get; set; }
         public List<Szolgaltatas> OsszesSzolgaltatas { get; set; } = new();

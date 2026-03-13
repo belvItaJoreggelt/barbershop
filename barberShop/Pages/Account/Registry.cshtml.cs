@@ -58,8 +58,8 @@ namespace barberShop.Pages.Account
                 UserName = RegEmail,
                 Email = RegEmail,
                 EmailConfirmed = true,
-                PhoneNumber = RegTelo
-
+                PhoneNumber = RegTelo,
+                Nev = RegNev.Trim()
             };
 
             var result = await _userManager.CreateAsync(user, RegPassword);

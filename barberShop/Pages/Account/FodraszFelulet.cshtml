@@ -9,7 +9,7 @@
 
     @if (string.IsNullOrEmpty(Model.Section))
     {
-        <p>
+        <p class="mb-3">
            <a asp-page="/Account/Login" class="px-4 btn egyGomb aranyFont">kijelentkezés</a>
         </p>
         <div class="row g-3">
@@ -245,7 +245,6 @@
                         </div>
                     </div>
 
-                    @* LEGALUL EGY DARAB MENTÉS GOMB A MUNKAIDŐHÖZ *@
                     <div class="mt-4">
                         <button type="submit" asp-page-handler="Mentes" class="btn egyGomb aranyFont">
                             mentés
@@ -279,9 +278,9 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center aranyFont">ᐯ</td>
+                                            <td class="text-center" style="color:#D4AF37;">▼</td>
                                         </tr>
-                                        <tr class="rejtett"  style="display:none !important;">
+                                        <tr class="rejtett">
                                             <td colspan="4" class="p-3">
                                                 <span class="ezustFont d-block">@ip.CustomerPhone</span>
                                                 <span class="ezustFont d-block">@ip.CustomerEmail</span>
@@ -335,7 +334,7 @@
                     </div>
                 </div>
 
-
+                @* jovobeli foglalasok*@
                 
             </div>
             
@@ -454,9 +453,26 @@
         display: flex;
         flex-direction: column;
     }
+
+    .rejtett{
+        display:none;
+    }
 </style>
 
 <script>
+    document.querySelectorAll('.lenyitoGomb').forEach(function (gomb) {
+        gomb.addEventListener('click', function () {
+            var rejtettSor = this.nextElementSibling;
+
+            if (rejtettSor && rejtettSor.classList.contains('rejtett')) {
+                if (rejtettSor.style.display === 'table-row') {
+                    rejtettSor.style.display = 'none';
+                } else {
+                    rejtettSor.style.display = 'table-row';
+                }
+            }
+        });
+    });
     (function () {
         var calYear = @DateTime.Now.Year;
         var calMonth = @(DateTime.Now.Month - 1);
@@ -550,8 +566,5 @@
         render();
     })();
 
-    document.querySelectorAll('.lenyitoGomb').forEach(m => m.addEventListener('click', function() {
-        const rejtett = this.nextElementSibling;  // tr → következő tr
-        if (rejtett) rejtett.style.display = rejtett.style.display === 'none' ? 'table-row' : 'none';
-    }));
+    
 </script>

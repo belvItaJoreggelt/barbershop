@@ -8,5 +8,6 @@ namespace barberShop
         /// Ha az admin egyben fodrász is, ide kötődik a Fodrasz profil.
         /// </summary>
         public int? FodraszId { get; set; }
+        public string? Nev { get; set; }        
     }
 }

@@ -21,7 +21,7 @@
     }
     @if (Model.Section == "bejelentkezes")
     {
-        <div class="row">
+        <div class="row urlap">
             <div class="col-md-5">
                 <form method="post">
                    
@@ -60,6 +60,21 @@
 }
 
 <style>
+    .urlap {
+        opacity: 0;
+        animation: formFade 0.5s ease-in forwards;
+    }
+
+    @@keyframes formFade {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
+
     .valaszto{
         height: fit-content;
         width: fit-content;
