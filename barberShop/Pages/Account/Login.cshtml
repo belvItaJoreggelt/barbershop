@@ -6,16 +6,19 @@
 
 <div class="container py-4">
     <div class="row gap-3">
-        <a asp-page="/Account/Login" asp-route-section="bejelentkezes" class="valaszto btn @(Model.Section == "bejelentkezes" ? "aktiv" : "inaktiv")" id="valaszto1">
+        <a asp-page="/Account/Login" asp-route-section="bejelentkezes" class="valaszto btn aktiv" id="valaszto1">
             <h3> Bejelentkezés</h3>
         </a>
 
-        <a asp-page="/Account/Login" asp-route-section="regisztracio" class="valaszto btn @(Model.Section=="regisztracio" ? "aktiv" : "inaktiv")" id="valaszto2">
+        <a asp-page="/Account/Registry" class="valaszto btn inaktiv" id="valaszto2">
             <h3> Regisztrálás</h3>
         </a>
     </div>
    
-    
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success mb-3">@TempData["SuccessMessage"]</div>
+    }
     @if (Model.Section == "bejelentkezes")
     {
         <div class="row">
@@ -49,41 +52,7 @@
             </div>
         </div>
     }
-    else
-    {
-        <div class="row">
-            <div class="col-5">
-                <form method="post" asp-page-handler="Regisztracio">
-                   
-                    <div class="mt-3">
-                        <label class="form-label ezustFont">E-mail cím</label>
-                        <input class="form-control" />
-                    </div>
-
-                    <div class="mt-3">
-                        <label class="form-label ezustFont">Jelszó</label>
-                        <input class="form-control" />
-                    </div>
-
-                    <div class="mt-3">
-                        <label class="form-label ezustFont">Név</label>
-                        <input class="form-control" />
-                    </div>
-
-                    <div class="mt-3">
-                        <label class="form-label ezustFont">Telefonszám</label>
-                        <input class="form-control" />
-                    </div>
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary egyGomb">Regisztráció</button>
-                        <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-    }
-
+    
 </div>
 
 @section Scripts {
@@ -103,10 +72,20 @@
 
     .aktiv {
         border-top: solid 1px #D4AF37;
-        color:white;
+        color: white;
+    }
+
+    .aktiv:hover {
+        border-top: solid 1px #D4AF37;
+        color: white;
     }
 
     .inaktiv {
+        border-top: solid 1px gray;
+        color: gray;
+    }
+
+    .inaktiv:hover {
         border-top: solid 1px gray;
         color: gray;
     }

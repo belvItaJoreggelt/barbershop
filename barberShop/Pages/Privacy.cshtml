@@ -1,8 +1,82 @@
 ﻿@page
 @model PrivacyModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Adatkezelési tájékoztató";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container py-4">
+    <h1 class="mb-4">@ViewData["Title"]</h1>
+
+    <p class="text-muted small">Utolsó frissítés: @DateTime.Now.ToString("yyyy. MMMM d.", new System.Globalization.CultureInfo("hu-HU"))</p>
+
+    <h2 class="h4 mt-4">1. Bevezetés</h2>
+    <p>
+        Ez az adatkezelési tájékoztató a barberShop weboldal adatkezelési gyakorlatát mutatja be.
+        Önnek jogában áll tudni, milyen adatokat gyűjtünk, milyen célból és milyen jogai vannak ezzel kapcsolatban.
+    </p>
+
+    <h2 class="h4 mt-4">2. Gyűjtött adatok</h2>
+
+    <h3 class="h5 mt-3">2.1. Foglaláskor</h3>
+    <p>A szolgáltatás időpont foglalásakor (bejelentkezés nélkül is) a következő adatokat kérjük és tároljuk:</p>
+    <ul>
+        <li><strong>Név</strong> – a foglalás azonosításához</li>
+        <li><strong>E-mail cím</strong> – a foglalási visszaigazolás kiküldéséhez</li>
+        <li><strong>Telefonszám</strong> – a kapcsolattartáshoz és az esetleges emlékeztetéshez</li>
+        <li><strong>Megjegyzés</strong> (opcionális) – további információk a szolgáltatásról</li>
+        <li><strong>Foglalás adatai</strong> – dátum, időpont, kiválasztott fodrász és szolgáltatás</li>
+    </ul>
+
+    <h3 class="h5 mt-3">2.2. Regisztrációkor</h3>
+    <p>Ha regisztrál az oldalon, a következő adatokat gyűjtjük és tároljuk:</p>
+    <ul>
+        <li><strong>Név</strong> – azonosítás</li>
+        <li><strong>E-mail cím</strong> – felhasználói fiók és bejelentkezés</li>
+        <li><strong>Jelszó</strong> – kizárólag titkosított formában tároljuk </li>
+        <li><strong>Telefonszám</strong> – kapcsolattartás</li>
+    </ul>
+
+    <h3 class="h5 mt-3">2.3. Bejelentkezéskor</h3>
+    <p>Bejelentkezéskor megadott e-mail és jelszó csak a belépéshez szükséges, nem tároljuk őket külön ebben a műveletben.</p>
+
+    <h2 class="h4 mt-4">3. Célok</h2>
+    <p>Az adatokat a következő célokra használjuk:</p>
+    <ul>
+        <li>Időpontfoglalás kezelése</li>
+        <li>Foglalási visszaigazolás e-mailben történő kiküldése</li>
+        <li>Felhasználói fiók kezelése és bejelentkezés</li>
+        <li>Szükség esetén kapcsolattartás (pl. emlékeztetés, időpont módosítás)</li>
+    </ul>
+
+    <h2 class="h4 mt-4">4. Adatkezelő</h2>
+    <p>
+        Az adatkezelő az időpontfoglaló alkalmazást üzemeltető személy, aki az alábbi e-mail címen érhető el:
+        <br>bestbarbershop@gmail.com
+    </p>
+
+    <h2 class="h4 mt-4">5. Adatmegőrzés</h2>
+    <p>
+        A foglalási és felhasználói adatokat a szükséges időtartamig őrizzük meg (pl. aktív foglalások megtartása után 3–5 évig jogi kötelezettségek miatt, vagy ameddig Ön nem kéri törlésüket).
+    </p>
+
+    <h2 class="h4 mt-4">6. Ön jogai (GDPR)</h2>
+    <p>Önnek joga van:</p>
+    <ul>
+        <li><strong>Hozzáféréshez</strong> – tájékoztatást kérhet arról, milyen adatait tároljuk</li>
+        <li><strong>Helyesbítéshez</strong> – téves adatok kijavítását kérheti</li>
+        <li><strong>Törléshez</strong> – „elfelejtéshez” jogosultság</li>
+        <li><strong>Korlátozáshoz</strong> – a feldolgozás korlátozását kérheti</li>
+        <li><strong>Panaszhoz</strong> – a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH) panaszt tehet</li>
+    </ul>
+    <p>Ezekben az ügyekben az adatkezelőhöz fordulhat (lásd a 4. pontban megadott elérhetőség).</p>
+
+    <h2 class="h4 mt-4">7. Cookie-k</h2>
+    <p>
+        Az oldal szükséges cookie-kat használ a működéshez (pl. bejelentkezési munkamenet). Ezek nélkül az oldal funkciói nem használhatók teljes mértékben.
+    </p>
+
+    <h2 class="h4 mt-4">8. Kapcsolat</h2>
+    <p>
+        További kérdéseivel az adatkezelő elérhetőségén keresztül fordulhat.
+    </p>
+</div>

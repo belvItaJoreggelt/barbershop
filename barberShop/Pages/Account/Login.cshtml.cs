@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using static barberShop.Pages.IdopontfoglaloModel;
 
 namespace barberShop.Pages.Account
 {
@@ -17,11 +16,15 @@ namespace barberShop.Pages.Account
             _signInManager = signInManager;
         }
 
+
+        #region BejelentkezesProps
         [BindProperty]
         public InputModel Input { get; set; } = new();
 
         [BindProperty(SupportsGet =true)]
         public string? Section { get; set; } = "bejelentkezes";
+        #endregion
+
         public class InputModel
         {
             [Required(ErrorMessage = "e-mail megadása kötelező")]
@@ -43,6 +46,8 @@ namespace barberShop.Pages.Account
             return Page();
         }
 
+
+
         public async Task<IActionResult> OnPostAsync()
         {
             Section = "bejelentkezes";
@@ -60,7 +65,6 @@ namespace barberShop.Pages.Account
 
             if (result.Succeeded)
             {
-                // később majd átirányíthatod /Admin/Index-re
                 if (User.IsInRole("Admin"))
                 {
                     return RedirectToPage("/Account/AdminFelulet");
@@ -69,6 +73,10 @@ namespace barberShop.Pages.Account
                 {
                     return RedirectToPage("/Account/FodraszFelulet");
                 }
+                else if (User.IsInRole("Mugli"))
+                {
+                    return RedirectToPage("/Account/MugliFelulet");
+                }
                 return RedirectToPage("/Index");
             }
 
@@ -76,12 +84,7 @@ namespace barberShop.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnPostRegisztracioAsnyc()
-        {
-            Section = "regisztracio";
-            return Page();
-
-        }
+        
         //vége
 
     }
