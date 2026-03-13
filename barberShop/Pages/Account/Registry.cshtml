@@ -19,34 +19,32 @@
         <div class="alert alert-success mb-3">@TempData["SuccessMessage"]</div>
     }
     <div class="row">
-        <div class="col-5">
-            <form method="post" asp-page-handler="Regisztracio">
-                <div asp-validation-summary="All" class="text-danger mb-3"></div>
-                <div class="mt-3">
-                    <label class="form-label ezustFont">E-mail cím</label>
-                    <input class="form-control" asp-for="RegEmail" />
-                </div>
+        <form method="post" asp-page-handler="Regisztracio">
+            <div asp-validation-summary="All" class="text-danger mb-3"></div>
+            <div class="mt-3 col-4">
+                <label class="form-label ezustFont">E-mail cím</label>
+                <input class="form-control" asp-for="RegEmail" />
+            </div>
 
-                <div class="mt-3">
-                    <label class="form-label ezustFont">Jelszó</label>
-                    <input class="form-control" type="password" asp-for="RegPassword" />
-                </div>
+            <div class="mt-3 col-4">
+                <label class="form-label ezustFont">Jelszó</label>
+                <input class="form-control" type="password" asp-for="RegPassword" />
+            </div>
 
-                <div class="mt-3">
-                    <label class="form-label ezustFont">Név</label>
-                    <input class="form-control" asp-for="RegNev" />
-                </div>
+            <div class="mt-3 col-4">
+                <label class="form-label ezustFont">Név</label>
+                <input class="form-control" asp-for="RegNev" />
+            </div>
 
-                <div class="mt-3">
-                    <label class="form-label ezustFont">Telefonszám</label>
-                    <input class="form-control" asp-for="RegTelo" />
-                </div>
-                <div class="mt-3">
-                    <button type="submit" class="btn btn-primary egyGomb">Regisztráció</button>
-                    <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
-                </div>
-            </form>
-        </div>
+            <div class="mt-3 col-4">
+                <label class="form-label ezustFont">Telefonszám</label>
+                <input class="form-control" asp-for="RegTelo" />
+            </div>
+            <div class="mt-3 col-4">
+                <button type="submit" class="btn btn-primary egyGomb">Regisztráció</button>
+                <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn btn-outline-secondary">Mégse</a>
+            </div>
+        </form>
     </div>
 </div>
 <style>
