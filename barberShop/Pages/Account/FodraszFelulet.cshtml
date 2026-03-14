@@ -278,7 +278,9 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">
+                                                <span class="nyil">▼</span>
+                                            </td>
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="p-3">
@@ -312,7 +314,9 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center nyil" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">
+                                                <span class="nyil">▼</span>
+                                            </td>
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="p-3">
@@ -346,7 +350,10 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">
+                                                <span class="nyil">▼</span>
+                                            </td>
+
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="p-3">
@@ -486,7 +493,8 @@
         display:none;
     }
     .nyil {
-        transition: transform 0.25s ease;
+        transition: transform 0.4s ease;
+        display: inline-block;
     }
 
 </style>
