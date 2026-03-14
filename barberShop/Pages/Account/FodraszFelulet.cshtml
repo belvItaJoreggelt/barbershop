@@ -460,20 +460,9 @@
 </style>
 
 <script>
-    document.querySelectorAll('.lenyitoGomb').forEach(function (gomb) {
-        gomb.addEventListener('click', function () {
-            var rejtettSor = this.nextElementSibling;
-
-            if (rejtettSor && rejtettSor.classList.contains('rejtett')) {
-                if (rejtettSor.style.display === 'table-row') {
-                    rejtettSor.style.display = 'none';
-                } else {
-                    rejtettSor.style.display = 'table-row';
-                }
-            }
-        });
-    });
+   
     (function () {
+        if (!document.getElementById('calendarBody')) return;
         var calYear = @DateTime.Now.Year;
         var calMonth = @(DateTime.Now.Month - 1);
         var selectedDate = null;
@@ -566,5 +555,17 @@
         render();
     })();
 
-    
+     document.querySelectorAll('.lenyitoGomb').forEach(function (gomb) {
+        gomb.addEventListener('click', function () {
+            var rejtettSor = this.nextElementSibling;
+
+            if (rejtettSor && rejtettSor.classList.contains('rejtett')) {
+                if (rejtettSor.style.display === 'table-row') {
+                    rejtettSor.style.display = 'none';
+                } else {
+                    rejtettSor.style.display = 'table-row';
+                }
+            }
+        });
+    });
 </script>
