@@ -278,7 +278,7 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center" style="color:#D4AF37;">▼</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="p-3">
@@ -299,33 +299,32 @@
                     </div>
                 </div>
 
-
-
-
-
                 <div class="card egyszolgaltatas szolg-kartya">
                     <div class="card-header aranyFont">Jövőbeli</div>
-                    <div class="card-body gap-4">
+                    <div class="card-body">
                         @if (Model.JovobeliFoglalasok.Any())
                         {
-                            foreach (var ip in Model.JovobeliFoglalasok)
-                            {
-                                <div class="py-4 px-2" style="height:auto;">
-                                    <div class="lathato d-flex justify-content-between align-items-center" data-toggle-id="foglalas-@ip.ID">
-                                        <span class="aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</span>
-                                        <span class="ezustFont">@ip.Szolgaltatas.Nev</span>
-                                        <span class="ezustFont">@ip.CustomerNeve</span>
-                                        <span class="aranyFont lenyitoGomb" role="button" tabindex="0">▼</span>
-                                    </div>
-
-                                    <div class="rejtett d-flex flex-column" id="foglalas-@ip.ID" style="display:none !important">
-                                        <span class="ezustFont">@ip.CustomerPhone</span>
-                                        <span class="ezustFont">@ip.CustomerEmail</span>
-                                        <span class="ezustFont">@ip.CustomerNotes</span>
-                                        <div class="btn btn-sm dangerGomb w-auto p-3">törlés</div>
-                                    </div>
-                                </div>
-                            }
+                            <table class="table-borderless foglTabla">
+                                <tbody>
+                                    @foreach (var ip in Model.JovobeliFoglalasok)
+                                    {
+                                        <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
+                                            <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                            <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
+                                            <td class="text-center ezustFont">@ip.CustomerNeve</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                        </tr>
+                                        <tr class="rejtett">
+                                            <td colspan="4" class="p-3">
+                                                <span class="ezustFont d-block">@ip.CustomerPhone</span>
+                                                <span class="ezustFont d-block">@ip.CustomerEmail</span>
+                                                <span class="ezustFont d-block">@ip.CustomerNotes</span>
+                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
                         }
                         else
                         {
@@ -334,7 +333,40 @@
                     </div>
                 </div>
 
-                @* jovobeli foglalasok*@
+                <div class="card egyszolgaltatas szolg-kartya">
+                    <div class="card-header aranyFont">Megtörtént</div>
+                    <div class="card-body">
+                        @if (Model.Regifoglalasok.Any())
+                        {
+                            <table class="table-borderless foglTabla">
+                                <tbody>
+                                    @foreach (var ip in Model.Regifoglalasok)
+                                    {
+                                        <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
+                                            <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                            <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
+                                            <td class="text-center ezustFont">@ip.CustomerNeve</td>
+                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                        </tr>
+                                        <tr class="rejtett">
+                                            <td colspan="4" class="p-3">
+                                                <span class="ezustFont d-block">@ip.CustomerPhone</span>
+                                                <span class="ezustFont d-block">@ip.CustomerEmail</span>
+                                                <span class="ezustFont d-block">@ip.CustomerNotes</span>
+                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
+                        }
+                    </div>
+                </div>
+               
                 
             </div>
             
