@@ -312,7 +312,7 @@
                                             <td class="text-center aranyFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
-                                            <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">▼</td>
+                                            <td class="text-center nyil" style="color:#D4AF37; font-size:1.2rem;">▼</td>
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="p-3">
@@ -481,14 +481,14 @@
         border-spacing: 12px 8px;
     }
 
-    .elohivas {
-        display: flex;
-        flex-direction: column;
-    }
-
+    
     .rejtett{
         display:none;
     }
+    .nyil {
+        transition: transform 0.25s ease;
+    }
+
 </style>
 
 <script>
@@ -587,17 +587,27 @@
         render();
     })();
 
-     document.querySelectorAll('.lenyitoGomb').forEach(function (gomb) {
-        gomb.addEventListener('click', function () {
-            var rejtettSor = this.nextElementSibling;
+     document.querySelectorAll('.lenyitoGomb').forEach(function(gomb){
+         gomb.addEventListener('click', function(){
+             var rejtettSor= this.nextElementSibling;
+             var nyil=this.querySelector('.nyil');
 
-            if (rejtettSor && rejtettSor.classList.contains('rejtett')) {
-                if (rejtettSor.style.display === 'table-row') {
-                    rejtettSor.style.display = 'none';
-                } else {
-                    rejtettSor.style.display = 'table-row';
-                }
-            }
-        });
-    });
+             if(rejtettSor && rejtettSor.classList.contains('rejtett')){
+                 if(rejtettSor.style.display === 'table-row'){
+                     rejtettSor.style.display = 'none';
+                     if(nyil){
+                         nyil.style.transform = 'rotate(0deg)';
+                     }
+                 }
+                 else{
+                     rejtettSor.style.display ='table-row';
+                     if(nyil){
+                         nyil.style.transform='rotate(180deg)';
+                     }
+                 }
+             }
+         });
+     });
+
+
 </script>
