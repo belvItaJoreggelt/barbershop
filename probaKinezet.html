@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>barberShop - Szolgáltatások</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body style="background-image: url('/kepek/backgrounds/blacktop.png'); background-size: cover; background-position: center; background-repeat: no-repeat; background-attachment: scroll; color: white;">
+<div class="py-4 container" id="app">
+    <!-- SZOLGALTATASOK -->
+    <div id="szolgaltatasok" class="section">
+        <h1 class="mb-4 ezustFont">Szolgáltatásaink</h1>
+        <div class="row egyszolgaltatas szolgLayout shadow-sm mb-4 py-1 px-0 px-md-3 mx-lg-3 overflow-hidden szolg-kartya" style="animation-delay: 0s;">
+            <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
+                <img src="https://placehold.co/400x200/1a1a1a/666?text=Kep" alt="Szolgáltatás" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: contain; object-position: top;" />
+            </div>
+            <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column szolgReszletekNagy">
+                <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>Hajvágás</strong></h3>
+                <p class="mt-1 ezustFont">Professzionális hajvágás.</p>
+                <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: 3 500 Ft</strong></h3>
+                <div class="d-flex mt-auto fodrKiv">
+                    <a href="#fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                </div>
+            </div>
+            <div class="overflow-hidden szolgKep" style="display:none;"><img src="https://placehold.co/400x200/1a1a1a/666?text=Kep" alt="" class="w-100 h-100" /></div>
+            <div class="szolgNev" style="display:none;"><h3 class="szoveg_3d h5 ps-2 aranyFont"><strong>Hajvágás</strong></h3></div>
+            <div class="szolgLeiras" style="display:none;"><p class="mt-2 ezustFont">Professzionális hajvágás.</p><h3 class="mt-2 ps-2 h5 aranyFont"><strong>Ár: 3 500 Ft</strong></h3><div class="d-flex fodrKiv"><a href="#fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a></div></div>
+        </div>
+        <div class="row egyszolgaltatas szolgLayout shadow-sm mb-4 py-1 px-0 px-md-3 mx-lg-3 overflow-hidden szolg-kartya" style="animation-delay: 0.75s;">
+            <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
+                <img src="https://placehold.co/400x200/1a1a1a/666?text=Kep" alt="Szolgáltatás" class="position-absolute top-0 start-0 w-100 h-100" style="object-fit: contain; object-position: top;" />
+            </div>
+            <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column szolgReszletekNagy">
+                <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>Hajvágás + szakáll igazítás</strong></h3>
+                <p class="mt-1 ezustFont">Hajvágás és szakáll formázás egyben.</p>
+                <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: 5 000 Ft</strong></h3>
+                <div class="d-flex mt-auto fodrKiv">
+                    <a href="#fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                </div>
+            </div>
+            <div class="overflow-hidden szolgKep" style="display:none;"></div>
+            <div class="szolgNev" style="display:none;"><h3 class="szoveg_3d h5 ps-2 aranyFont"><strong>Hajvágás +<br>szakáll igazítás</strong></h3></div>
+            <div class="szolgLeiras" style="display:none;"><p class="mt-2 ezustFont">Hajvágás és szakáll.</p><h3 class="mt-2 ps-2 h5 aranyFont"><strong>Ár: 5 000 Ft</strong></h3><div class="d-flex fodrKiv"><a href="#fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a></div></div>
+        </div>
+    </div>
+
+    <!-- FODRASZOK -->
+    <div id="fodraszok" class="section" style="display:none;">
+        <h1 class="mb-4 mb-sm-2 ezustFont">Fodrász kiválasztása</h1>
+        <div class="mb-4 p-3">
+            <a href="#szolgaltatasok" class="btn egyGomb btn-sm mb-3">Vissza a szolgáltatásokhoz</a>
+            <p class="ezustFont mb-3">Szolgáltatás: <strong>Hajvágás</strong></p>
+            <div class="row egyszolgaltatas shadow-sm mb-3 p-0 overflow-hidden szolg-kartya" style="animation-delay: 0s;">
+                <div class="col-md-5 col-lg-4 py-3 d-flex align-items-center justify-content-center">
+                    <div class="fodrasz-kep-wrap">
+                        <img src="https://placehold.co/140x140/1a1a1a/999?text=FP" alt="Fodrász" class="fodraszProfilkep" />
+                    </div>
+                </div>
+                <div class="col-md-7 col-lg-8 py-3 px-3 d-flex flex-column justify-content-center">
+                    <h3 class="h5 align-self-center aranyFont">Kovács István</h3>
+                    <div class="mt-2 d-flex flex-column align-items-center justify-content-center">
+                        <p class="ezustFont small">Legkorábbi időpontok:</p>
+                        <div class="d-flex flex-wrap gap-2 mb-3">
+                            <a href="#foglalas" class="btn egyGomb aranyFont btn-sm text-nowrap">03.15. 10:00</a>
+                            <a href="#foglalas" class="btn egyGomb aranyFont btn-sm text-nowrap">03.15. 14:30</a>
+                        </div>
+                        <a href="#osszesIdopont" class="btn aranyFont egyGomb btn-sm align-self-center mt-1">Összes időpont</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- OSSZES IDOPONT -->
+    <div id="osszesIdopont" class="section" style="display:none;">
+        <h1 class="mb-4 ezustFont">Időpont kiválasztása</h1>
+        <div class="p-4">
+            <p><a href="#fodraszok" class="btn px-4 egyGomb aranyFont">Vissza a fodrászokhoz</a></p>
+            <div class="card p-2 egyszolgaltatas szolg-kartya d-flex flex-column align-items-center gap-5">
+                <div class="card-body">
+                    <div class="text-center">
+                        <div class="fodrasz-kep-wrap mx-auto">
+                            <img src="https://placehold.co/140x140/1a1a1a/999?text=FP" alt="Fodrász" class="fodraszProfilkep" />
+                        </div>
+                    </div>
+                    <div class="text-center w-100 gap-2">
+                        <p class="h4 mt-2 mx-auto aranyFont">Kovács István</p>
+                        <p class="h6 mt-2 ezustFont">Hajvágás - 30perc</p>
+                    </div>
+                    <div class="d-flex justify-content-center w-100 mt-3">
+                        <div class="calendar-widget border rounded p-3 w-100" style="max-width: 320px;">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold ezustFont" id="calendarMonthYear">2025. Március</span>
+                                <div class="btn-group btn-group-sm">
+                                    <button type="button" class="btn egyGomb aranyFont" id="calPrev">↑</button>
+                                    <button type="button" class="btn egyGomb aranyFont" id="calNext">↓</button>
+                                </div>
+                            </div>
+                            <table class="table table-bordered table-sm mb-2 small">
+                                <thead><tr><th class="text-center" style="width:14%">H</th><th style="width:14%">K</th><th style="width:14%">Sze</th><th style="width:14%">Cs</th><th style="width:14%">P</th><th style="width:14%">Szo</th><th style="width:14%">V</th></tr></thead>
+                                <tbody id="calendarBody"></tbody>
+                            </table>
+                            <button type="button" class="btn btn-sm egyGomb aranyFont" id="calToday">Ma</button>
+                            <input type="hidden" id="naptarDatum" value="2025-03-15" />
+                        </div>
+                    </div>
+                    <div class="col-md-4 mt-2 mx-auto gap-4">
+                        <span class="aranyFont small">Délelőtt</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#foglalas" class="btn ezustGomb btn-sm text-nowrap">09:00</a>
+                            <a href="#foglalas" class="btn ezustGomb btn-sm text-nowrap">10:00</a>
+                            <a href="#foglalas" class="btn ezustGomb btn-sm text-nowrap">11:00</a>
+                        </div>
+                        <span class="aranyFont small mt-3">Délután</span>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="#foglalas" class="btn ezustGomb btn-sm text-nowrap">14:00</a>
+                            <a href="#foglalas" class="btn ezustGomb btn-sm text-nowrap">15:00</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOGLAS -->
+    <div id="foglalas" class="section" style="display:none;">
+        <div class="p-4">
+            <a href="#fodraszok" class="btn egyGomb aranyFont px-4">Vissza a fodrászokhoz</a>
+            <div class="mt-4">
+                <p class="ezustFont">Fodrász: <span class="aranyFont">Kovács István</span></p>
+                <p class="ezustFont">Szolgáltatás: <span class="aranyFont">Hajvágás - 30perc</span></p>
+                <p class="ezustFont">Ár: <span class="aranyFont">3 500 Ft</span></p>
+                <p class="ezustFont">Dátum: <span class="aranyFont">2025-03-15</span> <span class="ezustFont"> 10:00</span></p>
+                <form>
+                    <p><label class="form-label ezustFont">Név:</label><input class="form-control" /></p>
+                    <p><label class="form-label ezustFont">E-mail cím:</label><input class="form-control" type="email" /></p>
+                    <p><label class="form-label ezustFont">Telefonszám:</label><input class="form-control" /></p>
+                    <p><label class="form-label ezustFont">Megjegyzés:</label><input class="form-control" /></p>
+                    <button type="button" class="btn egyGomb aranyFont" onclick="document.getElementById('koszi').style.display='block'; document.getElementById('foglalas').style.display='none';">Foglalás elküldése</button>
+                    <a href="#szolgaltatasok" class="btn btn-outline-secondary ms-2">Mégse</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- KOSZI -->
+    <div id="koszi" class="section" style="display:none;">
+        <p><a href="#szolgaltatasok" class="btn mx-4 egyGomb aranyFont">Új foglalás megkezdése</a></p>
+        <div class="p-4 mt-4 egyszolgaltatas szolg-kartya d-flex flex-column justify-content-center align-items-center">
+            <p class="ezustFont h4 mt-1 text-center">Időpontodat sikeresen rögzítettük!</p>
+            <p class="ezustFont h3 mt-3 text-center">Mi gondoskodunk a stílusról, te csak érkezz pontosan!</p>
+            <img src="https://placehold.co/300x200/1a1a1a/999?text=LOGO" alt="logo" class="mt-2" style="object-fit:contain; max-height:300px;" />
+        </div>
+    </div>
+</div>
+
+<style>
+    html, body {
+    min-height: 100vh;
+}
+    body {
+    background-image: url('feher_top.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+    .ezustFont { color: #eeeeee; }
+    .aranyFont {
+        width: fit-content;
+        background: linear-gradient(90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100%);
+        -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .egyszolgaltatas {
+        border-radius: 20px;
+        border-top: 4px solid #D4AF37; border-bottom: 4px solid #D4AF37;
+        background: black; backdrop-filter: blur(8px);
+    }
+    .egyGomb {
+        background: black; color: #D4AF37; border: solid 0.5px #D4AF37;
+        transition: transform 0.5s ease;
+    }
+    .egyGomb:hover { background: black; color: #D4AF37; border: solid 0.5px #D4AF37; transform: scale(1.08); }
+    .ezustGomb {
+        background: black; color: #eeeeee; border: solid 0.5px #eeeeee;
+        transition: transform 0.5s ease;
+    }
+    .ezustGomb:hover { background: black; color: #eeeeee; border: solid 0.5px #eeeeee; transform: scale(1.08); }
+    .szoveg_3d { font-weight: 700; letter-spacing: 0.05em; }
+    .szolg-kartya {
+        transform-origin: center; opacity: 0;
+        animation: szetnyilik 0.9s ease-out forwards;
+    }
+    @keyframes szetnyilik {
+        from { transform: scaleX(0); opacity: 0; }
+        to { transform: scaleX(1); opacity: 1; }
+    }
+    .row.egyszolgaltatas { align-items: stretch; }
+    .fodrasz-kep-wrap {
+        height: 100%; max-height: 140px; aspect-ratio: 1/1;
+        border-radius: 50%; overflow: hidden; border: 3px solid #D4AF37;
+        display: flex; align-items: center; justify-content: center;
+    }
+    .fodraszProfilkep { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .szolgKep, .szolgNev, .szolgLeiras { display: none; }
+    .szolgKep_Nagy { display: flex; }
+    .szolgReszletekNagy { display: flex; }
+    .table td, .table th { background: black !important; color: #eeeeee !important; }
+    .table { border-radius: 20px !important; border: solid 0.5px #D4AF37; }
+    .calendar-widget { border: none !important; }
+    .calendar-widget td.naptarKivalasztott { background: #D4AF37 !important; color: black !important; }
+    @media (max-width: 768px) {
+        .fodrasz-kep-wrap { max-height: 70px; }
+        .szolgLayout { display: grid; grid-template-columns: auto 1fr; grid-template-rows: 150px 150px; position: relative; width: 100vw; padding-left: 0 !important; }
+        .szolgKep_Nagy, .szolgReszletekNagy { display: none !important; }
+        .szolgKep { display: flex; grid-column: 2; grid-row: 1; position: relative; overflow: hidden; }
+        .szolgKep img { object-fit: cover; object-position: top; }
+        .szolgKep::after { content: ''; position: absolute; top:0; left:0; width: 45%; height: 100%; background: linear-gradient(to right, rgba(0,0,0,0.98), transparent); }
+        .szolgNev { display: flex; grid-column: 1; grid-row: 1; align-items: center; }
+        .szolgLeiras { display: flex; grid-column: 1/3; grid-row: 2; flex-direction: column; }
+        .fodrKiv { position: absolute; right: 15px; bottom: 15px; }
+    }
+</style>
+<script>
+(function(){
+    function show(id){ document.querySelectorAll('.section').forEach(function(s){ s.style.display='none'; }); var e=document.getElementById(id); if(e)e.style.display='block'; }
+    window.addEventListener('hashchange', function(){ var h=location.hash.slice(1)||'szolgaltatasok'; show(h); });
+    if(location.hash) show(location.hash.slice(1)); else show('szolgaltatasok');
+
+    if(document.getElementById('calendarBody')){
+        var calYear=2025, calMonth=2, monthNames=['Január','Február','Március','Április','Május','Június','Július','Augusztus','Szeptember','Október','November','December'];
+        function render(){
+            var first=new Date(calYear,calMonth,1), last=new Date(calYear,calMonth+1,0), startPad=(first.getDay()+6)%7, days=last.getDate(), tbody=document.getElementById('calendarBody');
+            document.getElementById('calendarMonthYear').textContent=calYear+'. '+monthNames[calMonth];
+            tbody.innerHTML=''; var row=document.createElement('tr');
+            for(var i=0;i<startPad;i++){ var c=document.createElement('td'); c.className='text-muted'; row.appendChild(c); }
+            for(var d=1;d<=days;d++){
+                if(row.children.length===7){ tbody.appendChild(row); row=document.createElement('tr'); }
+                var cell=document.createElement('td'); cell.className='text-center'; cell.style.cursor='pointer'; cell.textContent=d;
+                cell.onclick=function(){ var day=parseInt(this.textContent); document.getElementById('naptarDatum').value=calYear+'-'+String(calMonth+1).padStart(2,'0')+'-'+String(day).padStart(2,'0'); };
+                row.appendChild(cell);
+            }
+            while(row.children.length<7){ var c=document.createElement('td'); c.className='text-muted'; row.appendChild(c); }
+            if(row.children.length) tbody.appendChild(row);
+        }
+        document.getElementById('calPrev').onclick=function(){ calMonth--; if(calMonth<0){ calMonth=11; calYear--; } render(); };
+        document.getElementById('calNext').onclick=function(){ calMonth++; if(calMonth>11){ calMonth=0; calYear++; } render(); };
+        document.getElementById('calToday').onclick=function(){ var t=new Date(); calYear=t.getFullYear(); calMonth=t.getMonth(); render(); document.getElementById('naptarDatum').value=t.getFullYear()+'-'+String(t.getMonth()+1).padStart(2,'0')+'-'+String(t.getDate()).padStart(2,'0'); };
+        render();
+    }
+})();
+</script>
+</body>
+</html>

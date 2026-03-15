@@ -17,7 +17,7 @@ namespace barberShop.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("ProductVersion", "10.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -386,6 +386,9 @@ namespace barberShop.Migrations
 
                     b.Property<int>("Idotartam")
                         .HasColumnType("int");
+
+                    b.Property<string>("KepFajlNev_Vilagos")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("KepFajlNeve")
                         .HasColumnType("nvarchar(max)");

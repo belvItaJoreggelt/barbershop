@@ -9,7 +9,7 @@
     @if (string.IsNullOrEmpty(Model.Section))
     {
         <p>
-            <a asp-page="/Account/Login" class="px-4 btn aranyFont egyGomb">kijelentkezés</a>
+            <a asp-page="/Account/Login" class="px-4 btn egyGomb">kijelentkezés</a>
         </p>
         <div class="row gap-4">
             <div class="col-md-4">
@@ -18,7 +18,7 @@
                     <div class="card-body d-flex flex-column flex-grow-1">
                         <p class="ezustFont">a profilodhoz tartozó adatok megtekintése és szerkesztése</p>
                         <div class="mt-auto ms-auto">
-                            <a asp-page="/Account/MugliFelulet" asp-route-section="adataim" class="btn btn-sm egyGomb aranyFont">tovább</a>
+                            <a asp-page="/Account/MugliFelulet" asp-route-section="adataim" class="btn btn-sm egyGomb">tovább</a>
                         </div>
                     </div>
                 </div>
@@ -30,7 +30,7 @@
                     <div class="card-body d-flex flex-column flex-grow-1">
                         <p class="ezustFont">foglalásaid megtekintése és lemondása</p>
                         <div class="mt-auto ms-auto">
-                            <a asp-page="/Account/MugliFelulet" asp-route-section="foglalasaim" class="btn btn-sm egyGomb aranyFont">tovább</a>
+                            <a asp-page="/Account/MugliFelulet" asp-route-section="foglalasaim" class="btn btn-sm egyGomb">tovább</a>
                         </div>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
     else if (Model.Section == "adataim")
     {
         <p class="mb-3">
-            <a asp-page="/Account/MugliFelulet" asp-route-section="" class="btn px-4 egyGomb aranyFont">vissza</a>
+            <a asp-page="/Account/MugliFelulet" asp-route-section="" class="btn px-4 egyGomb">vissza</a>
         </p>
         @if (TempData["Success"]!= null)
         {
@@ -61,7 +61,7 @@
                             <input class="form-control" asp-for="EditPassword"/>
                         </div>
                         <div class="mt-auto ms-auto">
-                            <button class="btn egyGomb aranyFont">mentés</button>
+                            <button class="btn egyGomb">mentés</button>
                         </div>
                     </form>
                 </div>
@@ -81,7 +81,7 @@
                             <input class="form-control" asp-for="EditTel" />
                         </div>
                         <div class="mt-auto ms-auto">
-                            <button class="btn egyGomb aranyFont">mentés</button>
+                            <button class="btn egyGomb">mentés</button>
                         </div>
                     </form>
                 </div>
@@ -91,16 +91,13 @@
     else if (Model.Section == "foglalasaim")
     {
         <p class="mb-3">
-            <a asp-page="/Account/MugliFelulet" asp-route-section="" class="btn px-4 egyGomb aranyFont">vissza</a>
+            <a asp-page="/Account/MugliFelulet" asp-route-section="" class="btn px-4 egyGomb">vissza</a>
         </p>
     }
 </div>
 
 <style>
-    .ezustFont {
-        color: #eeeeee;
-    }
-
+    /*
     .aranyFont {
         width: fit-content;
         background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
@@ -108,7 +105,7 @@
         background-clip: text;
         color: transparent;
     }
-
+   
     .vilagosBarna {
         background: rgba(245, 238, 225, 0.9);
         background: transparent;
@@ -121,48 +118,6 @@
         background: black;
         overflow: auto;
     }
-
-    .egyGomb {
-        background: #bfa27a;
-        background: black;
-        color: #D4AF37;
-        border: solid 0.5px #D4AF37;
-        transition: transform 0.5s ease;
-    }
-
-    .egyGomb:hover {
-            background: black;
-            color: #D4AF37;
-            border: solid 0.5px #D4AF37;
-            transform: scale(1.08);
-    }
-
-    .dangerGomb {
-        color: darkorange;
-        border: solid 1px darkorange;
-    }
-
-    .dangerGomb:hover {
-            color: darkorange;
-            border: solid 1px darkorange;
-            transform: scale(1.08);
-    }
-
-    .szolg-kartya {
-        transform-origin: center;
-        opacity: 0;
-        animation: szetnyilik 0.9s ease-out forwards;
-    }
-
-    @@keyframes szetnyilik {
-        from {
-            transform: scaleX(0);
-            opacity: 0;
-        }
-
-        to {
-            transform: scaleX(1);
-            opacity: 1;
-        }
-    }
+         */
+    
 </style>

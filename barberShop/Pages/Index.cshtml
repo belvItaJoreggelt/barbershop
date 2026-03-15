@@ -15,24 +15,28 @@
                 style="animation-delay: @(index * 0.750)s;">
 
                 <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
-                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve) || !string.IsNullOrEmpty(szolg.KepFajlNev_Vilagos))
                     {
-                        <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
-                             alt="@szolg.Nev"
-                             class="position-absolute top-0 start-0 w-100 h-100"
-                             style="object-fit: contain; object-position:top; display: block; background: transparent;" />
-                    }
-                    else
-                    {
-                        <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
+                        @if (!string.IsNullOrEmpty(szolg.KepFajlNev_Vilagos))
+                        {
+                            <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNev_Vilagos"
+                                 alt="@szolg.Nev" class="position-absolute top-0 start-0 w-100 h-100 kep-vilagos"
+                                 style="object-fit: contain; object-position:top; display: block; background: transparent;" />
+                        }
+                        @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                        {
+                            <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
+                                 alt="@szolg.Nev" class="position-absolute top-0 start-0 w-100 h-100 kep-sotet"
+                                 style="object-fit: contain; object-position:top; display: block; background: transparent;" />
+                        }
                     }
                 </div>
                 <div class="col-md-7 col-lg-8 px-4 pt-4 pb-1 d-flex flex-column szolgReszletekNagy">
-                    <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>@szolg.Nev</strong></h3>
+                    <h3 class="szoveg_3d h5 mx-auto accentFont"><strong>@szolg.Nev</strong></h3>
                     <p class="mt-1 ezustFont">@(szolg.Leiras ?? "")</p>
-                    <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
+                    <h3 class="mt-2 mx-auto h5 accentFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
                     <div class="d-flex mt-auto fodrKiv">
-                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn egyGomb ms-auto">Fodrász kiválasztása</a>
                     </div>
                 </div>
 
@@ -51,7 +55,7 @@
                     }
                 </div>
                 <div class="szolgNev">
-                    <h3 class="szoveg_3d h5 ps-2 aranyFont" white-space: nowrap;>
+                    <h3 class="szoveg_3d h5 ps-2 accentFont" white-space: nowrap;>
                         <strong>
                             @if (szolg.Nev == "Hajvágás + szakáll igazítás")
                             {
@@ -66,9 +70,9 @@
                 </div>
                 <div class="szolgLeiras">
                     <p class="mt-2 ezustFont">@(szolg.Leiras ?? "")</p>
-                    <h3 class="mt-2 ps-2 h5 aranyFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
+                    <h3 class="mt-2 ps-2 h5 accentFont"><strong>Ár: @szolg.Ar.ToString("N0") Ft</strong></h3>
                     <div class="d-flex fodrKiv">
-                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn aranyFont egyGomb ms-auto">Fodrász kiválasztása</a>
+                        <a asp-page="/Index" asp-route-szolgaltatasId="@szolg.Id" asp-route-section="fodraszok" class="btn egyGomb ms-auto">Fodrász kiválasztása</a>
                     </div>
                 </div>
                 @{
@@ -117,7 +121,7 @@
                         </div>
 
                         <div class="col-md-7 col-lg-8 py-3 px-3 d-flex flex-column justify-content-center">
-                            <h3 class="h5 align-self-center aranyFont">@fodrasz.Nev</h3>
+                            <h3 class="h5 align-self-center accentFont">@fodrasz.Nev</h3>
 
                             <div class="mt-2 d-flex flex-column align-items-center justify-content-center">
                                 @if (legkorabbi != null && legkorabbi.Count > 0)
@@ -132,7 +136,7 @@
                                                asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
                                                asp-route-foglalasDatum="@ido.ToString("yyyy-MM-dd")"
                                                asp-route-foglalasIdo="@ido.ToString("HH:mm")"
-                                               class="btn egyGomb aranyFont btn-sm text-nowrap">@ido.ToString("MM.dd.") @ido.ToString("HH:mm")</a>
+                                               class="btn egyGomb accentFont btn-sm text-nowrap">@ido.ToString("MM.dd.") @ido.ToString("HH:mm")</a>
                                         }
                                     </div>
                                 }
@@ -143,7 +147,7 @@
                                    asp-route-naptarDatum="@(legkorabbi != null && legkorabbi.Count > 0
                                                                       ? legkorabbi[0].ToString("yyyy-MM-dd")
                                                                       : DateTime.Today.ToString("yyyy-MM-dd"))"
-                                   class="btn aranyFont egyGomb btn-sm align-self-center mt-1">
+                                   class="btn accentFont egyGomb btn-sm align-self-center mt-1">
                                     Összes időpont
                                 </a>
                             </div>
@@ -162,7 +166,7 @@
 
         <div class="p-4">
             <p>
-                <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn px-4 egyGomb aranyFont">Vissza a fodrászokhoz</a>
+                <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn px-4 egyGomb">Vissza a fodrászokhoz</a>
             </p>
 
             <div class="card p-2 egyszolgaltatas szolg-kartya d-flex flex-column align-items-center gap-5">
@@ -175,7 +179,7 @@
                     </div>
                 
                     <div class="text-center w-100 gap-2">
-                        <p class="h4 mt-2 mx-auto aranyFont">@Model.KivalasztottF.Nev</p>
+                        <p class="h4 mt-2 mx-auto accentFont">@Model.KivalasztottF.Nev</p>
                         <p class="h6 mt-2 ezustFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</p>
                     </div>
 
@@ -185,8 +189,8 @@
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <span class="fw-bold ezustFont" id="calendarMonthYear">@DateTime.Now.ToString("yyyy. MMMM")</span>
                                 <div class="btn-group btn-group-sm">
-                                    <button type="button" class="btn egyGomb aranyFont" id="calPrev" title="Előző hónap">↑</button>
-                                    <button type="button" class="btn egyGomb aranyFont" id="calNext" title="Következő hónap">↓</button>
+                                    <button type="button" class="btn egyGomb" id="calPrev" title="Előző hónap">↑</button>
+                                    <button type="button" class="btn egyGomb" id="calNext" title="Következő hónap">↓</button>
                                 </div>
                             </div>
                             <table class="table table-bordered table-sm mb-2 small">
@@ -204,7 +208,7 @@
                                 <tbody id="calendarBody"></tbody>
                             </table>
                             <div class="d-flex justify-content-center align-items-center">
-                                <button type="button" class="btn btn-sm egyGomb aranyFont" id="calToday">Ma</button>
+                                <button type="button" class="btn btn-sm egyGomb" id="calToday">Ma</button>
                             </div>
                             <input type="hidden" id="naptarDatum" name="NaptarDatum" value="@Model.NaptarDatum" />
                         </div>
@@ -219,7 +223,7 @@
                         {
                             @if (Model.ReggeliIdopontok.Any())
                             {
-                                <span class="aranyFont small">Délelőtt</span>
+                                <span class="accentFont small">Délelőtt</span>
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach (var idpont in Model.ReggeliIdopontok)
                                     {
@@ -238,7 +242,7 @@
                             }
                             @if (Model.DelutaniIdopontok.Any())
                             {
-                                <span class="aranyFont small">Délután</span>
+                                <span class="accentFont small">Délután</span>
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach (var idopont in Model.DelutaniIdopontok)
                                     {
@@ -256,7 +260,7 @@
                             }
                             @if (Model.EstiIdopontok.Any())
                             {
-                                <span class="aranyFont small">Este</span>
+                                <span class="accentFont small">Este</span>
                                 <div class="d-flex flex-wrap gap-2">
                                     @foreach (var idopont in Model.EstiIdopontok)
                                     {
@@ -283,13 +287,13 @@
         ViewData["Title"] = "Foglalás";
 
         <div class="p-4">
-            <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn egyGomb aranyFont px-4">Vissza a fodrászokhoz </a>
+            <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn egyGomb px-4">Vissza a fodrászokhoz </a>
 
             <div class="mt-4">
-                <p class="ezustFont">Fodrász: <span class="aranyFont">@Model.KivalasztottF.Nev</span></p>
-                <p class="ezustFont">Szolgáltatás: <span class="aranyFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
-                <p class="ezustFont">Ár: <span class="aranyFont">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
-                <p class="ezustFont">Dátum: <span class="aranyFont">@Model.FoglalasDatum </span><span class="ezustFont"> @Model.FoglalasIdo</span></p>
+                <p class="ezustFont">Fodrász: <span class="accentFont">@Model.KivalasztottF.Nev</span></p>
+                <p class="ezustFont">Szolgáltatás: <span class="accentFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
+                <p class="ezustFont">Ár: <span class="accentFont">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
+                <p class="ezustFont">Dátum: <span class="accentFont">@Model.FoglalasDatum </span><span class="ezustFont"> @Model.FoglalasIdo</span></p>
                 
                 <form method="post" asp-page-handler="Foglalas">
                     <input type="hidden" asp-for="FodraszId" />
@@ -320,7 +324,7 @@
                         <input asp-for="UgyfelMegjegyzes" class="form-control" />
                     </p>
 
-                    <button type="submit" class="btn egyGomb aranyFont">Foglalás elküldése</button>
+                    <button type="submit" class="btn egyGomb">Foglalás elküldése</button>
                     <a href="/" class="btn btn-outline-secondary ms-2">Mégse</a>
                 </form>
             </div>
@@ -331,7 +335,7 @@
     else if(Model.Section=="koszi")
     {
         <p>
-            <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn mx-4 egyGomb aranyFont">Új foglalás megkezdése</a>
+            <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn mx-4 egyGomb">Új foglalás megkezdése</a>
         </p>
         <div class="p-4 mt-4 egyszolgaltatas szolg-kartya d-flex flex-column justify-content-center align-items-center">
             <p class="ezustFont h4 mt-1 text-center">Időpontodat sikeresen rögzítettük!</p>
@@ -342,89 +346,20 @@
 </div>
 
 <style>
-    .ezustFont{
-        color: #eeeeee;   
+    /* Kék (alap): világos kép látszik, sötét elrejtve */
+    .kep-vilagos { display: block !important; }
+    .kep-sotet { display: none !important; }
+
+    [data-theme="barna"] .kep-vilagos,
+    [data-theme="arany"] .kep-vilagos {
+        display: none !important;
     }
 
-    .aranyFont{
-        width: fit-content;
-        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        
-    }
-    .vilagosBarna{
-        background: rgba(245, 238, 225, 0.9);
-        background: transparent;
+    [data-theme="barna"] .kep-sotet,
+    [data-theme="arany"] .kep-sotet {
+        display: block !important;
     }
 
-    .egyszolgaltatas{
-        border-radius: 20px;
-        border-top: 4px solid #bfa27a;
-        border-bottom: 4px solid #bfa27a;
-        border-top: 4px solid #D4AF37;
-        border-bottom: 4px solid #D4AF37;
-        background: black;
-        backdrop-filter: blur(8px);
-    }
-
-    .egyGomb{
-        background: #bfa27a;
-        background: black;
-        color: #D4AF37;
-        border: solid 0.5px #D4AF37;
-        transition: transform 0.5s ease;
-    }
-    .egyGomb:hover {
-        background: black;
-        color: #D4AF37;
-        border: solid 0.5px #D4AF37;
-        transform: scale(1.08);
-    }
-
-    .ezustGomb {
-        background: black;
-        color: #eeeeee;
-        border: solid 0.5px #eeeeee;
-        transition: transform 0.5s ease;
-    }
-
-        .ezustGomb:hover {
-        background: black;
-            color: #eeeeee;
-            border: solid 0.5px #eeeeee;
-        transform: scale(1.08);
-    }
-
-    .feherBorder{
-        border: solid 2px white;
-    }
-    .szoveg_3d {
-        /*color: #1a1a1a;*/
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        
-    }
-
-    .szolg-kartya{
-        transform-origin: center;
-        opacity:0;
-        animation: szetnyilik 0.9s ease-out forwards;
-    }
-
-    @@keyframes szetnyilik{
-        from{
-            transform: scaleX(0);
-            opacity:0;
-        }
-        to{
-            transform: scaleX(1);
-            opacity:1;
-        }
-    }
-
-    
     .row.egyszolgaltatas {
         align-items: stretch;
     }
@@ -436,7 +371,7 @@
         aspect-ratio: 1 / 1;
         border-radius: 50%;
         overflow: hidden;
-        border: 3px solid #D4AF37;
+        border: 3px solid var(--accent-color);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -465,9 +400,12 @@
 
 
     .szolgKep_Nagy {
+        border-radius: 12px;
+        overflow: hidden;
         display: flex;
     }
 
+    
     .szolgReszletekNagy{
         display: flex;
     }

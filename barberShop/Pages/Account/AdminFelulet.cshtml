@@ -6,12 +6,18 @@
 <div class="container py-4">
     <h1 class="mb-4 ezustFont">Admin felület</h1>
 
+   
+
     @if (string.IsNullOrEmpty(Model.Section))
     {
+        <p class="mb-3">
+            <a asp-page="/Account/Login" class="px-4 btn egyGomb">kijelentkezés</a>
+        </p>
+
         <div class="row g-3">
             <div class="col-md-4">
                 <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style="animation-delay: 0.00s;">
-                    <div class="card-header fw-bold aranyFont">Szolgáltatásaink</div>
+                    <div class="card-header fw-bold accentFont">Szolgáltatásaink</div>
                     <div class="card-body ezustFont d-flex flex-column flex-grow-1">
                         <p class="card-text">foglaláskor megjelenő szolgáltatások részadatainak szerkesztése.</p>
                         <div class="mt-auto text-end">
@@ -22,7 +28,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style=" animation-delay: 0.80s;">
-                    <div class="card-header fw-bold aranyFont">Fodrászaink</div>
+                    <div class="card-header fw-bold accentFont">Fodrászaink</div>
                     <div class="card-body ezustFont d-flex flex-column flex-grow-1">
                         <p class="card-text">foglaláskor megjelenő fodrászok adatainak szerkesztése</p>
                         <div class="mt-auto text-end">
@@ -33,7 +39,7 @@
             </div>
             <div class="col-md-4">
                 <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya" style=" animation-delay: 1.6s;">
-                    <div class="card-header fw-bold aranyFont">Felhasználóink</div>
+                    <div class="card-header fw-bold accentFont">Felhasználóink</div>
                     <div class="card-body ezustFont d-flex flex-column flex-grow-1">
                         <p class="card-text">admin / fodrász / felhasználói profilok felvétele szerkesztése.</p>
                         <div class="mt-auto text-end">
@@ -46,11 +52,11 @@
     }else if (Model.Section =="szolgaltatasok")
     {
         <p class="mb-3">
-            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb px-4">Vissza</a>
         </p>
 
         <div class="card mb-4 egyszolgaltatas szolg-kartya">
-            <div class="card-header aranyFont">Új szolgáltatás</div>
+            <div class="card-header accentFont">Új szolgáltatás</div>
             <div class="card-body">
                 <form method="post" asp-page-handler="Create" class="row g-3">
                     <div class="col-md-3">
@@ -70,14 +76,14 @@
                         <input asp-for="CreateLeiras" class="form-control" placeholder="Rövid leírás" />
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn egyGomb aranyFont w-100">Hozzáad</button>
+                        <button type="submit" class="btn egyGomb w-100">Hozzáad</button>
                     </div>
                 </form>
             </div>
         </div>
 
         <div class="card egyszolgaltatas szolg-kartya">
-            <div class="card-header aranyFont">Szolgáltatások listája</div>
+            <div class="card-header accentFont">Szolgáltatások listája</div>
             <div class="card-body p-3">
                 <table class="table table-bordered table-hover mb-0 table-rounded">
                     <thead class="">
@@ -114,7 +120,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <button type="submit" class="btn egyGomb aranyFont btn-primary">Mentés</button>
+                                                    <button type="submit" class="btn egyGomb btn-primary">Mentés</button>
                                                     <a asp-page="/Account/AdminFelulet" asp-route-section="szolgaltatasok" class="btn btn-sm btn-outline-secondary">Mégse</a>
                                                 </div>
                                             </div>
@@ -150,10 +156,10 @@
     }else if (Model.Section =="fodraszok")
     {
         <p class="mb-3">
-            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb px-4">Vissza</a>
         </p>
         <div class="card egyszolgaltatas szolg-kartya">
-            <div class="card-header aranyFont">Fodrászok listája</div>
+            <div class="card-header accentFont">Fodrászok listája</div>
             <div class="card-body p-3">
                 <table class="table table-bordered table-hover mb-0">
                     <thead class="">
@@ -192,7 +198,7 @@
                                                     }
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <button type="submit" class="btn btn-sm egyGomb aranyFont">Mentés</button>
+                                                    <button type="submit" class="btn btn-sm egyGomb">Mentés</button>
                                                     <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" class="btn btn-sm btn-outline-secondary">Mégse</a>
                                                 </div>
                                             </div>
@@ -228,7 +234,7 @@
     else if (Model.Section == "felhasznalok")
     {
         <p class="mb-3">
-            <a asp-page="/Account/AdminFelulet" class="btn egyGomb aranyFont px-4">Vissza</a>
+            <a asp-page="/Account/AdminFelulet" class="btn egyGomb px-4">Vissza</a>
         </p>
         @if (TempData["UserError"] != null)
         {
@@ -246,7 +252,7 @@
         }
 
         <div class="card mb-4  egyszolgaltatas szolg-kartya">
-            <div class="card-header aranyFont">Új felhasználó felvétele</div>
+            <div class="card-header accentFont">Új felhasználó felvétele</div>
             <div class="card-body">
                 <form method="post" asp-page-handler="CreateUser" id="formUjUser"class="row g-3">
                     <div class="row g-3 align-items-end">
@@ -292,7 +298,7 @@
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button type="submit" class="btn egyGomb aranyFont w-100">Mentés</button>
+                            <button type="submit" class="btn egyGomb w-100">Mentés</button>
                         </div>
                     </div>
                     
@@ -303,7 +309,7 @@
         <div class="row">
             <div class="col-md-12 mb-3">
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header aranyFont fw-bold">Admin</div>
+                    <div class="card-header accentFont fw-bold">Admin</div>
                     <div class="card-body p-0">
                         <div class="row g-0">
                             <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
@@ -339,7 +345,7 @@
             </div>
             <div class="col-md-12 mb-3">
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header aranyFont fw-bold">Fodrász</div>
+                    <div class="card-header accentFont fw-bold">Fodrász</div>
                     <div class="card-body p-0">
                         <div class="row g-0">
                             <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
@@ -375,7 +381,7 @@
             </div>
             <div class="col-md-12 mb-3">
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header aranyFont fw-bold">Felhasználó</div>
+                    <div class="card-header accentFont fw-bold">Felhasználó</div>
                     <div class="card-body p-0">
                         <div class="row g-0">
                             <div class="col-6 py-2 px-3 fw-bold ezustFont">felhasználónév</div>
@@ -428,92 +434,6 @@
     </script>
 }
 <style>
-    .ezustFont {
-        color: #eeeeee;
-    }
-
-    .aranyFont {
-        width: fit-content;
-        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
-
-    .vilagosBarna {
-        background: rgba(245, 238, 225, 0.9);
-        background: transparent;
-    }
-
-    .egyszolgaltatas {
-        border-radius: 20px;
-        border-top: 4px solid #bfa27a;
-        border-bottom: 4px solid #bfa27a;
-        border-top: 4px solid #D4AF37;
-        border-bottom: 4px solid #D4AF37;
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
-    }
-
-    .egyGomb {
-        background: #bfa27a;
-        background: black;
-        color: #D4AF37;
-        border: solid 0.5px #D4AF37;
-        transition: transform 0.5s ease;
-    }
-
-        .egyGomb:hover {
-            background: black;
-            color: #D4AF37;
-            border: solid 0.5px #D4AF37;
-            transform: scale(1.08);
-        }
-
-    .dangerGomb{
-        color: darkorange;
-        border: solid 1px darkorange;
-    }
-
-    .feherBorder {
-        border: solid 2px white;
-    }
-
-
-    .szoveg_3d {
-        
-        font-weight: 700;
-        letter-spacing: 0.05em;
-    }
-
-    .szolg-kartya {
-        transform-origin: center;
-        opacity: 0;
-        animation: szetnyilik 0.9s ease-in-out forwards
-    }
-
-    @@keyframes szetnyilik {
-        0% {
-            opacity: 0;
-        }
-
-        25% {
-            opacity: 0.25; 
-        }
-
-        50%{
-            opacity: 0.5;
-        }
-
-        75%{
-            opacity:0.75;
-        }
-
-        100% {
-            opacity: 1; 
-        }
-    }
-
     .table td,
     .table th {
         background: black !important;

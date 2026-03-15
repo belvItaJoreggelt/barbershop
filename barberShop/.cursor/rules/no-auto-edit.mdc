@@ -1,0 +1,9 @@
+---
+description: Ne módosíts fájlokat automatikusan
+alwaysApply: true
+---
+
+# Ne szerkessz fájlokat
+
+- NE használj fájlszerkesztő eszközt, hacsak a felhasználó KIFEJEZETTEN nem kéri.
+- Mindig a chat-ben add meg a megoldást.

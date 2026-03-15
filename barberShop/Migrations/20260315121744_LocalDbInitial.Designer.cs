@@ -12,15 +12,15 @@ using barberShop;
 namespace barberShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260313161416_AddFelhasznalonev")]
-    partial class AddFelhasznalonev
+    [Migration("20260315121744_LocalDbInitial")]
+    partial class LocalDbInitial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.2")
+                .HasAnnotation("ProductVersion", "10.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

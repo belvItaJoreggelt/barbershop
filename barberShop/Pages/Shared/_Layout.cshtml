@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - barberShop</title>
+    <title>@ViewData["Title"] - BestBarbershop</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -13,7 +13,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">barberShop</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">BestBarbershop</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -21,33 +21,58 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Szolgáltatások</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
-                        @if (User.IsInRole("Admin"))
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Admin/Index">Admin</a>
-                            </li>
-                        }
                     </ul>
                     <ul class="navbar-nav">
-                        @if (User.Identity?.IsAuthenticated == true)
-                        {
-                            <li class="nav-item">
-                                <form method="post" asp-page="/Account/Logout" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link text-dark border-0 p-0">Kijelentkez�s</button>
-                                </form>
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-page="/Account/Login">Bejelentkez�s</a>
-                            </li>
-                        }
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle text-dark" href="#" role="button" data-bs-toggle="dropdown">Szín</a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item tema-valaszto" href="#" data-theme="kek">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#2563eb;border-radius:50%;margin-right:6px;vertical-align:middle;"></span>kék
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item tema-valaszto" href="#" data-theme="barna">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#7A4A2A;border-radius:50%;margin-right:6px;vertical-align:middle;"></span>barna
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item tema-valaszto" href="#" data-theme="arany">
+                                        <span style="display:inline-block;width:14px;height:14px;background:#D4AF37;border-radius:50%;margin-right:6px;vertical-align:middle;"></span>arany
+                                    </a>
+                                </li>                                
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            @if (User.Identity?.IsAuthenticated == true)
+                            {
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <a class="nav-link text-dark" asp-page="/Account/AdminFelulet"> 👤 </a>
+                                }
+                                else if (User.IsInRole("Fodrasz"))
+                                {
+                                    <a class="nav-link text-dark" asp-page="/Account/FodraszFelulet"> 👤 </a>
+                                }
+                                else if (User.IsInRole("Mugli"))
+                                {
+                                    <a class="nav-link text-dark" asp-page="/Account/MugliFelulet"> 👤 </a>
+                                }
+                                else
+                                {
+                                    <a class="nav-link text-dark" asp-page="/Account/Login"> 👤 </a>
+                                }
+                            }
+                            else
+                            {
+                                <a class="nav-link text-dark" asp-page="/Account/Login"> 👤  </a>
+                            }
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -61,8 +86,8 @@
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - barberShop - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        <div class="container" >
+            &copy; 2026 - BestBarbershop - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
     </footer>
 
@@ -75,15 +100,183 @@
 </html>
 
 <style>
-    /*html, body{
-        min-height:100%
-    }*/
-    body {
+    :root{
+        --accent-color: #0F3460;
+    }
+
+    
+    .accentFont{
+        background: linear-gradient(to bottom right, #1f72d6 0%, #164d8f 38%, #0F3460 28%, #0F3460 78%, #206cc9 88%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+
+    [data-theme="barna"]{
+        --accent-color: #7A4A2A;
+    }
+    [data-theme="barna"] .accentFont{
+        background: linear-gradient(to bottom right, #695a3f 0%, #bfa27a 38%, #bfa27a 28%, #bfa27a 78%, #7c6a4a 88%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    [data-theme="barna"] .egyGomb{
+        background: white;
+        color: rgb(49, 47, 47);
+    }
+    [data-theme="barna"] .egyGomb:hover{
+        background: white;
+        color: rgb(49, 47, 47);
+    }
+
+
+    [data-theme="arany"]{
+        --accent-color: #D4AF37;
+    }
+    [data-theme="arany"] body{
         background-image: url('/kepek/backgrounds/blacktop.png');
+    }
+    [data-theme="arany"] .ezustFont{
+        color: #eeeeee;
+    }
+    [data-theme="arany"] .egyszolgaltatas{
+        background: rgba(0, 0, 0, 0.7);
+    }
+    [data-theme="arany"] .accentFont{
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    [data-theme="arany"] .egyGomb{
+        width: fit-content;
+        background: black;
+        background-image: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    [data-theme="arany"] .egyGomb:hover{
+        width: fit-content;
+        background: black;
+        background-image: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+    
+    
+
+
+
+
+
+    body {
+        background: white;
+        background-image: url('/kepek/backgrounds/feher_top.png');
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
         background-attachment: scroll;
-        color:white;
+        color: rgb(90, 87, 87);
+    }
+
+    .aranyFont {
+        width: fit-content;
+        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .ezustFont {
+        /*color: #eeeeee;*/
+        color: rgb(90, 87, 87);
+    }
+
+    .egyszolgaltatas {
+        border-radius: 20px;
+        border-top: 4px solid #bfa27a;
+        border-bottom: 4px solid #bfa27a;
+        border-top: 4px solid var(--accent-color);
+        border-bottom: 4px solid var(--accent-color);
+        /*background: rgba(0, 0, 0, 0.7);*/
+        background: transparent;
+        backdrop-filter: blur(8px);
+        overflow: auto;
+    }
+
+    .egyGomb {
+        background: white;
+        color: var(--accent-color);
+        border: solid 0.5px var(--accent-color);
+        transition: transform 0.5s ease;
+    }
+
+    .egyGomb:hover {
+        background: white;
+        color: var(--accent-color);
+        border: solid 0.5px var(--accent-color);
+        transform: scale(1.08);
+    }
+
+    .dangerGomb {
+        color: darkorange;
+        border: solid 1px darkorange;
+    }
+
+    .dangerGomb:hover {
+        color: darkorange;
+        border: solid 1px darkorange;
+        transform: scale(1.08);
+    }
+
+    .szoveg_3d {
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .szolg-kartya {
+        transform-origin: center;
+        opacity: 0;
+        animation: szetnyilik 0.9s ease-out forwards;
+    }
+
+    @@keyframes szetnyilik {
+        from {
+            transform: scaleX(0);
+            opacity: 0;
+        }
+
+        to {
+            transform: scaleX(1);
+            opacity: 1;
+        }
     }
 </style>
+<script>
+    
+    (function() {
+        document.querySelectorAll('.tema-valaszto').forEach(function(el) {
+            el.addEventListener('click', function(e) {
+                e.preventDefault();
+                var tema = this.getAttribute('data-theme');
+                if (tema === 'kek') {
+                    document.documentElement.removeAttribute('data-theme');
+                } else {
+                    document.documentElement.setAttribute('data-theme', tema);
+                }
+                try { localStorage.setItem('tema', tema); } catch(x) {}
+            });
+        });
+        /*try {
+            var mentett = localStorage.getItem('tema');
+            if (mentett && mentett !== 'kek') {
+                document.documentElement.setAttribute('data-theme', mentett);
+            }
+        } catch(x) {}*/
+    })();
+</script>

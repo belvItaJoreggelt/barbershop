@@ -5,14 +5,14 @@
 namespace barberShop.Migrations
 {
     /// <inheritdoc />
-    public partial class AddFelhasznalonev : Migration
+    public partial class AddKepFajNevVilagos : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Nev",
-                table: "AspNetUsers",
+                name: "KepFajlNev_Vilagos",
+                table: "Szolgaltatasok",
                 type: "nvarchar(max)",
                 nullable: true);
         }
@@ -21,8 +21,8 @@ namespace barberShop.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Nev",
-                table: "AspNetUsers");
+                name: "KepFajlNev_Vilagos",
+                table: "Szolgaltatasok");
         }
     }
 }

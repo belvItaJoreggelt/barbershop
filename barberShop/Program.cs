@@ -1,6 +1,8 @@
+using barberShop;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using barberShop;
+using Microsoft.Extensions.Options;
+using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,12 +11,12 @@ var builder = WebApplication.CreateBuilder(args);
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlServer(
+    options.UseNpgsql(
         builder.Configuration.GetConnectionString("DefaultConnection"),
-        sqlOptions => sqlOptions.EnableRetryOnFailure(
+        npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
             maxRetryCount: 3,
             maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorNumbersToAdd: null)));
+            errorCodesToAdd: null)));
 
 builder.Services.AddIdentity<Felhasznalo, IdentityRole>(options =>
 {
@@ -75,7 +77,7 @@ _ = Task.Run(async () =>
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<AppDbContext>();
 
-        // await context.Database.MigrateAsync(); // ha kell – vagy maradjon commentelve
+        await context.Database.MigrateAsync(); // ha kell – vagy maradjon commentelve
 
         SeedAdatok.Initialize(context);
 

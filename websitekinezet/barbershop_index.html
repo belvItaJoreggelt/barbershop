@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BarberShop</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #0b0b0b;
+      color: #eeeeee;
+      background-image: url('feher_top.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    .py-4 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+    .p-2 { padding: 0.5rem; }
+    .p-3 { padding: 1rem; }
+    .p-4 { padding: 1.5rem; }
+    .mt-1 { margin-top: 0.25rem; }
+    .mt-2 { margin-top: 0.5rem; }
+    .mt-3 { margin-top: 1rem; }
+    .mt-4 { margin-top: 1.5rem; }
+    .mb-0 { margin-bottom: 0; }
+    .mb-2 { margin-bottom: 0.5rem; }
+    .mb-3 { margin-bottom: 1rem; }
+    .mb-4 { margin-bottom: 1.5rem; }
+    .mx-auto { margin-left: auto; margin-right: auto; }
+    .ms-auto { margin-left: auto; }
+    .text-center { text-align: center; }
+    .small { font-size: 0.875rem; }
+    .h3 { font-size: 1.75rem; }
+    .h4 { font-size: 1.5rem; }
+    .h5 { font-size: 1.25rem; }
+    .h6 { font-size: 1rem; }
+    .fw-bold { font-weight: 700; }
+    .text-nowrap { white-space: nowrap; }
+    .overflow-hidden { overflow: hidden; }
+
+    .ezustFont { color: rgb(90, 87, 87); }
+
+    .aranyFont {
+      width: fit-content;
+      background: linear-gradient(to bottom right,#0F3460 0%, #0F3460 28%, #206cc9 48%, #0F3460 68%);
+      background: linear-gradient(to bottom right, #695a3f 0%, #bfa27a 38%, #bfa27a 28%, #bfa27a 78%, #7c6a4a 88%);
+       width: fit-content;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .aranyFont {
+      
+
+    }
+
+
+    .egyszolgaltatas {
+      border-radius: 20px;
+      border-top: 4px solid #7A4A2A;
+      border-bottom: 4px solid #7A4A2A;
+      /*background: rgba(255, 255, 255, 0.7);*/     /*#6B3E26*/
+      background: transparent;
+      backdrop-filter: blur(8px);
+    }
+
+    .egyGomb, .ezustGomb {
+      display: inline-block;
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 0.5s ease;
+      font-size: 0.95rem;
+      background: white;
+    }
+
+    .egyGomb {
+      color: rgb(49, 47, 47);
+      border: solid 0.5px #7A4A2A;
+    }
+
+    .egyGomb:hover {
+      transform: scale(1.08);
+    }
+
+    .ezustGomb {
+      color: #eeeeee;
+      border: solid 0.5px #eeeeee;
+    }
+
+    .ezustGomb:hover {
+      transform: scale(1.08);
+    }
+
+    .szoveg_3d {
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .szolg-kartya {
+      transform-origin: center;
+      opacity: 0;
+      animation: szetnyilik 0.9s ease-out forwards;
+    }
+
+    @keyframes szetnyilik {
+      from { transform: scaleX(0); opacity: 0; }
+      to { transform: scaleX(1); opacity: 1; }
+    }
+
+    .service-card {
+      display: grid;
+      grid-template-columns: minmax(260px, 36%) 1fr;
+      align-items: stretch;
+      gap: 0;
+      margin-bottom: 1.5rem;
+      padding: 0.25rem 1rem;
+    }
+
+    .szolgKep_Nagy {
+      position: relative;
+      min-height: 260px;
+      display: flex;
+      overflow: hidden;
+    }
+
+    .szolgKep_Nagy img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: top;
+      display: block;
+      background: transparent;
+    }
+
+    .szolgReszletekNagy {
+      display: flex;
+      flex-direction: column;
+      padding: 1.5rem 1.5rem 0.5rem;
+    }
+
+    .fodrKiv {
+      display: flex;
+      margin-top: auto;
+    }
+
+    .szolgKep,
+    .szolgNev,
+    .szolgLeiras {
+      display: none;
+    }
+
+    .back-link { margin-bottom: 1rem; }
+
+    .barber-card {
+      display: grid;
+      grid-template-columns: minmax(220px, 36%) 1fr;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 1rem;
+      padding: 0;
+    }
+
+    .barber-image-col,
+    .barber-content-col {
+      padding: 1rem;
+    }
+
+    .barber-content-col {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .fodrasz-kep-wrap {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #D4AF37;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+    }
+
+    .fodraszProfilkep {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slot-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-widget {
+      max-width: 320px;
+      width: 100%;
+      margin: 0 auto;
+      border: none !important;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+      gap: 0.5rem;
+    }
+
+    .btn-group { display: flex; gap: 0.35rem; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 20px !important;
+      border: solid 0.5px #D4AF37;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    th, td {
+      background: black !important;
+      color: #eeeeee !important;
+      border: 1px solid #2a2a2a;
+      padding: 0.45rem;
+      text-align: center;
+    }
+
+    .calendar-widget td.naptarKivalasztott {
+      background: #D4AF37 !important;
+      color: black !important;
+    }
+
+    .calendar-widget td.today-outline {
+      outline: 1px solid #4e8cff;
+      outline-offset: -2px;
+    }
+
+    .calendar-widget td.muted {
+      color: #666 !important;
+      cursor: default !important;
+    }
+
+    .booking-shell {
+      padding: 1.5rem;
+    }
+
+    .details-line { margin: 0.55rem 0; }
+
+    label.form-label {
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 0.9rem;
+      border-radius: 10px;
+      border: 1px solid #3c3c3c;
+      background: #111;
+      color: #eee;
+      outline: none;
+    }
+
+    .form-control:focus {
+      border-color: #D4AF37;
+      box-shadow: 0 0 0 1px #D4AF37;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .btn-outline-secondary {
+      display: inline-block;
+      padding: 0.65rem 1rem;
+      border-radius: 10px;
+      text-decoration: none;
+      border: 1px solid #777;
+      color: #ddd;
+    }
+
+    .thankyou-box {
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .thankyou-box img {
+      margin-top: 0.5rem;
+      object-fit: contain;
+      max-height: 300px;
+      max-width: 100%;
+    }
+
+    .section-title {
+      margin-top: 0;
+    }
+
+    @media (max-width: 768px) {
+      .service-card {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: 150px 1fr;
+        width: 100%;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+      }
+
+      .szolgKep_Nagy,
+      .szolgReszletekNagy {
+        display: none !important;
+      }
+
+      .szolgKep {
+        display: flex;
+        height: 100%;
+        width: 100%;
+        grid-column: 2;
+        grid-row: 1;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .szolgKep img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top;
+        display: block;
+        background: transparent;
+        position: relative;
+      }
+
+      .szolgKep::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 45%;
+        height: 100%;
+        background: linear-gradient(to right, rgba(0, 0, 0, 0.98) 0%, rgba(0, 0, 0, 0.85) 25%, rgba(0, 0, 0, 0.5) 60%, transparent 100%);
+      }
+
+      .szolgNev {
+        display: flex;
+        grid-column: 1;
+        grid-row: 1;
+        align-items: center;
+        padding-left: 0.7rem;
+      }
+
+      .szolgLeiras {
+        display: flex;
+        grid-column: 1 / 3;
+        grid-row: 2;
+        flex-direction: column;
+        padding: 1rem;
+        position: relative;
+      }
+
+      .fodrKiv {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+      }
+
+      .barber-card {
+        grid-template-columns: 1fr;
+      }
+
+      .fodrasz-kep-wrap {
+        width: 90px;
+        height: 90px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container py-4" id="app"></div>
+
+  <script>
+    const data = {
+      szolgaltatasok: [
+        {
+          id: 1,
+          nev: 'Hajvágás',
+          leiras: 'Modern és klasszikus férfi hajvágás személyre szabva.',
+          ar: 6500,
+          idotartam: 45,
+          kepFajlNeve: 'hajvagasFekvo2.png'
+        },
+        {
+          id: 2,
+          nev: 'Szakáll igazítás',
+          leiras: 'Precíz formázás és igényes szakálligazítás.',
+          ar: 4000,
+          idotartam: 30,
+          kepFajlNeve: 'szakallFekvo2.png'
+        },
+        {
+          id: 3,
+          nev: 'Hajvágás + szakáll igazítás',
+          leiras: 'Komplett frissítés hajra és szakállra egyben.',
+          ar: 9500,
+          idotartam: 75,
+          kepFajlNeve: 'hajEsSzakallFekvo2.png'
+        }
+      ],
+      fodraszok: [
+        {
+          id: 1,
+          nev: 'Balázs',
+          profilkepFajlNeve: 'balazs.png',
+          szolgaltatasIds: [1, 2, 3],
+          legkorabbi: ['2026-03-15T09:00', '2026-03-15T11:30', '2026-03-16T14:00']
+        },
+        {
+          id: 2,
+          nev: 'Máté',
+          profilkepFajlNeve: 'mate.png',
+          szolgaltatasIds: [1, 3],
+          legkorabbi: ['2026-03-15T10:00', '2026-03-16T13:00', '2026-03-17T16:30']
+        },
+        {
+          id: 3,
+          nev: 'Dávid',
+          profilkepFajlNeve: 'david.png',
+          szolgaltatasIds: [2, 3],
+          legkorabbi: ['2026-03-15T12:00', '2026-03-18T09:30', '2026-03-18T17:00']
+        }
+      ],
+      szabadIdopontok: {
+        '1_1_2026-03-15': ['09:00', '09:30', '10:00', '11:30', '12:00', '18:00'],
+        '1_1_2026-03-16': ['08:30', '09:00', '14:00', '14:30', '19:00'],
+        '2_1_2026-03-15': ['10:00', '10:30', '11:00', '16:00'],
+        '2_1_2026-03-16': ['13:00', '13:30', '17:00'],
+        '3_2_2026-03-15': ['12:00', '12:30', '18:30'],
+        '3_2_2026-03-18': ['09:30', '10:00', '17:00'],
+        '1_3_2026-03-15': ['09:00', '11:30', '18:00'],
+        '2_3_2026-03-16': ['13:00', '16:30'],
+        '3_3_2026-03-18': ['09:30', '17:00']
+      }
+    };
+
+    function formatPrice(n) {
+      return new Intl.NumberFormat('hu-HU').format(n) + ' Ft';
+    }
+
+    function getParam(name, fallback = '') {
+      return new URLSearchParams(location.search).get(name) || fallback;
+    }
+
+    function serviceById(id) {
+      return data.szolgaltatasok.find(x => String(x.id) === String(id));
+    }
+
+    function barberById(id) {
+      return data.fodraszok.find(x => String(x.id) === String(id));
+    }
+
+    function formatDateLabel(dateStr) {
+      const d = new Date(dateStr + 'T00:00:00');
+      return d.toLocaleDateString('hu-HU');
+    }
+
+    function earliestSlotsForBarber(barberId) {
+      const b = barberById(barberId);
+      return b ? b.legkorabbi.map(x => new Date(x)) : [];
+    }
+
+    function makeUrl(params) {
+      const u = new URL(location.pathname, location.href);
+      Object.entries(params).forEach(([k, v]) => {
+        if (v === null || v === undefined || v === '') u.searchParams.delete(k);
+        else u.searchParams.set(k, v);
+      });
+      return u.pathname + '?' + u.searchParams.toString();
+    }
+
+    function splitDayTimes(times) {
+      return {
+        reggeli: times.filter(t => t < '12:00'),
+        delutani: times.filter(t => t >= '12:00' && t < '18:00'),
+        esti: times.filter(t => t >= '18:00')
+      };
+    }
+
+    function renderSzolgaltatasok() {
+      const cards = data.szolgaltatasok.map((szolg, index) => {
+        const nevMobil = szolg.nev === 'Hajvágás + szakáll igazítás'
+          ? 'Hajvágás +<br>szakáll igazítás'
+          : szolg.nev;
+
+        return `
+          <div class="service-card row egyszolgaltatas szolgLayout szolg-kartya overflow-hidden" style="animation-delay:${(index * 0.75).toFixed(3)}s;">
+            <div class="szolgKep_Nagy">
+              <img src="${szolg.kepFajlNeve}" alt="${szolg.nev}">
+            </div>
+            <div class="szolgReszletekNagy">
+              <h3 class="szoveg_3d h5 mx-auto aranyFont"><strong>${szolg.nev}</strong></h3>
+              <p class="mt-1 ezustFont">${szolg.leiras || ''}</p>
+              <h3 class="mt-2 mx-auto h5 aranyFont"><strong>Ár: ${formatPrice(szolg.ar)}</strong></h3>
+              <div class="d-flex mt-auto fodrKiv">
+                <a href="${makeUrl({ section: 'fodraszok', szolgaltatasId: szolg.id })}" class="egyGomb aranyFont ms-auto">Fodrász kiválasztása</a>
+              </div>
+            </div>
+
+            <div class="szolgKep">
+              <img src="${szolg.kepFajlNeve}" alt="${szolg.nev}">
+            </div>
+            <div class="szolgNev">
+              <h3 class="szoveg_3d h5 aranyFont"><strong>${nevMobil}</strong></h3>
+            </div>
+            <div class="szolgLeiras">
+              <p class="mt-2 ezustFont">${szolg.leiras || ''}</p>
+              <h3 class="mt-2 h5 aranyFont"><strong>Ár: ${formatPrice(szolg.ar)}</strong></h3>
+              <div class="d-flex fodrKiv">
+                <a href="${makeUrl({ section: 'fodraszok', szolgaltatasId: szolg.id })}" class="egyGomb aranyFont ms-auto">Fodrász kiválasztása</a>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+
+      return `
+        <h1 class="mb-4 ezustFont section-title">Szolgáltatásaink</h1>
+        ${cards}`;
+    }
+
+    function renderFodraszok() {
+      const selectedService = serviceById(getParam('szolgaltatasId', '1')) || data.szolgaltatasok[0];
+      const filtered = data.fodraszok.filter(f => f.szolgaltatasIds.includes(selectedService.id));
+
+      const content = filtered.length === 0
+        ? `<p class="ezustFont mb-0">Ehhez a szolgáltatáshoz jelenleg nincs elérhető fodrász.</p>`
+        : filtered.map((fodrasz, idx) => {
+            const legkorabbi = earliestSlotsForBarber(fodrasz.id);
+            const slotButtons = legkorabhiOrEmpty(legkorabbi, fodrasz.id, selectedService.id);
+            return `
+              <div class="barber-card egyszolgaltatas szolg-kartya overflow-hidden" style="animation-delay:${(idx * 0.40).toFixed(2)}s;">
+                <div class="barber-image-col">
+                  <div class="fodrasz-kep-wrap">
+                    <img src="${fodrasz.profilkepFajlNeve}" alt="${fodrasz.nev}" class="fodraszProfilkep" />
+                  </div>
+                </div>
+                <div class="barber-content-col">
+                  <h3 class="h5 aranyFont">${fodrasz.nev}</h3>
+                  <div class="mt-2" style="display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                    ${slotButtons}
+                    <a href="${makeUrl({ section: 'osszesIdopont', szolgaltatasId: selectedService.id, FodraszId: fodrasz.id, naptarDatum: (legkorabbi[0] ? legkorabbi[0].toISOString().slice(0,10) : '2026-03-15') })}" class="egyGomb aranyFont mt-1">Összes időpont</a>
+                  </div>
+                </div>
+              </div>`;
+          }).join('');
+
+      return `
+        <h1 class="mb-4 ezustFont section-title">Fodrász kiválasztása</h1>
+        <div class="mb-4 p-3">
+          <div class="back-link"><a href="${makeUrl({ section: 'szolgaltatasok', szolgaltatasId: null, FodraszId: null, naptarDatum: null, foglalasDatum: null, foglalasIdo: null })}" class="egyGomb">Vissza a szolgáltatásokhoz</a></div>
+          <p class="ezustFont mb-3">Szolgáltatás: <strong>${selectedService.nev}</strong></p>
+          ${content}
+        </div>`;
+    }
+
+    function legkorabhiOrEmpty(legkorabbi, fodraszId, szolgId) {
+      if (!legkorabbi || legkorabbi.length === 0) return '';
+      const buttons = legkorabbi.map(ido => {
+        const date = ido.toISOString().slice(0, 10);
+        const time = ido.toTimeString().slice(0, 5);
+        const label = ido.toLocaleDateString('hu-HU', { month: '2-digit', day: '2-digit' }).replace(/\.$/, '.') + ' ' + time;
+        return `<a href="${makeUrl({ section: 'foglalas', FodraszId: fodraszId, szolgaltatasId: szolgId, foglalasDatum: date, foglalasIdo: time })}" class="egyGomb aranyFont small text-nowrap">${label}</a>`;
+      }).join('');
+      return `<p class="ezustFont small">Legkorábbi időpontok:</p><div class="slot-list">${buttons}</div>`;
+    }
+
+    function renderOsszesIdopont() {
+      const selectedService = serviceById(getParam('szolgaltatasId', '1')) || data.szolgaltatasok[0];
+      const selectedBarber = barberById(getParam('FodraszId', '1')) || data.fodraszok[0];
+      const dateStr = getParam('naptarDatum', '2026-03-15');
+      const key = `${selectedBarber.id}_${selectedService.id}_${dateStr}`;
+      const times = data.szabadIdopontok[key] || [];
+      const split = splitDayTimes(times);
+
+      function renderTimeGroup(title, arr) {
+        if (!arr.length) return '';
+        const items = arr.map(t => `
+          <a href="${makeUrl({ section: 'foglalas', FodraszId: selectedBarber.id, szolgaltatasId: selectedService.id, foglalasDatum: dateStr, foglalasIdo: t })}" class="ezustGomb small text-nowrap">${t}</a>
+        `).join('');
+        return `<div class="mt-3"><span class="aranyFont small">${title}</span><div class="slot-list" style="justify-content:flex-start;">${items}</div></div>`;
+      }
+
+      return `
+        <h1 class="mb-4 ezustFont section-title">Időpont kiválasztása</h1>
+        <div class="p-4">
+          <p><a href="${makeUrl({ section: 'fodraszok', szolgaltatasId: selectedService.id, FodraszId: null, naptarDatum: null, foglalasDatum: null, foglalasIdo: null })}" class="egyGomb aranyFont">Vissza a fodrászokhoz</a></p>
+
+          <div class="egyszolgaltatas szolg-kartya" style="display:flex;flex-direction:column;align-items:center;gap:2rem;">
+            <div class="p-4" style="width:100%;">
+              <div class="text-center">
+                <div class="fodrasz-kep-wrap mx-auto">
+                  <img src="${selectedBarber.profilkepFajlNeve}" alt="${selectedBarber.nev}" class="fodraszProfilkep" />
+                </div>
+              </div>
+
+              <div class="text-center" style="width:100%;">
+                <p class="h4 mt-2 mx-auto aranyFont">${selectedBarber.nev}</p>
+                <p class="h6 mt-2 ezustFont">${selectedService.nev} - ${selectedService.idotartam} perc</p>
+              </div>
+
+              <div class="mt-3">
+                <div class="calendar-widget" data-szolgaltatas-id="${selectedService.id}" data-fodrasz-id="${selectedBarber.id}">
+                  <div class="calendar-header">
+                    <span class="fw-bold ezustFont" id="calendarMonthYear"></span>
+                    <div class="btn-group">
+                      <button type="button" class="egyGomb aranyFont" id="calPrev" title="Előző hónap">↑</button>
+                      <button type="button" class="egyGomb aranyFont" id="calNext" title="Következő hónap">↓</button>
+                    </div>
+                  </div>
+                  <table>
+                    <thead>
+                      <tr>
+                        <th>H</th><th>K</th><th>Sze</th><th>Cs</th><th>P</th><th>Szo</th><th>V</th>
+                      </tr>
+                    </thead>
+                    <tbody id="calendarBody"></tbody>
+                  </table>
+                  <div class="text-center"><button type="button" class="egyGomb aranyFont" id="calToday">Ma</button></div>
+                </div>
+              </div>
+
+              <div style="max-width:420px;margin:0 auto;">
+                ${(!split.reggeli.length && !split.delutani.length && !split.esti.length) ? `<p class="ezustFont text-center small">Erre a napra nincs szabad időpont.</p>` : ''}
+                ${renderTimeGroup('Délelőtt', split.reggeli)}
+                ${renderTimeGroup('Délután', split.delutani)}
+                ${renderTimeGroup('Este', split.esti)}
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
+    function renderFoglalas() {
+      const selectedService = serviceById(getParam('szolgaltatasId', '1')) || data.szolgaltatasok[0];
+      const selectedBarber = barberById(getParam('FodraszId', '1')) || data.fodraszok[0];
+      const foglalasDatum = getParam('foglalasDatum', '2026-03-15');
+      const foglalasIdo = getParam('foglalasIdo', '09:00');
+
+      return `
+        <div class="booking-shell">
+          <a href="${makeUrl({ section: 'fodraszok', szolgaltatasId: selectedService.id, FodraszId: null, naptarDatum: null, foglalasDatum: null, foglalasIdo: null })}" class="egyGomb aranyFont">Vissza a fodrászokhoz</a>
+
+          <div class="mt-4">
+            <p class="details-line ezustFont">Fodrász: <span class="aranyFont">${selectedBarber.nev}</span></p>
+            <p class="details-line ezustFont">Szolgáltatás: <span class="aranyFont">${selectedService.nev} - ${selectedService.idotartam} perc</span></p>
+            <p class="details-line ezustFont">Ár: <span class="aranyFont">${formatPrice(selectedService.ar)}</span></p>
+            <p class="details-line ezustFont">Dátum: <span class="aranyFont">${formatDateLabel(foglalasDatum)}</span> <span class="ezustFont">${foglalasIdo}</span></p>
+
+            <form id="bookingForm">
+              <p>
+                <label class="form-label ezustFont">Név:</label>
+                <input name="ugyfelNev" class="form-control" />
+              </p>
+              <p>
+                <label class="form-label ezustFont">E-mail cím:</label>
+                <input name="ugyfelEmail" class="form-control" type="email" />
+              </p>
+              <p>
+                <label class="form-label ezustFont">Telefonszám:</label>
+                <input name="ugyfelTelefon" class="form-control" />
+              </p>
+              <p>
+                <label class="form-label ezustFont">Megjegyzés:</label>
+                <input name="ugyfelMegjegyzes" class="form-control" />
+              </p>
+
+              <div class="button-row">
+                <button type="submit" class="egyGomb aranyFont">Foglalás elküldése</button>
+                <a href="${makeUrl({ section: 'szolgaltatasok', szolgaltatasId: null, FodraszId: null, naptarDatum: null, foglalasDatum: null, foglalasIdo: null })}" class="btn-outline-secondary">Mégse</a>
+              </div>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function renderKoszi() {
+      return `
+        <p><a href="${makeUrl({ section: 'szolgaltatasok', szolgaltatasId: null, FodraszId: null, naptarDatum: null, foglalasDatum: null, foglalasIdo: null })}" class="egyGomb aranyFont">Új foglalás megkezdése</a></p>
+        <div class="thankyou-box egyszolgaltatas szolg-kartya">
+          <p class="ezustFont h4 mt-1 text-center">Időpontodat sikeresen rögzítettük!</p>
+          <p class="ezustFont h3 mt-3 text-center">Mi gondoskodunk a stílusról, te csak érkezz pontosan!</p>
+          <img src="logo.png" alt="logo" />
+        </div>`;
+    }
+
+    function initBookingForm() {
+      const form = document.getElementById('bookingForm');
+      if (!form) return;
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        location.href = makeUrl({ section: 'koszi' });
+      });
+    }
+
+    function initCalendar() {
+      const monthEl = document.getElementById('calendarMonthYear');
+      const bodyEl = document.getElementById('calendarBody');
+      const prevBtn = document.getElementById('calPrev');
+      const nextBtn = document.getElementById('calNext');
+      const todayBtn = document.getElementById('calToday');
+      if (!monthEl || !bodyEl || !prevBtn || !nextBtn || !todayBtn) return;
+
+      const initialDate = getParam('naptarDatum', '2026-03-15');
+      const initial = new Date(initialDate + 'T00:00:00');
+      let calYear = initial.getFullYear();
+      let calMonth = initial.getMonth();
+      const selectedDate = new Date(initialDate + 'T00:00:00');
+      const monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
+
+      function buildOsszesIdopontUrl(dateStr) {
+        return makeUrl({
+          section: 'osszesIdopont',
+          naptarDatum: dateStr,
+          szolgaltatasId: getParam('szolgaltatasId', '1'),
+          FodraszId: getParam('FodraszId', '1'),
+          foglalasDatum: null,
+          foglalasIdo: null
+        });
+      }
+
+      function render() {
+        const first = new Date(calYear, calMonth, 1);
+        const last = new Date(calYear, calMonth + 1, 0);
+        const startPad = (first.getDay() + 6) % 7;
+        const days = last.getDate();
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        monthEl.textContent = calYear + '. ' + monthNames[calMonth];
+        bodyEl.innerHTML = '';
+        let row = document.createElement('tr');
+
+        for (let i = 0; i < startPad; i++) {
+          const cell = document.createElement('td');
+          cell.className = 'muted';
+          row.appendChild(cell);
+        }
+
+        for (let d = 1; d <= days; d++) {
+          if (row.children.length === 7) {
+            bodyEl.appendChild(row);
+            row = document.createElement('tr');
+          }
+
+          const cell = document.createElement('td');
+          cell.style.cursor = 'pointer';
+          cell.textContent = d;
+
+          const dObj = new Date(calYear, calMonth, d);
+          if (selectedDate.getTime() === dObj.getTime()) cell.classList.add('naptarKivalasztott');
+          if (dObj.getTime() === today.getTime()) cell.classList.add('today-outline');
+
+          cell.addEventListener('click', function () {
+            const dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+            location.href = buildOsszesIdopontUrl(dateStr);
+          });
+
+          row.appendChild(cell);
+        }
+
+        while (row.children.length > 0 && row.children.length < 7) {
+          const cell = document.createElement('td');
+          cell.className = 'muted';
+          row.appendChild(cell);
+        }
+        if (row.children.length) bodyEl.appendChild(row);
+      }
+
+      prevBtn.addEventListener('click', function () {
+        calMonth--;
+        if (calMonth < 0) { calMonth = 11; calYear--; }
+        render();
+      });
+
+      nextBtn.addEventListener('click', function () {
+        calMonth++;
+        if (calMonth > 11) { calMonth = 0; calYear++; }
+        render();
+      });
+
+      todayBtn.addEventListener('click', function () {
+        const t = new Date();
+        const dateStr = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
+        location.href = buildOsszesIdopontUrl(dateStr);
+      });
+
+      render();
+    }
+
+    function renderApp() {
+      const section = getParam('section', 'szolgaltatasok');
+      const app = document.getElementById('app');
+
+      if (section === 'fodraszok') app.innerHTML = renderFodraszok();
+      else if (section === 'osszesIdopont') app.innerHTML = renderOsszesIdopont();
+      else if (section === 'foglalas') app.innerHTML = renderFoglalas();
+      else if (section === 'koszi') app.innerHTML = renderKoszi();
+      else app.innerHTML = renderSzolgaltatasok();
+
+      initCalendar();
+      initBookingForm();
+    }
+
+    renderApp();
+  </script>
+</body>
+</html>
