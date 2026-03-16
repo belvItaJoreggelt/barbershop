@@ -102,7 +102,8 @@ namespace barberShop.Pages
                 for (int d = 0; d < 14; ++d)
                 {
                     var datum = DateTime.Today.AddDays(d);
-                    var munkaido = fodrasz.FodraszMunkaidok?.FirstOrDefault(m => m.Datum.Date == datum.Date);
+                    var datumUtc = DBDataTimeHelper.ToUtcDate(datum);
+                    var munkaido = fodrasz.FodraszMunkaidok?.FirstOrDefault(m => m.Datum.Date == datumUtc.Date);
                     if (munkaido == null) continue;
 
                     var kezdo = munkaido.Kezdoido;
@@ -149,8 +150,9 @@ namespace barberShop.Pages
 
                 NaptarDatum = nap.ToString("yyyy-MM-dd");
 
+                var napUtc = DBDataTimeHelper.ToUtcDate(nap);
                 var munkaido = await _context.FodraszMunkaidok
-                    .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF.ID && m.Datum == nap);
+                    .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF.ID && m.Datum == napUtc);
 
                 if (munkaido == null)
                     return;
@@ -161,7 +163,7 @@ namespace barberShop.Pages
 
                 var foglaltak = await _context.Idopontok
                     .Include(i => i.Szolgaltatas)
-                    .Where(i => i.FodraszId == KivalasztottF.ID && i.EsedekessegiIdopont.Date == nap)
+                    .Where(i => i.FodraszId == KivalasztottF.ID && i.EsedekessegiIdopont.Date == napUtc.Date)
                     .ToListAsync();
 
                 while (kezdo2.Add(TimeSpan.FromMinutes(hosszPerc)) <= zaro2)
@@ -231,8 +233,8 @@ namespace barberShop.Pages
             {
                 FodraszId = fodr.ID,
                 SzolgaltatasId = szolg.Id,
-                EsedekessegiIdopont = kezdes,
-                CustomerNeve= UgyfelNev,
+                EsedekessegiIdopont = DBDataTimeHelper.ToUtc(kezdes),
+                CustomerNeve = UgyfelNev,
                 CustomerEmail=UgyfelEmail,
                 CustomerPhone=UgyfelTelefon,
                 CustomerNotes= UgyfelMegjegyzes
