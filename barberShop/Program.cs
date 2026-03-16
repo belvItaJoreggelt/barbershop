@@ -68,34 +68,25 @@ app.MapRazorPages()
    .WithStaticAssets();
 
 // Háttérben fut – nem blokkolja az app indulását
-_ = Task.Run(async () =>
+using (var scope = app.Services.CreateScope())
 {
     try
     {
-        await Task.Delay(2000); // Kis késleltetés, hogy az app már tudjon válaszolni
-        using var scope = app.Services.CreateScope();
         var services = scope.ServiceProvider;
         var context = services.GetRequiredService<AppDbContext>();
-
-        await context.Database.MigrateAsync(); // ha kell – vagy maradjon commentelve
-
+        await context.Database.MigrateAsync();
         SeedAdatok.Initialize(context);
-
         var userManager = services.GetRequiredService<UserManager<Felhasznalo>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
         const string adminRoleName = "Admin";
-
         if (!await roleManager.RoleExistsAsync(adminRoleName))
             await roleManager.CreateAsync(new IdentityRole(adminRoleName));
-
         const string fodraszRole = "Fodrasz";
         if (!await roleManager.RoleExistsAsync(fodraszRole))
             await roleManager.CreateAsync(new IdentityRole(fodraszRole));
-
         const string felhasznaloRole = "Mugli";
         if (!await roleManager.RoleExistsAsync(felhasznaloRole))
             await roleManager.CreateAsync(new IdentityRole(felhasznaloRole));
-
         var adminEmail = "kerberosz@kerberosz.com";
         var adminUser = await userManager.FindByEmailAsync(adminEmail);
         if (adminUser == null)
@@ -114,13 +105,11 @@ _ = Task.Run(async () =>
                     .LogError("Nem sikerült az admin létrehozása: {Errors}",
                         string.Join("; ", createResult.Errors.Select(e => e.Description)));
         }
-
-        // fodraszEmail logika – ha kell, marad
     }
     catch (Exception ex)
     {
         app.Services.GetRequiredService<ILogger<Program>>()
             .LogError(ex, "Hiba Seed adatok inicializálásánál!");
     }
-});
+}
 app.Run();
