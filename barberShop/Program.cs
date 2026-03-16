@@ -11,12 +11,7 @@ var builder = WebApplication.CreateBuilder(args);
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        npgsqlOptions => npgsqlOptions.EnableRetryOnFailure(
-            maxRetryCount: 3,
-            maxRetryDelay: TimeSpan.FromSeconds(5),
-            errorCodesToAdd: null)));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddIdentity<Felhasznalo, IdentityRole>(options =>
 {
