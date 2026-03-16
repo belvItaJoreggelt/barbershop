@@ -43,7 +43,7 @@ namespace barberShop
                         Idotartam = 45,
                         Leiras = "Legyen szó klasszikus fazonról vagy modern átmenetről, nálunk a precizitás az alap. A hajvágást alapos hajmosással és egyénre szabott stylinggal zárjuk, hogy egész nap magabiztos maradj.",
                         KepFajlNeve = "hajvagasFekvo.png",
-                        KepFajlNev_Vilagos= "hajvagasFekvo_Vilagos"
+                        KepFajlNev_Vilagos= "hajvagasFekvo_Vilagos.png"
                     },
                     new Szolgaltatas
                     {
@@ -52,7 +52,7 @@ namespace barberShop
                         Idotartam = 15,
                         Leiras = "Az ápolt szakáll meghatározza az arc karakterét, nálunk pedig minden a részletekről szól. A precíz formázást prémium ápolók használatával tesszük teljessé, hogy megjelenésed markáns, stílusod pedig kifogástalan legyen.",
                         KepFajlNeve = "szakallFekvo.png",
-                        KepFajlNev_Vilagos= "szakallFekv_Vilagos"
+                        KepFajlNev_Vilagos= "szakallFekv_Vilagos.png"
                     },
                     new Szolgaltatas
                     {
@@ -61,7 +61,7 @@ namespace barberShop
                         Idotartam = 60,
                         Leiras = "Hozd összhangba a megjelenésed egyetlen látogatással, ahol a karakteres hajvágás és a tűpontos szakállformázás találkozik.",
                         KepFajlNeve = "hajEsSzakallFekvo.png",
-                        KepFajlNev_Vilagos= "hajEsSzakallFekvo_Vilagos"
+                        KepFajlNev_Vilagos= "hajEsSzakallFekvo_Vilagos.png"
                     },
                     new Szolgaltatas
                     {
@@ -70,7 +70,7 @@ namespace barberShop
                         Idotartam = 60,
                         Leiras = "Extrém skin fade, precíz hajtetoválás vagy teljesen egyedi, aszimmetrikus formára vágysz? Nálunk valóra válnak a legmerészebb elképzeléseidet is!",
                         KepFajlNeve = "kreativFekvo.png",
-                        KepFajlNev_Vilagos= "kreativFekvo_Vilagos"
+                        KepFajlNev_Vilagos= "kreativFekvo_Vilagos.png"
                     }
                 };
                 context.Szolgaltatasok.AddRange(szolgaltatasok);
