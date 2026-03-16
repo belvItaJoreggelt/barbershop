@@ -169,6 +169,7 @@ namespace barberShop.Pages
                 while (kezdo2.Add(TimeSpan.FromMinutes(hosszPerc)) <= zaro2)
                 {
                     var slot = nap.Date + kezdo2;
+                    if (slot < most) { kezdo2 = kezdo2.Add(TimeSpan.FromMinutes(15)); continue; }
                     var veg = slot.AddMinutes(hosszPerc);
 
                     bool utkozik = foglaltak.Any(i =>
@@ -234,6 +235,7 @@ namespace barberShop.Pages
                 FodraszId = fodr.ID,
                 SzolgaltatasId = szolg.Id,
                 EsedekessegiIdopont = DBDataTimeHelper.ToUtc(kezdes),
+                FoglalasiIdopont = DBDataTimeHelper.ToUtc(DateTime.Now),
                 CustomerNeve = UgyfelNev,
                 CustomerEmail=UgyfelEmail,
                 CustomerPhone=UgyfelTelefon,
