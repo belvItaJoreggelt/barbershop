@@ -59,7 +59,7 @@ app.UseAuthorization();
 app.UseStaticFiles();
 app.MapRazorPages();
 
-
+// Háttérben fut – nem blokkolja az app indulását
 using (var scope = app.Services.CreateScope())
 {
     try
@@ -97,7 +97,6 @@ using (var scope = app.Services.CreateScope())
                     .LogError("Nem sikerült az admin létrehozása: {Errors}",
                         string.Join("; ", createResult.Errors.Select(e => e.Description)));
         }
-        await SeedAdatok.SeedFodraszBejelentkezoekAsync(context, userManager);
     }
     catch (Exception ex)
     {
