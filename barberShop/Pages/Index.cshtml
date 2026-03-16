@@ -43,15 +43,20 @@
 
 
                 <div class="overflow-hidden szolgKep">
-                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                    @if (!string.IsNullOrEmpty(szolg.KepFajlNeve) || !string.IsNullOrEmpty(szolg.KepFajlNev_Vilagos))
                     {
-                        <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
-                             alt="@szolg.Nev"
-                             class="w-100 h-100"/>
-                    }
-                    else
-                    {
-                        <div class="d-flex align-items-center justify-content-center text-muted" style="min-height: 200px;">Kép</div>
+                        @if (!string.IsNullOrEmpty(szolg.KepFajlNev_Vilagos))
+                        {
+                            <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNev_Vilagos"
+                                 alt="@szolg.Nev" class="position-absolute top-0 start-0 w-100 h-100 kep-vilagos"
+                                 style="object-fit: contain; object-position:top; display: block; background: transparent;" />
+                        }
+                        @if (!string.IsNullOrEmpty(szolg.KepFajlNeve))
+                        {
+                            <img src="~/kepek/szolgaltatasok/@szolg.KepFajlNeve"
+                                 alt="@szolg.Nev" class="position-absolute top-0 start-0 w-100 h-100 kep-sotet"
+                                 style="object-fit: contain; object-position:top; display: block; background: transparent;" />
+                        }
                     }
                 </div>
                 <div class="szolgNev">
