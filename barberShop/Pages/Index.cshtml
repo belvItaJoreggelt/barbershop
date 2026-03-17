@@ -300,7 +300,7 @@
                 <p class="ezustFont">Ár: <span class="accentFont">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
                 <p class="ezustFont">Dátum: <span class="accentFont">@Model.FoglalasDatum </span><span class="ezustFont"> @Model.FoglalasIdo</span></p>
                 
-                <form method="post" asp-page-handler="Foglalas">
+                <form method="post" asp-page-handler="Foglalas" class="FoglHatter">
                     <input type="hidden" asp-for="FodraszId" />
                     <input type="hidden" asp-for="SzolgaltatasId" />
                     <input type="hidden" asp-for="FoglalasDatum" />
