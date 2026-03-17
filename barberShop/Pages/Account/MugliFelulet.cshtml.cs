@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
 namespace barberShop.Pages.Account
@@ -35,6 +36,12 @@ namespace barberShop.Pages.Account
         #endregion
 
 
+        #region Foglalasaim
+        [BindProperty]
+        public List<Idopont> Mai_Foglalasaim { get; set; } = new();
+        [BindProperty]
+        public List<Idopont> Egyeb_Foglalasaim { get; set; } = new();
+        #endregion
 
 
 
@@ -46,9 +53,33 @@ namespace barberShop.Pages.Account
             if (user == null)
                 return;
 
-            EditEmail = user.Email ?? "";
-            EditNev = user.Nev ?? "";
-            EditTel = user.PhoneNumber ?? "";
+            if (Section == "adataim")
+            {
+                EditEmail = user.Email ?? "";
+                EditNev = user.Nev ?? "";
+                EditTel = user.PhoneNumber ?? "";
+            }
+            else if (Section == "foglalasaim")
+            {
+                var todayUtc = DBDataTimeHelper.ToUtc(DateTime.Today);
+
+                var osszes = await _context.Idopontok
+                    .Include(f => f.Szolgaltatas)
+                    .Include(f=>f.Fodrasz)
+                    .Where(f => f.CustomerEmail == user.Email)
+                    .OrderByDescending(f=>f.EsedekessegiIdopont)
+                    .ToListAsync();
+
+                Mai_Foglalasaim = osszes
+                    .Where(f=>f.EsedekessegiIdopont == todayUtc)
+                    .ToList();
+
+                Egyeb_Foglalasaim = osszes
+                    .Where(f => f.EsedekessegiIdopont != todayUtc)
+                    .OrderByDescending(f => f.EsedekessegiIdopont)
+                    .ToList();
+            }
+            
             
         }
 

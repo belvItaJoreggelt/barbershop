@@ -93,31 +93,53 @@
         <p class="mb-3">
             <a asp-page="/Account/MugliFelulet" asp-route-section="" class="btn px-4 egyGomb">vissza</a>
         </p>
+
+        <div class="row">
+            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
+                <div class="card-header">Mai foglalások</div>
+                <div class="card-body">
+                    
+                    @if (Model.Mai_Foglalasaim.Any())
+                    {
+                        <table class="foglTabla table-borderless">
+                            <tbody>
+                                @foreach (var idopont in Model.Mai_Foglalasaim)
+                                {
+                                    <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
+                                        <td class="text-center accentFont">@idopont.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                        <td class="text-center accentFont">@idopont.Szolgaltatas?.Nev</td>
+                                        <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
+                                            <span class="nyil">▼</span>
+                                        </td>
+                                    </tr>
+                                    <tr class="rejtett">
+                                        <td colspan="4" class="p-3">
+                                            <span class="ezustFont d-block">Fodrász: <span class="accentFont">@idopont.Fodrasz?.Nev</span></span>
+                                            <span class="ezustFont d-block">Idő: <span class="accentFont">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
+                                            <span class="ezustFont d-block">Ár: <span class="accentFont">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
+                                            <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <p>Nincsen foglalásod a mai napra.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
+                <div class="card-header">További foglalások</div>
+                <div class="card-body">
+                </div>
+            </div>
+        </div>
     }
 </div>
 
 <style>
-    /*
-    .aranyFont {
-        width: fit-content;
-        background: linear-gradient( 90deg, #a47e1b 0%, #b69121 8%, #c9a227 16%, #dbb42c 24%, #9a7009 32%, #edc531 40%, #a47e1b 48%, #b69121 56%, #c9a227 64%, #dbb42c 72%, #9a7009 80%, #edc531 88%, #a47e1b 100% );
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-    }
-   
-    .vilagosBarna {
-        background: rgba(245, 238, 225, 0.9);
-        background: transparent;
-    }
-
-    .egyszolgaltatas {
-        border-radius: 20px;
-        border-top: 4px solid #D4AF37;
-        border-bottom: 4px solid #D4AF37;
-        background: black;
-        overflow: auto;
-    }
-         */
     
 </style>
