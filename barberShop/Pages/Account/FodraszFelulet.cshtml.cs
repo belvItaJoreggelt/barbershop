@@ -323,12 +323,12 @@ namespace barberShop.Pages.Account
             var datumUtc=DBDataTimeHelper.ToUtcDate(datum);
 
             var elozoMunkaido = await _context.FodraszMunkaidok
-                .Where(i => i.FodraszId == user.FodraszId && i.Datum < datumUtc)
+                .Where(i => i.FodraszId == user.FodraszId)
                 .OrderByDescending(i => i.Datum)
                 .FirstOrDefaultAsync();
             if (elozoMunkaido == null)
             {
-                TempData["Info"] = "Ne, található előzőleg megadott munkaidő";
+                TempData["Info"] = "Nem található előzőleg megadott munkaidő";
                 return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim", naptarDatum = datum.ToString("yyyy-MM-dd") });
             }
 
