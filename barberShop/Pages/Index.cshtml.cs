@@ -24,19 +24,17 @@ namespace barberShop.Pages
         public List<Szolgaltatas> Szolgaltatasok { get; set; } = new();
 
 
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public int? SzolgaltatasId { get; set; }
 
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public int? FodraszId { get; set; }
         public Szolgaltatas KivalasztottSzolgaltatas { get; set; } = null;
         public List<Fodrasz> Fodraszok { get; set; } = new List<Fodrasz>();
         public Dictionary<int, List<DateTime>> FodraszLegkorabbiSzabadIdopontok { get; set; } = new();
 
 
-        //idpont kivalassz
-
-        [BindProperty(SupportsGet =true)]
+        [BindProperty(SupportsGet = true)]
         public string? NaptarDatum { get; set; }
 
 
@@ -46,8 +44,6 @@ namespace barberShop.Pages
         public List<DateTime> EstiIdopontok { get; set; } = new();
 
 
-
-        //idopont foglal
         [BindProperty(SupportsGet = true)]
         public string? FoglalasDatum { get; set; }
 
@@ -55,15 +51,15 @@ namespace barberShop.Pages
         public string? FoglalasIdo { get; set; }
 
         [BindProperty]
-        [Required(ErrorMessage ="A név megadása kötelező")]
+        [Required(ErrorMessage = "A név megadása kötelező")]
         public string UgyfelNev { get; set; } = "";
 
         [BindProperty]
-        [Required(ErrorMessage ="Az e-mail cím megadása kötelező")]
+        [Required(ErrorMessage = "Az e-mail cím megadása kötelező")]
         public string UgyfelEmail { get; set; } = "";
 
         [BindProperty]
-        [Required(ErrorMessage ="Telefonszám megadása kötelező")]
+        [Required(ErrorMessage = "Telefonszám megadása kötelező")]
         public string UgyfelTelefon { get; set; } = "";
 
         [BindProperty]
@@ -76,24 +72,37 @@ namespace barberShop.Pages
             if (!SzolgaltatasId.HasValue)
                 return;
 
-            KivalasztottSzolgaltatas = await _context.Szolgaltatasok.FindAsync(SzolgaltatasId.Value);
-            
+            await LoadSzolgaltatasEsFodraszokAsync();
+            if (KivalasztottSzolgaltatas == null)
+                return;
+
+            SzamoldLegkorabbiSzabadSlotokat();
+
+            if (Section == "osszesIdopont" && KivalasztottF != null)
+                await LoadNapraSzabadIdopontokAsync();
+        }
+
+        private async Task LoadSzolgaltatasEsFodraszokAsync()
+        {
+            KivalasztottSzolgaltatas = await _context.Szolgaltatasok.FindAsync(SzolgaltatasId!.Value);
             if (KivalasztottSzolgaltatas == null)
                 return;
 
             Fodraszok = await _context.Fodraszok
-                    .Where(f => f.VallaltSzolgaltatasok.Any(sz => sz.Id == SzolgaltatasId.Value))
-                    .Include(f => f.VallaltSzolgaltatasok)
-                    .Include(f => f.Idopontok)
-                    .ThenInclude(f => f.Szolgaltatas)
-                    .Include(f => f.FodraszMunkaidok)
-                    .ToListAsync();
+                .Where(f => f.VallaltSzolgaltatasok.Any(sz => sz.Id == SzolgaltatasId!.Value))
+                .Include(f => f.VallaltSzolgaltatasok)
+                .Include(f => f.Idopontok)
+                .ThenInclude(f => f.Szolgaltatas)
+                .Include(f => f.FodraszMunkaidok)
+                .ToListAsync();
 
             if (FodraszId.HasValue)
                 KivalasztottF = Fodraszok.FirstOrDefault(f => f.ID == FodraszId);
+        }
 
-            // slot számítás BENT, a KivalasztottSzolgaltatas != null blokkban
-            var szolgIdotartamPerc = KivalasztottSzolgaltatas.Idotartam;
+        private void SzamoldLegkorabbiSzabadSlotokat()
+        {
+            var szolgIdotartamPerc = KivalasztottSzolgaltatas!.Idotartam;
             var most = DateTime.Now;
 
             foreach (var fodrasz in Fodraszok)
@@ -102,8 +111,7 @@ namespace barberShop.Pages
                 for (int d = 0; d < 14; ++d)
                 {
                     var datum = DateTime.Today.AddDays(d);
-                    var datumUtc = DBDataTimeHelper.ToUtcDate(datum);
-                    var munkaido = fodrasz.FodraszMunkaidok?.FirstOrDefault(m => m.Datum.Date == datumUtc.Date);
+                    var munkaido = fodrasz.FodraszMunkaidok?.FirstOrDefault(m => m.Datum.Date == datum.Date);
                     if (munkaido == null) continue;
 
                     var kezdo = munkaido.Kezdoido;
@@ -133,63 +141,65 @@ namespace barberShop.Pages
                     if (szabadok.Count >= 3) break;
                 }
                 FodraszLegkorabbiSzabadIdopontok[fodrasz.ID] = szabadok;
+            }
+        }
 
-                
-                
-            }//foreach vge
+        private async Task LoadNapraSzabadIdopontokAsync()
+        {
+            ReggeliIdopontok.Clear();
+            DelutaniIdopontok.Clear();
+            EstiIdopontok.Clear();
 
-            if (Section=="osszesIdopont" && KivalasztottF !=null)
+            var nap = DateTime.Today;
+            if (!string.IsNullOrWhiteSpace(NaptarDatum) && DateTime.TryParse(NaptarDatum, out var parsedDate))
+                nap = parsedDate.Date;
+
+            NaptarDatum = nap.ToString("yyyy-MM-dd");
+
+            var munkaido = await _context.FodraszMunkaidok
+                .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF!.ID && m.Datum.Date == nap.Date);
+
+            if (munkaido == null)
+                return;
+
+            var kezdo2 = munkaido.Kezdoido;
+            var zaro2 = munkaido.ZaroIdo;
+            var hosszPerc = KivalasztottSzolgaltatas!.Idotartam;
+
+            var foglaltak = await _context.Idopontok
+                .Include(i => i.Szolgaltatas)
+                .Where(i => i.FodraszId == KivalasztottF!.ID && i.EsedekessegiIdopont.Date == nap.Date)
+                .ToListAsync();
+
+            var most = DateTime.Now;
+
+            while (kezdo2.Add(TimeSpan.FromMinutes(hosszPerc)) <= zaro2)
             {
-                ReggeliIdopontok.Clear();
-                DelutaniIdopontok.Clear();
-                EstiIdopontok.Clear();
-
-                var nap = DateTime.Today;
-                if(!string.IsNullOrWhiteSpace(NaptarDatum) && DateTime.TryParse(NaptarDatum, out var parsedDate ))
-                    nap=parsedDate.Date;
-
-                NaptarDatum = nap.ToString("yyyy-MM-dd");
-
-                var napUtc = DBDataTimeHelper.ToUtcDate(nap);
-                var munkaido = await _context.FodraszMunkaidok
-                    .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF.ID && m.Datum == napUtc);
-
-                if (munkaido == null)
-                    return;
-
-                var kezdo2 = munkaido.Kezdoido;
-                var zaro2 = munkaido.ZaroIdo;
-                var hosszPerc = KivalasztottSzolgaltatas.Idotartam;
-
-                var foglaltak = await _context.Idopontok
-                    .Include(i => i.Szolgaltatas)
-                    .Where(i => i.FodraszId == KivalasztottF.ID && i.EsedekessegiIdopont.Date == napUtc.Date)
-                    .ToListAsync();
-
-                while (kezdo2.Add(TimeSpan.FromMinutes(hosszPerc)) <= zaro2)
+                var slot = nap.Date + kezdo2;
+                if (slot < most)
                 {
-                    var slot = nap.Date + kezdo2;
-                    if (slot < most) { kezdo2 = kezdo2.Add(TimeSpan.FromMinutes(15)); continue; }
-                    var veg = slot.AddMinutes(hosszPerc);
-
-                    bool utkozik = foglaltak.Any(i =>
-                    {
-                        var iVeg = i.EsedekessegiIdopont.AddMinutes(i.Szolgaltatas.Idotartam);
-                        return i.EsedekessegiIdopont < veg && iVeg > slot;
-                    });
-
-                    if (!utkozik)
-                    {
-                        if (slot.Hour < 12)
-                            ReggeliIdopontok.Add(slot);
-                        else if (slot.Hour < 17)
-                            DelutaniIdopontok.Add(slot);
-                        else
-                            EstiIdopontok.Add(slot);
-                    }
-
                     kezdo2 = kezdo2.Add(TimeSpan.FromMinutes(15));
+                    continue;
                 }
+                var veg = slot.AddMinutes(hosszPerc);
+
+                bool utkozik = foglaltak.Any(i =>
+                {
+                    var iVeg = i.EsedekessegiIdopont.AddMinutes(i.Szolgaltatas.Idotartam);
+                    return i.EsedekessegiIdopont < veg && iVeg > slot;
+                });
+
+                if (!utkozik)
+                {
+                    if (slot.Hour < 12)
+                        ReggeliIdopontok.Add(slot);
+                    else if (slot.Hour < 17)
+                        DelutaniIdopontok.Add(slot);
+                    else
+                        EstiIdopontok.Add(slot);
+                }
+
+                kezdo2 = kezdo2.Add(TimeSpan.FromMinutes(15));
             }
         }
 
@@ -208,7 +218,7 @@ namespace barberShop.Pages
                 return Page();
             }
 
-            if (!SzolgaltatasId.HasValue ||!FodraszId.HasValue || string.IsNullOrWhiteSpace(FoglalasDatum) || string.IsNullOrWhiteSpace(FoglalasIdo))
+            if (!SzolgaltatasId.HasValue || !FodraszId.HasValue || string.IsNullOrWhiteSpace(FoglalasDatum) || string.IsNullOrWhiteSpace(FoglalasIdo))
             {
                 ModelState.AddModelError(string.Empty, "Hiányzó foglalaási adatok!");
                 return Page();
@@ -224,7 +234,7 @@ namespace barberShop.Pages
             var szolg = await _context.Szolgaltatasok.FindAsync(SzolgaltatasId.Value);
             var fodr = await _context.Fodraszok.FindAsync(FodraszId.Value);
 
-            if (szolg == null ||fodr==null)
+            if (szolg == null || fodr == null)
             {
                 ModelState.AddModelError(string.Empty, "Hibás adatok! 409");
                 return Page();
@@ -237,35 +247,30 @@ namespace barberShop.Pages
                 EsedekessegiIdopont = DBDataTimeHelper.ToUtc(kezdes),
                 FoglalasiIdopont = DBDataTimeHelper.ToUtc(DateTime.Now),
                 CustomerNeve = UgyfelNev,
-                CustomerEmail=UgyfelEmail,
-                CustomerPhone=UgyfelTelefon,
-                CustomerNotes= UgyfelMegjegyzes
+                CustomerEmail = UgyfelEmail,
+                CustomerPhone = UgyfelTelefon,
+                CustomerNotes = UgyfelMegjegyzes
             };
 
             _context.Idopontok.Add(idopont);
             await _context.SaveChangesAsync();
 
 
-            // e-mail
             var subject = "BestBarberShop - foglalás visszaigazolása";
             var body = $@"Kedves {UgyfelNev}!
 
 Foglalásodat sikeresen rögzítettük.
-
-Várunk szerettel a lentebb feltüntetett időpontra!
 
 Fodrász: {fodr.Nev}
 Szolgáltatás: {szolg.Nev}
 Időpont: {kezdes:yyyy.MM.dd HH:mm}
 
 Tengermély tisztelettel:
-BestBarberShop csapata";
+BestBarberShop";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
 
-            return RedirectToPage("/Index", new {section= "koszi" });
+            return RedirectToPage("/Index", new { section = "koszi" });
         }
-        //eddig és ne tovább
     }
-
 }
