@@ -173,5 +173,40 @@
 </div>
 
 <style>
+    .foglTabla {
+        border-collapse: separate;
+        border-spacing: 12px 8px;
+    }
+
     
+    .rejtett{
+        display:none;
+    }
+    .nyil {
+        transition: transform 0.4s ease;
+        display: inline-block;
+    }
 </style>
+<script>
+    document.querySelectorAll('.lenyitoGomb').forEach(function(gomb){
+         gomb.addEventListener('click', function(){
+             var rejtettSor= this.nextElementSibling;
+             var nyil=this.querySelector('.nyil');
+
+             if(rejtettSor && rejtettSor.classList.contains('rejtett')){
+                 if(rejtettSor.style.display === 'table-row'){
+                     rejtettSor.style.display = 'none';
+                     if(nyil){
+                         nyil.style.transform = 'rotate(0deg)';
+                     }
+                 }
+                 else{
+                     rejtettSor.style.display ='table-row';
+                     if(nyil){
+                         nyil.style.transform='rotate(180deg)';
+                     }
+                 }
+             }
+         });
+     });
+</script>
