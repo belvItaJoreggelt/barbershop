@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.UI.Services;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,13 @@ namespace barberShop.Pages
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
 
-        public IndexModel(AppDbContext context, IEmailKuldo emailKuldo)
+        public IndexModel(AppDbContext context,UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo)
         {
             _context = context;
+            _userManager = userManager;
             _emailKuldo = emailKuldo;
         }
 
@@ -65,21 +68,25 @@ namespace barberShop.Pages
         [BindProperty]
         public string? UgyfelMegjegyzes { get; set; }
 
+
+        
         public async Task OnGetAsync()
         {
             Szolgaltatasok = await _context.Szolgaltatasok.OrderBy(s => s.Sorszam).ThenBy(n => n.Nev).ToListAsync();
 
             if (!SzolgaltatasId.HasValue)
                 return;
-
             await LoadSzolgaltatasEsFodraszokAsync();
+
             if (KivalasztottSzolgaltatas == null)
                 return;
-
             SzamoldLegkorabbiSzabadSlotokat();
 
             if (Section == "osszesIdopont" && KivalasztottF != null)
                 await LoadNapraSzabadIdopontokAsync();
+
+            if (Section == "foglalas")
+                await FelhasznAdatokBetolt();
         }
 
         private async Task LoadSzolgaltatasEsFodraszokAsync()
@@ -271,6 +278,21 @@ BestBarberShop";
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
 
             return RedirectToPage("/Index", new { section = "koszi" });
+        }
+
+        public async Task FelhasznAdatokBetolt()
+        {
+            if (User.Identity?.IsAuthenticated == true)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user != null)
+                {
+                    UgyfelEmail = user.Email ?? "";
+                    UgyfelNev = user.Nev ?? "";
+                    UgyfelTelefon = user.PhoneNumber ?? "";
+                    
+                }
+            }
         }
     }
 }
