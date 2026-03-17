@@ -469,7 +469,7 @@
 
                 var dObj = new Date(calYear, calMonth, d);
                 if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
-                    cell.classList.add('bg-dark', 'text-white');
+                    cell.classList.add('naptarKivalasztott');
                 }
                 if (dObj.getTime() === today.getTime()) {
                     cell.classList.add('border-primary');
