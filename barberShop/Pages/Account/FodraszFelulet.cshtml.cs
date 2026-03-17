@@ -318,30 +318,35 @@ namespace barberShop.Pages.Account
                 return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim" });
 
             var datum = DateTime.Today;
-            if (!string.IsNullOrWhiteSpace(NaptarDatum) && DateTime.TryParse(NaptarDatum, out var parsed))
-                datum = parsed.Date;
-            var elozo = datum.AddDays(-1);
-
-            var datumUtc = DBDataTimeHelper.ToUtcDate(datum);
-            var elozoUtc = DBDataTimeHelper.ToUtcDate(elozo);
+            if(!string.IsNullOrWhiteSpace(NaptarDatum) &&DateTime.TryParse(NaptarDatum, out var parsed))
+                datum= parsed;
+            var datumUtc=DBDataTimeHelper.ToUtcDate(datum);
 
             var elozoMunkaido = await _context.FodraszMunkaidok
-                .FirstOrDefaultAsync(m => m.FodraszId == user.FodraszId && m.Datum == elozoUtc);
-            var elozoSzunetek = await _context.FodraszSzunetek
-                .Where(s => s.FodraszId == user.FodraszId && s.Datum == elozoUtc)
+                .Where(i => i.FodraszId == user.FodraszId && i.Datum < datumUtc)
+                .OrderByDescending(i => i.Datum)
+                .FirstOrDefaultAsync();
+            if (elozoMunkaido == null)
+            {
+                TempData["Info"] = "Ne, található előzőleg megadott munkaidő";
+                return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim", naptarDatum = datum.ToString("yyyy-MM-dd") });
+            }
+
+            var elozoUtc = elozoMunkaido.Datum;
+            var elozoSzunetek =await _context.FodraszSzunetek
+                .Where(sz => sz.FodraszId == user.FodraszId && sz.Datum == elozoUtc)
                 .ToListAsync();
 
-            if (elozoMunkaido != null)
+
+            var m = await _context.FodraszMunkaidok.FirstOrDefaultAsync(m => m.FodraszId == user.FodraszId && m.Datum == datumUtc);
+            if (m == null)
             {
-                var m = await _context.FodraszMunkaidok.FirstOrDefaultAsync(m => m.FodraszId == user.FodraszId && m.Datum == datumUtc);
-                if (m == null)
-                {
-                    m = new FodraszMunkaIdo { FodraszId = user.FodraszId.Value, Datum = datumUtc };
-                    _context.FodraszMunkaidok.Add(m);
-                }
-                m.Kezdoido = elozoMunkaido.Kezdoido;
-                m.ZaroIdo = elozoMunkaido.ZaroIdo;
+                m = new FodraszMunkaIdo { FodraszId = user.FodraszId.Value, Datum = datumUtc };
+                _context.FodraszMunkaidok.Add(m);
             }
+            m.Kezdoido = elozoMunkaido.Kezdoido;
+            m.ZaroIdo = elozoMunkaido.ZaroIdo;
+
             foreach (var s in elozoSzunetek)
             {
                 _context.FodraszSzunetek.Add(new FodraszSzunet
