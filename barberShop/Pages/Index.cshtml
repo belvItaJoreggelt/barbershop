@@ -294,13 +294,13 @@
         <div class="p-4">
             <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn egyGomb px-4">Vissza a fodrászokhoz </a>
 
-            <div class="mt-4">
+            <div class="mt-4 p-2 FoglHatter">
                 <p class="ezustFont">Fodrász: <span class="accentFont">@Model.KivalasztottF.Nev</span></p>
                 <p class="ezustFont">Szolgáltatás: <span class="accentFont">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
                 <p class="ezustFont">Ár: <span class="accentFont">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
                 <p class="ezustFont">Dátum: <span class="accentFont">@Model.FoglalasDatum </span><span class="ezustFont"> @Model.FoglalasIdo</span></p>
                 
-                <form method="post" asp-page-handler="Foglalas" class="FoglHatter">
+                <form method="post" asp-page-handler="Foglalas">
                     <input type="hidden" asp-for="FodraszId" />
                     <input type="hidden" asp-for="SzolgaltatasId" />
                     <input type="hidden" asp-for="FoglalasDatum" />
