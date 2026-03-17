@@ -108,7 +108,19 @@
         background-clip: text;
         color: transparent;
     }
-    
+    .table td,
+    .table th {
+        background: #0F3460 !important;
+        color: #eeeeee !important;
+    }
+    .table {
+        border-color: var(--accent-color) !important;
+    }
+    .table-hover tbody tr:hover td,
+    .table-hover tbody tr:hover th {
+        background: #164d8f !important;
+        color: white !important;
+    }
     
 
 
@@ -140,6 +152,22 @@
     [data-theme="barna"] .szolgKep::after{
         background: linear-gradient(to right, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.85) 25%, rgba(255, 255, 255, 0.5) 60%, transparent 100%);
     }
+
+    [data-theme="barna"] .table td,
+[data-theme="barna"] .table th {
+    background: #7A4A2A !important;
+    color: #f5f0e6 !important;
+}
+[data-theme="barna"] .table {
+    border-color: #7A4A2A !important;
+}
+[data-theme="barna"] .table-hover tbody tr:hover td,
+[data-theme="barna"] .table-hover tbody tr:hover th {
+    background: #8a5a3a !important;
+    color: white !important;
+}
+
+
 
 
 
@@ -191,6 +219,25 @@
     [data-theme="arany"] .privacyFont{
         color: white;
     }
+
+    [data-theme="arany"] .table td,
+[data-theme="arany"] .table th {
+    background: black !important;
+    color: #eeeeee !important;
+}
+[data-theme="arany"] .table {
+    border-color: #D4AF37 !important;
+}
+[data-theme="arany"] .table-hover tbody tr:hover td,
+[data-theme="arany"] .table-hover tbody tr:hover th {
+    background: #1a1a1a !important;
+    color: #D4AF37 !important;
+}
+
+
+
+
+
 
 
     body {
