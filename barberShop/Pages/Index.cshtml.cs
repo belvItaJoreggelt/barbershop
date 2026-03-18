@@ -162,9 +162,10 @@ namespace barberShop.Pages
                 nap = parsedDate.Date;
 
             NaptarDatum = nap.ToString("yyyy-MM-dd");
+            var napUtc = DBDataTimeHelper.ToUtcDate(nap);
 
             var munkaido = await _context.FodraszMunkaidok
-                .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF!.ID && m.Datum.Date == nap.Date);
+                .FirstOrDefaultAsync(m => m.FodraszId == KivalasztottF!.ID && m.Datum.Date == napUtc.Date);
 
             if (munkaido == null)
                 return;
@@ -175,7 +176,7 @@ namespace barberShop.Pages
 
             var foglaltak = await _context.Idopontok
                 .Include(i => i.Szolgaltatas)
-                .Where(i => i.FodraszId == KivalasztottF!.ID && i.EsedekessegiIdopont.Date == nap.Date)
+                .Where(i => i.FodraszId == KivalasztottF!.ID && i.EsedekessegiIdopont.Date == napUtc.Date)
                 .ToListAsync();
 
             var most = DateTime.Now;
@@ -190,10 +191,13 @@ namespace barberShop.Pages
                 }
                 var veg = slot.AddMinutes(hosszPerc);
 
+                var slotUtc = DBDataTimeHelper.ToUtc(slot);
+                var vegUtc = DBDataTimeHelper.ToUtc(veg);
+
                 bool utkozik = foglaltak.Any(i =>
                 {
                     var iVeg = i.EsedekessegiIdopont.AddMinutes(i.Szolgaltatas.Idotartam);
-                    return i.EsedekessegiIdopont < veg && iVeg > slot;
+                    return i.EsedekessegiIdopont < vegUtc && iVeg > slotUtc;
                 });
 
                 if (!utkozik)
