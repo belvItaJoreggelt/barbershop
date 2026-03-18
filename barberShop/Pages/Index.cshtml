@@ -296,7 +296,8 @@
 
             <div class="mt-4 p-2 FoglHatter">
                 <p class="ezustFont">Fodrász: <span class="accentFont fw-bold">@Model.KivalasztottF.Nev</span></p>
-                <p class="ezustFont">Szolgáltatás: <span class="accentFont fw-bold">@Model.KivalasztottSzolgaltatas.Nev - @($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
+                <p class="ezustFont">Szolgáltatás: <span class="accentFont fw-bold">@Model.KivalasztottSzolgaltatas.Nev</span></p>
+                <p class="ezustFont">Idő: <span class="accentFont fw-bold">@($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
                 <p class="ezustFont">Ár: <span class="accentFont fw-bold">@Model.KivalasztottSzolgaltatas.Ar.ToString("N0") Ft</span></p>
                 <p class="ezustFont">Dátum: <span class="accentFont fw-bold">@Model.FoglalasDatum </span><span class="ezustFont fw-bold"> @Model.FoglalasIdo</span></p>
                 
