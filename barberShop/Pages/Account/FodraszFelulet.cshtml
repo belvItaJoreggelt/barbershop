@@ -64,7 +64,7 @@
         else
         {
             <div class="card egyszolgaltatas szolg-kartya">
-                <div class="card-header accentFont">Profilomhoz tartozó adatok</div>
+                <div class="card-header accentFont fw-bold">Profilomhoz tartozó adatok</div>
                 <div class="card-body">
                     <form method="post" asp-page-handler="SaveAdataim">
                         <div class="row g-3">
@@ -182,7 +182,7 @@
                     </p>
 
                     <div class="card mb-3 szolg-kartya fodrMunkIdo">
-                        <div class="card-header fst-italic accentFont">Munkaidő és szünet/szünetek megadása</div>
+                        <div class="card-header fst-italic accentFont fw-bold">Munkaidő és szünet/szünetek megadása</div>
                         <div class="card-body">
 
                             @* Munkaidő *@
@@ -265,7 +265,7 @@
 
             <div class="d-flex gap-4 flex-column">
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header accentFont">Mai</div>
+                    <div class="card-header accentFont fw-bold">Mai</div>
                     <div class="card-body">
                         @if (Model.MaiFoglalasok.Any())
                         {
@@ -274,7 +274,7 @@
                                     @foreach (var ip in Model.MaiFoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
                                             <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
@@ -301,7 +301,7 @@
                 </div>
 
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header accentFont">Jövőbeli</div>
+                    <div class="card-header accentFont fw-bold">Jövőbeli</div>
                     <div class="card-body">
                         @if (Model.JovobeliFoglalasok.Any())
                         {
@@ -310,7 +310,7 @@
                                     @foreach (var ip in Model.JovobeliFoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
                                             <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">
@@ -337,7 +337,7 @@
                 </div>
 
                 <div class="card egyszolgaltatas szolg-kartya">
-                    <div class="card-header accentFont">Megtörtént</div>
+                    <div class="card-header accentFont fw-bold">Megtörtént</div>
                     <div class="card-body">
                         @if (Model.Regifoglalasok.Any())
                         {
@@ -346,7 +346,7 @@
                                     @foreach (var ip in Model.Regifoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center ezustFont">@ip.CustomerNeve</td>
                                             <td class="text-center" style="color:#D4AF37; font-size:1.2rem;">
