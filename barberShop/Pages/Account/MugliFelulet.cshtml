@@ -14,7 +14,7 @@
         <div class="row gap-4">
             <div class="col-md-4">
                 <div class="card h-100 egyszolgaltatas szolg-kartya">
-                    <div class="card-header accentFont">Adataim</div>
+                    <div class="card-header accentFont fw-bold">Adataim</div>
                     <div class="card-body d-flex flex-column flex-grow-1">
                         <p class="ezustFont">a profilodhoz tartozó adatok megtekintése és szerkesztése</p>
                         <div class="mt-auto ms-auto">
@@ -26,7 +26,7 @@
 
             <div class="col-md-4">
                 <div class="card h-100 egyszolgaltatas szolg-kartya">
-                    <div class="card-header accentFont">Foglalásaim</div>
+                    <div class="card-header accentFont fw-bold">Foglalásaim</div>
                     <div class="card-body d-flex flex-column flex-grow-1">
                         <p class="ezustFont">foglalásaid megtekintése és lemondása</p>
                         <div class="mt-auto ms-auto">
@@ -48,7 +48,7 @@
         }
         <div class="row gap-3">
             <div class="col-md-6 card egyszolgaltatas szolg-kartya">
-                <div class="card-header accentFont">Bejelentkezési adataim</div>
+                <div class="card-header accentFont fw-bold">Bejelentkezési adataim</div>
                 <div class="card-body d-flex flex-grow-1">
                     <form class="w-100 d-flex flex-column" asp-page-handler="SaveBejelentkezesi">
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
@@ -61,14 +61,14 @@
                             <input class="form-control" asp-for="EditPassword"/>
                         </div>
                         <div class="mt-auto ms-auto">
-                            <button class="btn egyGomb">mentés</button>
+                            <button class="btn egyGomb accentFont fw-bold">mentés</button>
                         </div>
                     </form>
                 </div>
             </div>
 
             <div class="col-md-6 card egyszolgaltatas szolg-kartya">
-                <div class="card-header accentFont">Egyéb adataim</div>
+                <div class="card-header accentFont fw-bold">Egyéb adataim</div>
                 <div class="card-body d-flex flex-grow-1">
                     <form class="w-100 d-flex flex-column" asp-page-handler="SaveEgyebAdataim">
                         <div asp-validation-summary="All" class="text-danger mb-3"></div>
@@ -96,7 +96,7 @@
 
         <div class="row gap-3">
             <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
-                <div class="card-header accentFont">Mai foglalások</div>
+                <div class="card-header accentFont fw-bold">Mai foglalások</div>
                 <div class="card-body">
                     
                     @if (Model.Mai_Foglalasaim.Any())
@@ -106,17 +106,17 @@
                                 @foreach (var idopont in Model.Mai_Foglalasaim)
                                 {
                                     <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                        <td class="text-center accentFont">@idopont.EsedekessegiIdopont.ToString("HH:mm")</td>
-                                        <td class="text-center accentFont">@idopont.Szolgaltatas?.Nev</td>
+                                        <td class="text-center accentFont fw-bold text-nowrap">@idopont.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                        <td class="text-center accentFont fw-bold">@idopont.Szolgaltatas?.Nev</td>
                                         <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
                                             <span class="nyil">▼</span>
                                         </td>
                                     </tr>
                                     <tr class="rejtett">
                                         <td colspan="4" class="p-3">
-                                            <span class="ezustFont d-block">Fodrász: <span class="accentFont">@idopont.Fodrasz?.Nev</span></span>
-                                            <span class="ezustFont d-block">Idő: <span class="accentFont">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
-                                            <span class="ezustFont d-block">Ár: <span class="accentFont">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
+                                            <span class="ezustFont d-block">Fodrász: <span class="accentFont fw-bold">@idopont.Fodrasz?.Nev</span></span>
+                                            <span class="ezustFont d-block">Idő: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
+                                            <span class="ezustFont d-block">Ár: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
                                             <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
                                         </td>
                                     </tr>
@@ -126,14 +126,14 @@
                     }
                     else
                     {
-                        <p class="ezustFont">Nincsen foglalásod a mai napra.</p>
+                        <p class="ezustFont fw-bold">Nincsen foglalásod a mai napra.</p>
                     }
                 </div>
             </div>
 
 
             <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
-                <div class="card-header accentFont">Mai foglalások</div>
+                <div class="card-header accentFont fw-bold">További foglalások</div>
                 <div class="card-body">
                     
                     @if (Model.Egyeb_Foglalasaim.Any())
@@ -143,17 +143,17 @@
                                 @foreach (var idopont in Model.Egyeb_Foglalasaim)
                                 {
                                     <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                        <td class="text-center accentFont">@idopont.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
-                                        <td class="text-center accentFont">@idopont.Szolgaltatas?.Nev</td>
+                                        <td class="text-center accentFont fw-bold text-nowrap">@idopont.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
+                                        <td class="text-center accentFont fw-bold">@idopont.Szolgaltatas?.Nev</td>
                                         <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
                                             <span class="nyil">▼</span>
                                         </td>
                                     </tr>
                                     <tr class="rejtett">
                                         <td colspan="4" class="p-3">
-                                            <span class="ezustFont d-block">Fodrász: <span class="accentFont">@idopont.Fodrasz?.Nev</span></span>
-                                            <span class="ezustFont d-block">Idő: <span class="accentFont">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
-                                            <span class="ezustFont d-block">Ár: <span class="accentFont">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
+                                            <span class="ezustFont d-block">Fodrász: <span class="accentFont fw-bold">@idopont.Fodrasz?.Nev</span></span>
+                                            <span class="ezustFont d-block">Idő: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
+                                            <span class="ezustFont d-block">Ár: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
                                             <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
                                         </td>
                                     </tr>
@@ -163,7 +163,7 @@
                     }
                     else
                     {
-                        <p class="ezustFont">Nincsenek további foglalásaid.</p>
+                        <p class="ezustFont fw-bold">Nincsenek további foglalásaid.</p>
                     }
                 </div>
             </div>
