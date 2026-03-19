@@ -12,7 +12,7 @@
         @foreach (var szolg in Model.Szolgaltatasok)
         {
             <div class="row egyszolgaltatas szolgLayout shadow-sm mb-3 py-1 px-0 px-md-3 mx-lg-3 py-sm-0 overflow-hidden szolg-kartya"
-                style="animation-delay: @(index * 0.750)s;">
+                style="animation-delay: @(index * 0.950)s;">
 
                 <div class="col-md-5 col-lg-4 position-relative overflow-hidden szolgKep_Nagy" style="min-height: 200px; background: transparent;">
                     @if (!string.IsNullOrEmpty(szolg.KepFajlNeve) || !string.IsNullOrEmpty(szolg.KepFajlNev_Vilagos))
@@ -108,7 +108,7 @@
                     var legkorabbi = Model.FodraszLegkorabbiSzabadIdopontok.GetValueOrDefault(fodrasz.ID);
 
                     <div class="row egyszolgaltatas shadow-sm mb-3 p-0 overflow-hidden szolg-kartya"
-                         style="animation-delay: @(fodraszIndex * 0.40)s;">
+                         style="animation-delay: @(fodraszIndex * 0.90)s;">
 
                         <div class="col-md-5 col-lg-4 py-3 d-flex align-items-center justify-content-center">
                             @if (!string.IsNullOrEmpty(fodrasz.ProfilkepFajlNeve))
