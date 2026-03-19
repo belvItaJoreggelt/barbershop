@@ -403,10 +403,17 @@
             });
         });
         try {
-            var mentett = localStorage.getItem('tema');
-            if (mentett && mentett !== 'kek') {
+        var mentett = localStorage.getItem('tema');
+        if (mentett) {
+            if (mentett === 'kek') {
+                document.documentElement.removeAttribute('data-theme');
+            } else {
                 document.documentElement.setAttribute('data-theme', mentett);
             }
-        } catch(x) {}
+        } else {
+            /* nincs mentve semmi → barna alapból */
+            document.documentElement.setAttribute('data-theme', 'barna');
+        }
+    } catch(x) {}
     })();
 </script>
