@@ -107,7 +107,7 @@
                                 {
                                     <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
                                         <td class="text-center accentFont fw-bold text-nowrap">@idopont.EsedekessegiIdopont.ToString("HH:mm")</td>
-                                        <td class="text-center accentFont fw-bold">@idopont.Szolgaltatas?.Nev</td>
+                                        <td class="text-center ezustFont">@idopont.Szolgaltatas?.Nev</td>
                                         <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
                                             <span class="nyil">▼</span>
                                         </td>
@@ -152,7 +152,7 @@
                                     <tr class="rejtett">
                                         <td colspan="4" class="p-3">
                                             <span class="ezustFont d-block">Fodrász: <span class="accentFont fw-bold">@idopont.Fodrasz?.Nev</span></span>
-                                            <span class="ezustFont d-block">Idő: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
+                                            <span class="ezustFont d-block">Idő: <span class="ezustFont">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
                                             <span class="ezustFont d-block">Ár: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
                                             <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
                                         </td>
