@@ -1,8 +1,0 @@
-@page
-@model OneSignalSdkModel
-@{
-    Layout = null;
-    Response.ContentType = "application/javascript";
-    Response.Headers["Cache-Control"] = "public, max-age=86400";
-}
-@Html.Raw(Model.ScriptContent)

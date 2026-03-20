@@ -8,9 +8,6 @@ var builder = WebApplication.CreateBuilder(args);
 /*builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
-// OneSignal konfiguráció
-builder.Services.Configure<OneSignalSettings>(builder.Configuration.GetSection("OneSignal"));
-builder.Services.AddHttpClient<IOneSignalService, OneSignalService>();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

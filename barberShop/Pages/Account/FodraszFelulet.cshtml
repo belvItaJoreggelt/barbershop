@@ -102,9 +102,6 @@
                                     }
                                 </div>
                             </div>
-                           <div class="col-12 mt-3">
-                                <button type="button" class="btn btn-sm egyGomb" id="pushEnableBtn">Push értesítések bekapcsolása</button>
-                            </div>
                             <div class="col-12 mt-3">
                                 <button type="submit" class="btn speckoGomb">mentés</button>
                             </div>
@@ -419,37 +416,6 @@
     }
 
 </style>
-<script src="/OneSignalSdk" defer></script>
-<script>
-    (function() {
-        var oneSignalReady = null;
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function(OneSignal) {
-            oneSignalReady = OneSignal;
-            try {
-                await OneSignal.init({ appId: "bd34ce5d-b78d-4a66-a98e-98c3bcd252ea" });
-                @if (Model.FodraszProfil != null)
-                {
-                    @:try { await OneSignal.login("fodrasz_@(Model.FodraszProfil.ID)"); } catch(e) {}
-                }
-            } catch (e) {
-                console.error("OneSignal init:", e);
-            }
-        });
-        document.addEventListener('click', function(e) {
-            var btn = e.target.closest && e.target.closest('#pushEnableBtn');
-            if (!btn) return;
-            e.preventDefault();
-            if (oneSignalReady) {
-                oneSignalReady.Notifications.requestPermission().catch(function(err) {
-                    alert("Hiba: " + (err.message || err));
-                });
-            } else {
-                alert("Az OneSignal nem töltődött be (reklámblockoló, tűzfal?). Próbáld: 1) inkognitó mód 2) wifi helyett mobilnet 3) másik böngésző");
-            }
-        });
-    })();
-</script>
 <script>
     (function () {
         if (!document.getElementById('calendarBody')) return;
