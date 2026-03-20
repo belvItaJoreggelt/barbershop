@@ -1,0 +1,13 @@
+{
+  "name": "BestBarberShop",
+  "short_name": "BestBarber",
+  "display": "standalone",
+  "start_url": "/",
+  "theme_color": "#0F3460",
+  "background_color": "#ffffff",
+  "icons": [
+    { "src": "/kepek/backgrounds/logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/kepek/backgrounds/logo.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "id": "/?homescreen=1"
+}

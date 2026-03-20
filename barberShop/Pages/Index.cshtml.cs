@@ -13,12 +13,14 @@ namespace barberShop.Pages
         private readonly AppDbContext _context;
         private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
+        private readonly IOneSignalService _oneSignal;
 
-        public IndexModel(AppDbContext context,UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo)
+        public IndexModel(AppDbContext context,UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo, IOneSignalService oneSignal)
         {
             _context = context;
             _userManager = userManager;
             _emailKuldo = emailKuldo;
+            _oneSignal = oneSignal;
         }
 
 
@@ -281,6 +283,7 @@ BestBarberShop";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
 
+            await _oneSignal.SendPushToBarberAsync(fodr.ID, "Új foglalás", $"{kezdes:yyyy.MM.dd HH:mm} - {UgyfelNev} – {szolg.Nev}");
             return RedirectToPage("/Index", new { section = "koszi" });
         }
 

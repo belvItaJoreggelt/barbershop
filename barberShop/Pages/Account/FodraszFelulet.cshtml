@@ -102,8 +102,11 @@
                                     }
                                 </div>
                             </div>
+                           <div class="col-12 mt-3">
+                                <button type="button" class="btn btn-sm egyGomb" id="pushEnableBtn">Push értesítések bekapcsolása</button>
+                            </div>
                             <div class="col-12 mt-3">
-                                <button type="submit" class="btn egyGomb">mentés</button>
+                                <button type="submit" class="btn speckoGomb">mentés</button>
                             </div>
                         </div>
                     </form>
@@ -416,17 +419,32 @@
     }
 
 </style>
-
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
-   
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({
+            appId: "bd34ce5d-b78d-4a66-a98e-98c3bcd252ea",
+        });
+        @if (Model.FodraszProfil != null)
+        {
+            @:await OneSignal.login("fodrasz_@(Model.FodraszProfil.ID)");
+        }
+        var btn = document.getElementById('pushEnableBtn');
+        if (btn) {
+            btn.addEventListener('click', async function() {
+                await OneSignal.Notifications.requestPermission();
+            });
+        }
+    });
+</script>
+<script>
     (function () {
         if (!document.getElementById('calendarBody')) return;
         var calYear = @DateTime.Now.Year;
         var calMonth = @(DateTime.Now.Month - 1);
         var selectedDate = null;
         var monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
-
-        // Kezdő dátum beállítása a Model.NaptarDatum alapján (ha van)
         var initialDate = '@Model.NaptarDatum';
         if (initialDate) {
             var p = initialDate.split('-');
@@ -436,7 +454,6 @@
                 selectedDate = new Date(calYear, calMonth, parseInt(p[2], 10));
             }
         }
-
         function render() {
             var first = new Date(calYear, calMonth, 1);
             var last = new Date(calYear, calMonth + 1, 0);
@@ -444,19 +461,16 @@
             var days = last.getDate();
             var today = new Date();
             today.setHours(0, 0, 0, 0);
-
             document.getElementById('calendarMonthYear').textContent = calYear + '. ' + monthNames[calMonth];
             var tbody = document.getElementById('calendarBody');
             tbody.innerHTML = '';
             var row = document.createElement('tr');
-
             for (var i = 0; i < startPad; i++) {
                 var cell = document.createElement('td');
                 cell.className = 'text-muted';
                 cell.textContent = '';
                 row.appendChild(cell);
             }
-
             for (var d = 1; d <= days; d++) {
                 if (row.children.length === 7) {
                     tbody.appendChild(row);
@@ -466,24 +480,16 @@
                 cell.className = 'text-center';
                 cell.style.cursor = 'pointer';
                 cell.textContent = d;
-
                 var dObj = new Date(calYear, calMonth, d);
-                if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
-                    cell.classList.add('naptarKivalasztott');
-                }
-                if (dObj.getTime() === today.getTime()) {
-                    cell.classList.add('border-primary');
-                }
-
+                if (selectedDate && selectedDate.getTime() === dObj.getTime()) cell.classList.add('naptarKivalasztott');
+                if (dObj.getTime() === today.getTime()) cell.classList.add('border-primary');
                 cell.addEventListener('click', function () {
                     var day = parseInt(this.textContent, 10);
                     var dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
                     window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
                 });
-
                 row.appendChild(cell);
             }
-
             while (row.children.length > 0 && row.children.length < 7) {
                 var emptyCell = document.createElement('td');
                 emptyCell.className = 'text-muted';
@@ -491,49 +497,37 @@
             }
             if (row.children.length) tbody.appendChild(row);
         }
-
         document.getElementById('calPrev').addEventListener('click', function () {
             calMonth--;
             if (calMonth < 0) { calMonth = 11; calYear--; }
             render();
         });
-
         document.getElementById('calNext').addEventListener('click', function () {
             calMonth++;
             if (calMonth > 11) { calMonth = 0; calYear++; }
             render();
         });
-
         document.getElementById('calToday').addEventListener('click', function () {
             var t = new Date();
             var dateStr = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
             window.location = '?section=idopontjaim&naptarDatum=' + dateStr;
         });
-
         render();
     })();
 
-     document.querySelectorAll('.lenyitoGomb').forEach(function(gomb){
-         gomb.addEventListener('click', function(){
-             var rejtettSor= this.nextElementSibling;
-             var nyil=this.querySelector('.nyil');
-
-             if(rejtettSor && rejtettSor.classList.contains('rejtett')){
-                 if(rejtettSor.style.display === 'table-row'){
-                     rejtettSor.style.display = 'none';
-                     if(nyil){
-                         nyil.style.transform = 'rotate(0deg)';
-                     }
-                 }
-                 else{
-                     rejtettSor.style.display ='table-row';
-                     if(nyil){
-                         nyil.style.transform='rotate(180deg)';
-                     }
-                 }
-             }
-         });
-     });
-
-
+    document.querySelectorAll('.lenyitoGomb').forEach(function(gomb){
+        gomb.addEventListener('click', function(){
+            var rejtettSor = this.nextElementSibling;
+            var nyil = this.querySelector('.nyil');
+            if(rejtettSor && rejtettSor.classList.contains('rejtett')){
+                if(rejtettSor.style.display === 'table-row'){
+                    rejtettSor.style.display = 'none';
+                    if(nyil) nyil.style.transform = 'rotate(0deg)';
+                } else {
+                    rejtettSor.style.display = 'table-row';
+                    if(nyil) nyil.style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+    });
 </script>
