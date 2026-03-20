@@ -419,19 +419,19 @@
     }
 
 </style>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="/OneSignalSdk" defer></script>
 <script>
     (function() {
         var oneSignalReady = null;
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function(OneSignal) {
+            oneSignalReady = OneSignal;
             try {
                 await OneSignal.init({ appId: "bd34ce5d-b78d-4a66-a98e-98c3bcd252ea" });
                 @if (Model.FodraszProfil != null)
                 {
                     @:try { await OneSignal.login("fodrasz_@(Model.FodraszProfil.ID)"); } catch(e) {}
                 }
-                oneSignalReady = OneSignal;
             } catch (e) {
                 console.error("OneSignal init:", e);
             }
@@ -445,7 +445,7 @@
                     alert("Hiba: " + (err.message || err));
                 });
             } else {
-                alert("Az értesítés szolgáltatás még betölt. Várj 5 másodpercet és kattints újra.");
+                alert("Az OneSignal nem töltődött be (reklámblockoló, tűzfal?). Próbáld: 1) inkognitó mód 2) wifi helyett mobilnet 3) másik böngésző");
             }
         });
     })();
