@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model barberShop.Pages.Account.FodraszFeluletModel
 @{
     ViewData["Title"] = "Fodrász adminfelület";
@@ -423,17 +423,30 @@
 <script>
     window.OneSignalDeferred = window.OneSignalDeferred || [];
     OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-            appId: "bd34ce5d-b78d-4a66-a98e-98c3bcd252ea",
-        });
-        @if (Model.FodraszProfil != null)
-        {
-            @:await OneSignal.login("fodrasz_@(Model.FodraszProfil.ID)");
+        try {
+            await OneSignal.init({
+                appId: "bd34ce5d-b78d-4a66-a98e-98c3bcd252ea",
+            });
+            @if (Model.FodraszProfil != null)
+            {
+                @:try { await OneSignal.login("fodrasz_@(Model.FodraszProfil.ID)"); } catch (e) { console.log("OneSignal login:", e); }
+            }
+        } catch (e) {
+            console.error("OneSignal init hiba:", e);
         }
         var btn = document.getElementById('pushEnableBtn');
         if (btn) {
             btn.addEventListener('click', async function() {
-                await OneSignal.Notifications.requestPermission();
+                try {
+                    if (typeof OneSignal !== 'undefined' && OneSignal.Notifications) {
+                        await OneSignal.Notifications.requestPermission();
+                    } else if (typeof OneSignal !== 'undefined' && OneSignal.Slidedown) {
+                        await OneSignal.Slidedown.promptPush();
+                    }
+                } catch (err) {
+                    console.error("Push engedély hiba:", err);
+                    alert("Nem sikerült megjeleníteni az értesítés engedélyt. Próbáld kezdőképernyőről (iPhone), vagy másik böngészővel.");
+                }
             });
         }
     });
