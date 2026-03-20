@@ -56,9 +56,9 @@
                                 Itt tudsz feliratkozni az új foglalásokról érkező push értesítésekre.
                             </p>
 
-                            <div class="mt-auto">
-                                <div class="onesignal-customlink-container"></div>
-                            </div>
+                           <button id="onesignal-subscribe-btn" class="btn egyGomb">
+                                Push értesítések bekapcsolása
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -522,6 +522,25 @@
                     rejtettSor.style.display = 'table-row';
                     if(nyil) nyil.style.transform = 'rotate(180deg)';
                 }
+            }
+        });
+    });
+
+    document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
+        window.OneSignalDeferred = window.OneSignalDeferred || [];
+        OneSignalDeferred.push(async function (OneSignal) {
+            try {
+                const permission = await OneSignal.Notifications.requestPermission();
+
+                console.log("Permission:", permission);
+
+                if (permission) {
+                    console.log("Push engedélyezve");
+                } else {
+                    console.log("Push elutasítva");
+                }
+            } catch (e) {
+                console.error("Push hiba:", e);
             }
         });
     });
