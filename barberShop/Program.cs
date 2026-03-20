@@ -8,6 +8,11 @@ var builder = WebApplication.CreateBuilder(args);
 /*builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
+builder.Services.Configure<OneSignalOptions>(
+    builder.Configuration.GetSection("OneSignal"));
+
+builder.Services.AddHttpClient<IPushNotificationService, OneSignalPushNotificationService>();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 

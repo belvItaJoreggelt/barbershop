@@ -13,11 +13,13 @@ namespace barberShop.Pages
         private readonly AppDbContext _context;
         private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
-        public IndexModel(AppDbContext context,UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo)
+        private readonly IPushNotificationService _pushNotificationService;
+        public IndexModel(AppDbContext context,UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo, IPushNotificationService pushNotificationService)
         {
             _context = context;
             _userManager = userManager;
             _emailKuldo = emailKuldo;
+            _pushNotificationService = pushNotificationService;
         }
 
 
@@ -279,6 +281,23 @@ Tengermély tisztelettel:
 BestBarberShop";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
+
+            var barberExternalId = $"fodrasz-{fodr.ID}";
+
+            try
+            {
+                await _pushNotificationService.SendBookingToBarberAsync(
+                    barberExternalId,
+                    fodr.Nev,
+                    UgyfelNev,
+                    szolg.Nev,
+                    idopont.EsedekessegiIdopont
+                );
+            }
+            catch
+            {
+                // itt később lehet logolni, de a foglalást ne akadályozza meg
+            }
 
             return RedirectToPage("/Index", new { section = "koszi" });
         }

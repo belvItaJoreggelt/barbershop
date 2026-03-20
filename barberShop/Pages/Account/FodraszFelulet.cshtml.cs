@@ -71,6 +71,12 @@ namespace barberShop.Pages.Account
             public List<Idopont> Regifoglalasok { get; set; } = new();
 
         #endregion
+
+        #region PushErtesitesek
+        public string? OneSignalExternalId { get; set; }
+        public bool IsFodraszPushAllowed { get; set; }
+        #endregion
+
         public async Task<IActionResult> OnGetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -79,6 +85,9 @@ namespace barberShop.Pages.Account
                 FodraszProfil = null;
                 return Page();
             }
+
+            IsFodraszPushAllowed = true;
+            OneSignalExternalId = $"fodrasz-{user.FodraszId.Value}";
 
             FodraszProfil = await _context.Fodraszok
                 .Include(sz => sz.VallaltSzolgaltatasok)
