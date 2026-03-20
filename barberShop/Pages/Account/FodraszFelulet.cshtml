@@ -527,23 +527,25 @@
     });
 
     document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function (OneSignal) {
-            try {
-                const permission = await OneSignal.Notifications.requestPermission();
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function (OneSignal) {
+        try {
+            await OneSignal.login("@Model.OneSignalExternalId");
 
-                console.log("Permission:", permission);
+            const permission = await OneSignal.Notifications.requestPermission();
 
-                if (permission) {
-                    console.log("Push engedélyezve");
-                } else {
-                    console.log("Push elutasítva");
-                }
-            } catch (e) {
-                console.error("Push hiba:", e);
+            console.log("Permission:", permission);
+
+            if (permission) {
+                console.log("Push engedélyezve");
+            } else {
+                console.log("Push elutasítva");
             }
-        });
+        } catch (e) {
+            console.error("Push hiba:", e);
+        }
     });
+});
 </script>
 @if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
 {
