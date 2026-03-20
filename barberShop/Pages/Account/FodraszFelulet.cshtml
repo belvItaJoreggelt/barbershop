@@ -547,7 +547,7 @@
     });
 });
 </script>
-@if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
+@if (string.IsNullOrEmpty(Model.Section) && Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
 {
     <script>
         console.log("Push engedélyezve ehhez a fodrászhoz:", "@Model.OneSignalExternalId");
@@ -560,6 +560,27 @@
             } catch (e) {
                 console.error("OneSignal login hiba:", e);
             }
+        });
+
+        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function (OneSignal) {
+                try {
+                    await OneSignal.login("@Model.OneSignalExternalId");
+
+                    const permission = await OneSignal.Notifications.requestPermission();
+
+                    console.log("Permission:", permission);
+
+                    if (permission) {
+                        console.log("Push engedélyezve");
+                    } else {
+                        console.log("Push elutasítva");
+                    }
+                } catch (e) {
+                    console.error("Push hiba:", e);
+                }
+            });
         });
     </script>
 }
