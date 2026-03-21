@@ -281,24 +281,24 @@ Tengermély tisztelettel:
 BestBarberShop";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
+            /*
+           var barberExternalId = $"fodrasz-{fodr.ID}";
 
-            var barberExternalId = $"fodrasz-{fodr.ID}";
-
-            try
-            {
-                await _pushNotificationService.SendBookingToBarberAsync(
-                    barberExternalId,
-                    fodr.Nev,
-                    UgyfelNev,
-                    szolg.Nev,
-                    idopont.EsedekessegiIdopont
-                );
-            }
-            catch
-            {
-                // itt később lehet logolni, de a foglalást ne akadályozza meg
-            }
-
+           try
+           {
+               await _pushNotificationService.SendBookingToBarberAsync(
+                   barberExternalId,
+                   fodr.Nev,
+                   UgyfelNev,
+                   szolg.Nev,
+                   idopont.EsedekessegiIdopont
+               );
+           }
+           catch
+           {
+               // itt később lehet logolni, de a foglalást ne akadályozza meg
+           }
+           */
             return RedirectToPage("/Index", new { section = "koszi" });
         }
 

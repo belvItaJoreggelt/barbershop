@@ -46,7 +46,7 @@
                     </div>
                 </div>
             </div>
-            @if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
+            @*@if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
             {
                 <div class="col-md-4">
                     <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
@@ -62,7 +62,7 @@
                         </div>
                     </div>
                 </div>
-            }
+            }*@
         </div>
     }
     else if (Model.Section == "adataim")
@@ -542,20 +542,15 @@
             }
         });
 
-        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", async function () {
-            console.log("[Push] Gomb kattintva");
+        // Safari: requestPermission() AZONNAL kell, user gesture kontextusban – ne OneSignalDeferred!
+        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
             const OneSignal = window._oneSignalInstance;
             if (!OneSignal) {
-                console.error("[Push] OneSignal nincs inicializálva!");
+                console.warn("OneSignal még nincs betöltve. Frissítsd az oldalt és próbáld újra.");
                 return;
             }
-            try {
-                console.log("[Push] requestPermission hívás...");
-                const result = await OneSignal.Notifications.requestPermission();
-                console.log("[Push] Permission eredmény:", result);
-            } catch (e) {
-                console.error("[Push] Hiba:", e);
-            }
+            OneSignal.Notifications.requestPermission();  // Nincs await – Safari miatt
+            OneSignal.login("@Model.OneSignalExternalId").catch(function(e) { console.error("OneSignal login hiba:", e); });
         });
     </script>
 }
