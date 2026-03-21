@@ -542,15 +542,18 @@
             }
         });
 
-        // Safari: requestPermission() AZONNAL kell, user gesture kontextusban – ne OneSignalDeferred!
-        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
+        // Safari: requestPermission user gesture-ben
+        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", async function () {
             const OneSignal = window._oneSignalInstance;
             if (!OneSignal) {
-                console.warn("OneSignal még nincs betöltve. Frissítsd az oldalt és próbáld újra.");
+                console.warn("OneSignal még nincs betöltve. Várj 2-3 mp-et, majd próbáld újra.");
                 return;
             }
-            OneSignal.Notifications.requestPermission();  // Nincs await – Safari miatt
-            OneSignal.login("@Model.OneSignalExternalId").catch(function(e) { console.error("OneSignal login hiba:", e); });
+            try {
+                await OneSignal.Notifications.requestPermission();
+            } catch (e) {
+                console.error("Push hiba:", e);
+            }
         });
     </script>
 }
