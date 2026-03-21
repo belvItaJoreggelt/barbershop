@@ -2,6 +2,7 @@
 @inject IConfiguration Configuration
 @{
     var oneSignalAppId = Configuration["OneSignal:AppId"] ?? "";
+    var oneSignalSafariWebId = Configuration["OneSignal:SafariWebId"] ?? "";
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -26,14 +27,17 @@
                 return;
             }
 
-            await OneSignal.init({
+            const initOptions = {
                 appId: appId,
                 serviceWorkerPath: "/push/onesignal/OneSignalSDKWorker.js",
                 serviceWorkerParam: { scope: "/push/onesignal/" },
-                notifyButton: {
-                    enable: false
-                }
-            });
+                notifyButton: { enable: false }
+            };
+            @if (!string.IsNullOrWhiteSpace(oneSignalSafariWebId))
+            {
+                @:initOptions.safari_web_id = "@oneSignalSafariWebId";
+            }
+            await OneSignal.init(initOptions);
             window._oneSignalInstance = OneSignal;  // Csak init UTÁN – iOS Safari
         });
     </script>
