@@ -29,8 +29,8 @@
 
             const initOptions = {
                 appId: appId,
-                serviceWorkerPath: "/push/onesignal/OneSignalSDKWorker.js",
-                serviceWorkerParam: { scope: "/push/onesignal/" },
+                serviceWorkerPath: "/OneSignalSDKWorker.js",
+                serviceWorkerParam: { scope: "/" },
                 notifyButton: { enable: false }
             };
             @if (!string.IsNullOrWhiteSpace(oneSignalSafariWebId))
