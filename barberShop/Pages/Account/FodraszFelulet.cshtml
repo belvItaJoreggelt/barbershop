@@ -531,6 +531,7 @@
     <script>
         console.log("Push engedélyezve ehhez a fodrászhoz:", "@Model.OneSignalExternalId");
 
+        // Login oldal betöltésekor (async, nem blokkol)
         window.OneSignalDeferred = window.OneSignalDeferred || [];
         OneSignalDeferred.push(async function (OneSignal) {
             try {
@@ -541,25 +542,15 @@
             }
         });
 
+        // Safari: requestPermission() AZONNAL kell, user gesture kontextusban – ne OneSignalDeferred!
         document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
-            window.OneSignalDeferred = window.OneSignalDeferred || [];
-            OneSignalDeferred.push(async function (OneSignal) {
-                try {
-                    await OneSignal.login("@Model.OneSignalExternalId");
-
-                    const permission = await OneSignal.Notifications.requestPermission();
-
-                    console.log("Permission:", permission);
-
-                    if (permission) {
-                        console.log("Push engedélyezve");
-                    } else {
-                        console.log("Push elutasítva");
-                    }
-                } catch (e) {
-                    console.error("Push hiba:", e);
-                }
-            });
+            const OneSignal = window._oneSignalInstance;
+            if (!OneSignal) {
+                console.warn("OneSignal még nincs betöltve. Frissítsd az oldalt és próbáld újra.");
+                return;
+            }
+            OneSignal.Notifications.requestPermission();  // Nincs await – Safari miatt
+            OneSignal.login("@Model.OneSignalExternalId").catch(function(e) { console.error("OneSignal login hiba:", e); });
         });
     </script>
 }
