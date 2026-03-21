@@ -38,7 +38,8 @@
                 @:initOptions.safari_web_id = "@oneSignalSafariWebId";
             }
             await OneSignal.init(initOptions);
-            window._oneSignalInstance = OneSignal;  // Csak init UTÁN – iOS Safari
+            window._oneSignalInstance = OneSignal;
+            console.log("[OneSignal] Init kész, SW path:", initOptions.serviceWorkerPath);
         });
     </script>
     <style>

@@ -542,17 +542,19 @@
             }
         });
 
-        // Safari: requestPermission user gesture-ben
         document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", async function () {
+            console.log("[Push] Gomb kattintva");
             const OneSignal = window._oneSignalInstance;
             if (!OneSignal) {
-                console.warn("OneSignal még nincs betöltve. Várj 2-3 mp-et, majd próbáld újra.");
+                console.error("[Push] OneSignal nincs inicializálva!");
                 return;
             }
             try {
-                await OneSignal.Notifications.requestPermission();
+                console.log("[Push] requestPermission hívás...");
+                const result = await OneSignal.Notifications.requestPermission();
+                console.log("[Push] Permission eredmény:", result);
             } catch (e) {
-                console.error("Push hiba:", e);
+                console.error("[Push] Hiba:", e);
             }
         });
     </script>
