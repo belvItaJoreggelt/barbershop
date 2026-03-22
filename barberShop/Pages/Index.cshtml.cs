@@ -69,8 +69,12 @@ namespace barberShop.Pages
         [BindProperty]
         public string? UgyfelMegjegyzes { get; set; }
 
+        [BindProperty]
+        [Range(typeof(bool),"true", "false", ErrorMessage ="Az adatkezeléshez való hozzájárulás kötelező.")]
+        public bool AdatKezHozzaJ { get; set; }
 
-        
+
+
         public async Task OnGetAsync()
         {
             Szolgaltatasok = await _context.Szolgaltatasok.OrderBy(s => s.Sorszam).ThenBy(n => n.Nev).ToListAsync();
