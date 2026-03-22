@@ -329,7 +329,10 @@
                         <label asp-for="UgyfelMegjegyzes" class="form-label ezustFont">Megjegyzés:</label>
                         <input asp-for="UgyfelMegjegyzes" class="form-control" />
                     </p>
-
+                    <label class="form-label ezustFont">
+                        <input type="checkbox" name="AdatKezHozzaJ" required />
+                        Hozzájárulok hogy <a asp-page="/Privacy">adatkezelési tájékoztató</a>ban leírtaknak megfelelően kezelejék az adataimat.
+                    </label>
                     <button type="submit" class="btn egyGomb">Foglalás elküldése</button>
                     <a href="/" class="btn btn-outline-secondary ms-2">Mégse</a>
                 </form>
