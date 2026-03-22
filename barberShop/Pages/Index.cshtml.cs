@@ -70,7 +70,6 @@ namespace barberShop.Pages
         public string? UgyfelMegjegyzes { get; set; }
 
         [BindProperty]
-        [Range(typeof(bool), "true", "true", ErrorMessage = "Az adatkezeléshez való hozzájárulás kötelező.")]
         public bool AdatKezHozzaJ { get; set; }
 
 
@@ -223,6 +222,11 @@ namespace barberShop.Pages
         public async Task<IActionResult> OnPostFoglalasAsync()
         {
             Section = "foglalas";
+
+            if (!AdatKezHozzaJ)
+            {
+                ModelState.AddModelError("AdatKezHozzaJ", "Az adatkezeléshez való hozzájárulás kötelező.");
+            }
 
             if (!ModelState.IsValid)
             {
