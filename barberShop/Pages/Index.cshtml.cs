@@ -70,7 +70,7 @@ namespace barberShop.Pages
         public string? UgyfelMegjegyzes { get; set; }
 
         [BindProperty]
-        [Range(typeof(bool),"true", "false", ErrorMessage ="Az adatkezeléshez való hozzájárulás kötelező.")]
+        [Range(typeof(bool), "true", "true", ErrorMessage = "Az adatkezeléshez való hozzájárulás kötelező.")]
         public bool AdatKezHozzaJ { get; set; }
 
 
