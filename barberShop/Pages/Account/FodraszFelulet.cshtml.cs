@@ -62,6 +62,8 @@ namespace barberShop.Pages.Account
 
         [BindProperty]
         public string? SzunetVege { get; set; }
+        [BindProperty]
+        public 
         public List<FodraszSzunet> BetoltSzunetek { get; set; } = new();
         #endregion
 
