@@ -554,6 +554,10 @@
         }
     ].filter(Boolean);
 
+    function atfed(sz1, sz2) {
+        return sz1[0] < sz2[1] && sz2[0] < sz1[1];
+    }
+
     function frissit() {
         hiddenDiv.innerHTML = '';
         szunetek.forEach(function(p) {
@@ -582,7 +586,18 @@
         var k = document.getElementById('inpSzunetKezdete').value;
         var v = document.getElementById('inpSzunetVege').value;
         if (!k || !v) return;
-        szunetek.push([k, v]);
+        if (k >= v) {
+            alert('A szünet vége később kell legyen a kezdeténél.');
+            return;
+        }
+        var uj = [k, v];
+        for (var i = 0; i < szunetek.length; i++) {
+            if (atfed(uj, szunetek[i])) {
+                alert('Az időpont átfed egy másik szünettel.');
+                return;
+            }
+        }
+        szunetek.push(uj);
         frissit();
     };
 
