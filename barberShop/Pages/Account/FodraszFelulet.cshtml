@@ -218,14 +218,14 @@
                             <div class="row g-3 align-items-end mb-3">
                                 <div class="col-md-3">
                                     <label asp-for="SzunetKezdete" class="form-label ezustFont">Szünet kezdete</label>
-                                    <input type="time" asp-for="SzunetKezdete" class="form-control" />
+                                    <input type="time" asp-for="SzunetKezdete" class="form-control" id="inpSzunetKezdete"/>
                                 </div>
                                 <div class="col-md-3">
                                     <label asp-for="SzunetVege" class="form-label ezustFont">Szünet vége</label>
-                                    <input type="time" asp-for="SzunetVege" class="form-control" />
+                                    <input type="time" asp-for="SzunetVege" class="form-control" id="inpSunetVege"/>
                                 </div>
                                 <div class="col-md-2">
-                                    <button type="submit" asp-page-handler="AddSzunet" class="btn egyGomb">
+                                    <button type="submit" asp-page-handler="AddSzunet" class="btn egyGomb" id="szunetHozzaad">
                                         Szünet hozzáadása
                                     </button>
                                 </div>
@@ -234,27 +234,8 @@
                             <div class="mt-4">
                                 <p class="form-label ezustFont">Szüneteim listája</p>
                                 <div class="border rounded">
-                                    @if (Model.BetoltSzunetek?.Count > 0)
-                                    {
-                                        <ul class="list-group list-group-flush">
-                                            @foreach (var s in Model.BetoltSzunetek)
-                                            {
-                                                <li class="list-group-item d-flex justify-content-between align-items-center SzunetItem ezustFont">
-                                                    @s.KezdoIdo.ToString(@"hh\:mm") – @s.ZaroIdo.ToString(@"hh\:mm")
-                                                    <button type="submit"
-                                                            asp-page-handler="DeleteSzunet"
-                                                            asp-route-id="@s.ID"
-                                                            class="btn dangerGomb btn-sm">
-                                                        Törlés
-                                                    </button>
-                                                </li>
-                                            }
-                                        </ul>
-                                    }
-                                    else
-                                    {
-                                        <p class="ezustFont mb-0 p-1">Nincs szünet megadva.</p>
-                                    }
+                                    <div id="szunetek-lista" class="border rounded"></div>
+                                    <div id="szunetek-hidden"></div>
                                 </div>
                             </div>
 
@@ -560,3 +541,51 @@
         });
     </script>
 }
+<script>
+(function() {
+    var listaDiv = document.getElementById('szunetek-lista');
+    var hiddenDiv = document.getElementById('szunetek-hidden');
+    if (!listaDiv || !hiddenDiv) return;
+
+    var szunetek = [
+        @foreach (var s in Model.BetoltSzunetek ?? new List<FodraszSzunet>())
+        {
+            @:["@s.KezdoIdo.ToString(@"hh\:mm")", "@s.ZaroIdo.ToString(@"hh\:mm")"],
+        }
+    ].filter(Boolean);
+
+    function frissit() {
+        hiddenDiv.innerHTML = '';
+        szunetek.forEach(function(p) {
+            hiddenDiv.innerHTML += '<input type="hidden" name="SzunetekKezdete" value="' + p[0] + '" />';
+            hiddenDiv.innerHTML += '<input type="hidden" name="SzunetekVege" value="' + p[1] + '" />';
+        });
+        if (szunetek.length === 0) {
+            listaDiv.innerHTML = '<p class="ezustFont mb-0 p-1">Nincs szünet megadva.</p>';
+            return;
+        }
+        listaDiv.innerHTML = '<ul class="list-group list-group-flush">' +
+            szunetek.map(function(p, i) {
+                return '<li class="list-group-item d-flex justify-content-between align-items-center SzunetItem ezustFont">' +
+                    p[0] + ' – ' + p[1] +
+                    ' <button type="button" class="btn dangerGomb btn-sm szunet-torol" data-i="' + i + '">Törlés</button></li>';
+            }).join('') + '</ul>';
+        listaDiv.querySelectorAll('.szunet-torol').forEach(function(b) {
+            b.onclick = function() {
+                szunetek.splice(parseInt(this.dataset.i, 10), 1);
+                frissit();
+            };
+        });
+    }
+
+    document.getElementById('szunetHozzaad').onclick = function() {
+        var k = document.getElementById('inpSzunetKezdete').value;
+        var v = document.getElementById('inpSzunetVege').value;
+        if (!k || !v) return;
+        szunetek.push([k, v]);
+        frissit();
+    };
+
+    frissit();
+})();
+</script>

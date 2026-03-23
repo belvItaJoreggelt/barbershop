@@ -63,7 +63,10 @@ namespace barberShop.Pages.Account
         [BindProperty]
         public string? SzunetVege { get; set; }
         [BindProperty]
-         
+        public List<string> SzunetekKezdete { get; set; } = new();
+        [BindProperty]
+        public List<string> SzunetekVege { get; set; } = new();
+
         public List<FodraszSzunet> BetoltSzunetek { get; set; } = new();
         #endregion
 
@@ -276,11 +279,32 @@ namespace barberShop.Pages.Account
             munkaido.Kezdoido = kezdo;
             munkaido.ZaroIdo = zaro;
 
+            var regiSzunetek = await _context.FodraszSzunetek
+                .Where(sz=>sz.FodraszId == user.FodraszId && sz.Datum== datumUtc)
+                .ToListAsync();
+            _context.FodraszSzunetek.RemoveRange(regiSzunetek);
+
+            var kezdok = SzunetekKezdete ?? new List<string>();
+            var vegek = SzunetekVege ?? new List<string>();
+            for (int i = 0; i < kezdok.Count && i < vegek.Count; ++i)
+            {
+                if (TimeSpan.TryParse(kezdok[i], out var sk) && TimeSpan.TryParse(vegek[i], out var sv))
+                {
+                    _context.FodraszSzunetek.Add(new FodraszSzunet
+                    {
+                        FodraszId = user.FodraszId.Value,
+                        Datum = datumUtc,
+                        KezdoIdo = sk,
+                        ZaroIdo = sv
+                    });
+                }
+            }
+
             await _context.SaveChangesAsync();
             TempData["Success"] = "Sikeres mentés";
             return RedirectToPage("/Account/FodraszFelulet", new {Section="idopontjaim", naptarDatum =NaptarDatum});
         }
-
+        /*
         public async Task<IActionResult> OnPostAddSzunetAsync()
         {
             var user = await _userManager.GetUserAsync(User);
@@ -321,7 +345,7 @@ namespace barberShop.Pages.Account
             }
             return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim", naptarDatum = NaptarDatum });
         }
-
+        */
         public async Task<IActionResult> OnGetCopyPrevDayAsync()
         {
             var user = await _userManager.GetUserAsync(User);
