@@ -393,6 +393,7 @@ namespace barberShop.Pages.Account
                 });
             }
             await _context.SaveChangesAsync();
+            TempData["Success"] = "Az előző napi munkaidő és szünetek átmásolva.";
             return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim", naptarDatum = datum.ToString("yyyy-MM-dd") });
         }
         #endregion

@@ -587,13 +587,13 @@
         var v = document.getElementById('inpSzunetVege').value;
         if (!k || !v) return;
         if (k >= v) {
-            alert('A szünet vége később kell legyen a kezdeténél.');
+            alert('A szünet végének később kell lennie a kezdeténél.');
             return;
         }
         var uj = [k, v];
         for (var i = 0; i < szunetek.length; i++) {
             if (atfed(uj, szunetek[i])) {
-                alert('Az időpont átfed egy másik szünettel.');
+                alert('Ne lehet átfedés a szünetek között!');
                 return;
             }
         }
