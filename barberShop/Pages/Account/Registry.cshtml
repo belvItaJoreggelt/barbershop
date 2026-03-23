@@ -20,25 +20,28 @@
     }
     <div class="row urlap">
         <form method="post" asp-page-handler="Regisztracio">
-            <div asp-validation-summary="All" class="text-danger mb-3"></div>
             <div class="mt-3 col-md-4">
                 <label class="form-label ezustFont">E-mail cím</label>
                 <input class="form-control" asp-for="RegEmail" />
+                <span asp-validation-for="RegEmail" class="text-danger"></span>
             </div>
 
             <div class="mt-3 col-md-4">
                 <label class="form-label ezustFont">Jelszó</label>
                 <input class="form-control" type="password" asp-for="RegPassword" />
+                <span asp-validation-for="RegPassword" class="text-danger"></span>
             </div>
 
             <div class="mt-3 col-md-4">
                 <label class="form-label ezustFont">Név</label>
                 <input class="form-control" asp-for="RegNev" />
+                <span asp-validation-for="RegNev" class="text-danger"></span>
             </div>
 
             <div class="mt-3 col-md-4">
                 <label class="form-label ezustFont">Telefonszám</label>
                 <input class="form-control" asp-for="RegTelo" />
+                <span asp-validation-for="RegTelo" class="text-danger"></span>
             </div>
             <div class="mt-3 col-md-4">
                 <button type="submit" class="btn btn-primary egyGomb">Regisztráció</button>
