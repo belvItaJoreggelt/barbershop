@@ -61,7 +61,7 @@
                             <input class="form-control" asp-for="EditPassword"/>
                         </div>
                         <div class="mt-auto ms-auto">
-                            <button class="btn accentFont fw-bold">mentés</button>
+                            <button class="btn speckoGomb">mentés</button>
                         </div>
                     </form>
                 </div>
@@ -81,7 +81,7 @@
                             <input class="form-control" asp-for="EditTel" />
                         </div>
                         <div class="mt-auto ms-auto">
-                            <button class="btn egyGomb">mentés</button>
+                            <button class="btn speckoGomb">mentés</button>
                         </div>
                     </form>
                 </div>
@@ -95,7 +95,7 @@
         </p>
 
         <div class="row gap-3">
-            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
+            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya foglalasok">
                 <div class="card-header accentFont fw-bold">Mai foglalások</div>
                 <div class="card-body">
                     
@@ -132,7 +132,7 @@
             </div>
 
 
-            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya">
+            <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya foglalasok">
                 <div class="card-header accentFont fw-bold">További foglalások</div>
                 <div class="card-body">
                     
@@ -173,6 +173,11 @@
 </div>
 
 <style>
+    .foglalasok{
+        max-height: 350px;
+        overflow: auto;
+    }
+
     .foglTabla {
         border-collapse: separate;
         border-spacing: 12px 8px;
