@@ -332,7 +332,11 @@
                    <p>
                         <label class="form-label ezustFont">
                             <input type="checkbox" asp-for="AdatKezHozzaJ" />
-                            Hozzájárulok hogy <a asp-page="/Privacy">adatkezelési tájékoztató</a>ban leírtaknak megfelelően kezelejék az adataimat.
+                            Hozzájárulok hogy 
+                            <a asp-page="/Privacy" asp-route-section="foglalas" asp-route-fodraszId="@Model.FodraszId"asp-route-szolgaltatasId="@Model.SzolgaltatasId" asp-route-foglalasDatum="@Model.FoglalasDatum" asp-route-foglalasIdo="@Model.FoglalasIdo">
+                                adatkezelési tájékoztató
+                            </a>
+                            ban leírtaknak megfelelően kezelejék az adataimat.
                         </label>
                         <span asp-validation-for="AdatKezHozzaJ" class="text-danger d-block"></span>
                     </p>

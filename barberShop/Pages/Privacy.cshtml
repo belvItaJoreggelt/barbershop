@@ -5,8 +5,14 @@
 }
 
 <div class="container py-4 privacyFont">
+    @if (Model.Section != "")
+    {
+        <a class="btn egyGomb px-4 mb-3" asp-page="/Index" asp-route-section="foglalas" asp-route-fodraszId="@Model.FodraszId" asp-route-szolgaltatasId="@Model.SzolgaltatasId" asp-route-foglalasDatum="@Model.FoglalasDatum" asp-route-foglalasIdo="@Model.FoglalasIdo">
+            Vissza
+        </a>
+    }
     <h1 class="mb-4">@ViewData["Title"]</h1>
-
+    
     <p class="text-muted small">Utolsó frissítés: @DateTime.Now.ToString("yyyy. MMMM d.", new System.Globalization.CultureInfo("hu-HU"))</p>
 
     <h2 class="h4 mt-4">1. Bevezetés</h2>

@@ -76,7 +76,7 @@
                         <input asp-for="CreateLeiras" class="form-control" placeholder="Rövid leírás" />
                     </div>
                     <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn egyGomb w-100">Hozzáad</button>
+                        <button type="submit" class="btn speckoGomb w-100">Hozzáad</button>
                     </div>
                 </form>
             </div>
@@ -106,10 +106,10 @@
                                         <form method="post" asp-page-handler="Update">
                                             <input type="hidden" name="Id" value="@s.Id" />
                                             <div class="row g-2 align-items-end">
-                                                <div class="col-md-2"><label class="form-label ezustFont small">Név</label><input name="EditNev" class="form-control form-control-sm" value="@s.Nev" /></div>
-                                                <div class="col-md-1"><label class="form-label ezustFont small">Perc</label><input name="EditIdotartam" class="form-control form-control-sm" type="number" min="1" value="@s.Idotartam" /></div>
-                                                <div class="col-md-1"><label class="form-label ezustFont small">Ár</label><input name="EditAr" class="form-control form-control-sm" type="number" min="0" value="@s.Ar" /></div>
-                                                <div class="col-md-4"><label class="form-label ezustFont small">Leírás</label><input name="EditLeiras" class="form-control form-control-sm" value="@(s.Leiras ?? "")" /></div>
+                                                <div class="col-md-2"><label class="form-label small">Név</label><input name="EditNev" class="form-control form-control-sm" value="@s.Nev" /></div>
+                                                <div class="col-md-1"><label class="form-label small">Perc</label><input name="EditIdotartam" class="form-control form-control-sm" type="number" min="1" value="@s.Idotartam" /></div>
+                                                <div class="col-md-1"><label class="form-label small">Ár</label><input name="EditAr" class="form-control form-control-sm" type="number" min="0" value="@s.Ar" /></div>
+                                                <div class="col-md-4"><label class="form-label small">Leírás</label><input name="EditLeiras" class="form-control form-control-sm" value="@(s.Leiras ?? "")" /></div>
                                                 <div class="col-md-2">
                                                     <label class="form-label small">Sorrend</label>
                                                     <select name="EditSorszam" class="form-select form-select-sm">
@@ -182,10 +182,10 @@
                                         <form method="post" asp-page-handler="UpdateFodrasz">
                                             <input type="hidden" name="Id" value="@f.ID" />
                                             <div class="row g-2 align-items-center">
-                                                <div class="col-md-2"><label class="form-label ezustFont small">Név</label><input name="EditFodraszNev" class="form-control form-control-sm" value="@f.Nev" /></div>
-                                                <div class="col-md-2"><label class="form-label ezustFont small">E-mail</label><input name="EditFodraszEmail" class="form-control form-control-sm" value="@f.Email" /></div>
-                                                <div class="col-md-2"><label class="form-label ezustFont small">Telefon</label><input name="EditFodraszTelefon" class="form-control form-control-sm" value="@f.Telefon" /></div>
-                                                <div class="col-md-2"><label class="form-label ezustFont small">Specializáció</label><input name="EditFodraszSpecializacio" class="form-control form-control-sm" value="@(f.Specializacio ?? "")" /></div>
+                                                <div class="col-md-2"><label class="form-label small">Név</label><input name="EditFodraszNev" class="form-control form-control-sm" value="@f.Nev" /></div>
+                                                <div class="col-md-2"><label class="form-label small">E-mail</label><input name="EditFodraszEmail" class="form-control form-control-sm" value="@f.Email" /></div>
+                                                <div class="col-md-2"><label class="form-label small">Telefon</label><input name="EditFodraszTelefon" class="form-control form-control-sm" value="@f.Telefon" /></div>
+                                                <div class="col-md-2"><label class="form-label small">Specializáció</label><input name="EditFodraszSpecializacio" class="form-control form-control-sm" value="@(f.Specializacio ?? "")" /></div>
                                                 <div class="col-md-2">
                                                     <label class="form-label ezustFont small">Szolgáltatások</label>
                                                     @foreach (var sz in Model.SzolgaltatasLista)
@@ -434,21 +434,26 @@
     </script>
 }
 <style>
+    /*
     .table td,
     .table th {
-        background: black !important;
+        background: transparent !important;
         color: #eeeeee !important;
     }
 
     tr.table-warning label{
         color: #eeeeee;
     }
-
+    
     .table-hover tbody tr.table-warning:hover > * {
         background-color: black !important;
     }
 
     .table{
         border-radius: 20px !important;
+        }*/
+    [data-theme="barna"] .dangerGomb{
+        color: rgb(143, 9, 9);
+        border-color: rgb(143, 9, 9);
     }
 </style>
