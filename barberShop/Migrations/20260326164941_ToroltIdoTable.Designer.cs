@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using barberShop;
@@ -11,9 +12,11 @@ using barberShop;
 namespace barberShop.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260326164941_ToroltIdoTable")]
+    partial class ToroltIdoTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -409,11 +412,11 @@ namespace barberShop.Migrations
 
             modelBuilder.Entity("barberShop.ToroltIdopont", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ID"));
 
                     b.Property<string>("CustomerEmail")
                         .IsRequired()
@@ -430,9 +433,6 @@ namespace barberShop.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("EredetiIdopontId")
-                        .HasColumnType("integer");
-
                     b.Property<DateTime>("EsedekessegiIdopont")
                         .HasColumnType("timestamp with time zone");
 
@@ -448,7 +448,7 @@ namespace barberShop.Migrations
                     b.Property<DateTime>("TorolveUtc")
                         .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
                     b.HasIndex("FodraszId");
 

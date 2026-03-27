@@ -12,7 +12,6 @@
         public Szolgaltatas Szolgaltatas { get; set; } = null!;
 
         public DateTime EsedekessegiIdopont {  get; set; }
-
         public DateTime FoglalasiIdopont { get; set; } = DateTime.UtcNow;
 
         //Vasarló adatok

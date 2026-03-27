@@ -1,0 +1,43 @@
+﻿@page
+@model barberShop.Pages.Account.SikerTorlesModel
+@{
+}
+<div class="container py-4">
+    @if (Model.Torolt != null)
+    {
+        <p>
+            <a asp-page="/Account/FodraszFelulet" asp-route-section="foglalasaim" class="px-4">Vissza</a>
+        </p>
+
+        <h1>Sikeresen töröltük az időpontot!</h1>
+
+        <p>
+            Kiküldtünk egy e-mail értesítőt, amennyiben személyesen is szeretnéd jelezni az ügyfelednek, azt alábbi elérhetőségeken teheted:
+            <br />
+            <br />
+            Telefon: <a href="tel:@Model.Torolt.CustomerPhone">@Model.Torolt.CustomerPhone</a>
+            <br />
+            E-mail: <a href="mailto:@Model.Torolt.CustomerEmail">@Model.Torolt.CustomerEmail</a>
+            <br />
+            <br />
+            <br />
+            Időpont: <span class="accentFont fw-bold">@Model.Torolt.EsedekessegiIdopont.ToString("yyyy.MM.dd HH:mm")</span>
+            <br />
+            Név: <span class="accentFont fw-bold">@Model.Torolt.CustomerNeve</span>
+            <br />
+            Szolgáltatás: <span class="accentFont fw-bold">@Model.Torolt.Szolgaltatas?.Nev</span>
+            
+        </p>
+    }
+    else
+    {
+        
+        <p>
+            <a asp-page="/Account/FodraszFelulet" asp-route-section="foglalasaim" class="px-4">Vissza</a>
+        </p>
+        <h1>
+            Sajnos nem található a törölt időpont részletei.
+        </h1>
+    }
+    
+</div>

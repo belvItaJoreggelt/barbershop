@@ -397,5 +397,41 @@ namespace barberShop.Pages.Account
             return RedirectToPage("/Account/FodraszFelulet", new { section = "idopontjaim", naptarDatum = datum.ToString("yyyy-MM-dd") });
         }
         #endregion
+
+        #region Foglalasaim
+        public async Task<IActionResult> OnPostTorolFoglalasAsync(int id)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            if (user?.FodraszId == null)
+                return RedirectToPage("/Account/FodraszFelulet", new { section = "foglalasaim" });
+
+            var idopont = await _context.Idopontok
+                .FirstOrDefaultAsync(i => i.ID == id && i.FodraszId == user.FodraszId.Value);
+
+            if (idopont == null)
+                return RedirectToPage("/Account/FodraszFelulet", new { section = "foglalasaim" });
+
+            var archiv = new ToroltIdopont
+            {
+                EredetiIdopontId = idopont.ID,
+                FodraszId = idopont.FodraszId,
+                SzolgaltatasId = idopont.SzolgaltatasId,
+                EsedekessegiIdopont = idopont.EsedekessegiIdopont,
+                FoglalasiIdopont = idopont.FoglalasiIdopont,
+                CustomerNeve = idopont.CustomerNeve,
+                CustomerEmail = idopont.CustomerEmail,
+                CustomerPhone = idopont.CustomerPhone,
+                CustomerNotes = idopont.CustomerNotes,
+                TorolveUtc = DateTime.UtcNow
+            };
+
+            _context.ToroltIdopontok.Add(archiv);
+            _context.Remove(idopont);
+            await _context.SaveChangesAsync();
+
+            return RedirectToPage("/Account/SikerTorles", new {id=archiv.Id});
+        }
+        #endregion
     }
 }

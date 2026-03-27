@@ -280,7 +280,7 @@
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="px-3 py-2">
-                                                <span class="ezustFont d-block">@ip.CustomerNeve</span>
+                                                <span class="accentFont d-block">@ip.CustomerNeve</span>
                                                 <span class="ezustFont d-block">@ip.CustomerPhone</span>
                                                 <span class="ezustFont d-block">@ip.CustomerEmail</span>
                                                 <span class="ezustFont d-block">@ip.CustomerNotes</span>
@@ -316,11 +316,18 @@
                                         </tr>
                                         <tr class="rejtett">
                                             <td colspan="4" class="px-3 py-2">
-                                                <span class="ezustFont d-block">@ip.CustomerNeve</span>
+                                                <span class="accentFont d-block">@ip.CustomerNeve</span>
                                                 <span class="ezustFont d-block">@ip.CustomerPhone</span>
                                                 <span class="ezustFont d-block">@ip.CustomerEmail</span>
                                                 <span class="ezustFont d-block">@ip.CustomerNotes</span>
-                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                                <form method="post" asp-page-handler="TorolFoglalas" class="d-inline" onclick="event.stopPropagation();">
+                                                    <input type="hidden" name="id" value="@ip.ID" />
+                                                    <button type="submit" class="btn btn-sm dangerGomb w-auto mt-2"
+                                                        onclick="event.stopPropagation(); return confirm('Biztosan törlöd ezt a foglalást?');">
+                                                        törlés
+                                                    </button>
+                                                </form>
+                                                
                                             </td>
                                         </tr>
                                     }
@@ -353,11 +360,10 @@
                                         </tr>
                                         <tr class="rejtett">
                                            <td colspan="4" class="px-3 py-2">
-                                                <span class="ezustFont d-block">@ip.CustomerNeve</span>
+                                                <span class="accentFont d-block">@ip.CustomerNeve</span>
                                                 <span class="ezustFont d-block">@ip.CustomerPhone</span>
                                                 <span class="ezustFont d-block">@ip.CustomerEmail</span>
                                                 <span class="ezustFont d-block">@ip.CustomerNotes</span>
-                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
                                             </td>
                                         </tr>
                                     }

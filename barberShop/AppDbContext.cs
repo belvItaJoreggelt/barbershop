@@ -14,6 +14,7 @@ namespace barberShop
         public DbSet<FodraszMunkaIdo> FodraszMunkaidok { get; set; }
         public DbSet<FodraszSzunet> FodraszSzunetek { get; set; }
 
+        public DbSet<ToroltIdopont> ToroltIdopontok { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,6 +56,12 @@ namespace barberShop
             modelBuilder.Entity<FodraszMunkaIdo>()
                 .HasIndex(m => new { m.FodraszId, m.Datum })
                 .IsUnique();
+
+            modelBuilder.Entity<ToroltIdopont>()
+                .HasOne(t => t.Szolgaltatas)
+                .WithMany()
+                .HasForeignKey(t => t.SzolgaltatasId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }
