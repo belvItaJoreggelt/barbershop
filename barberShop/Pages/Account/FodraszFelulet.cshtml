@@ -284,7 +284,13 @@
                                                 <span class="ezustFont d-block">@ip.CustomerPhone</span>
                                                 <span class="ezustFont d-block">@ip.CustomerEmail</span>
                                                 <span class="ezustFont d-block">@ip.CustomerNotes</span>
-                                                <div class="btn btn-sm dangerGomb w-auto mt-2">törlés</div>
+                                                <form method="post" asp-page-handler="TorolFoglalas" class="d-inline" onclick="event.stopPropagation();">
+                                                    <input type="hidden" name="id" value="@ip.ID" />
+                                                    <button type="submit" class="btn btn-sm dangerGomb w-auto mt-2"
+                                                        onclick="event.stopPropagation(); return confirm('Biztosan törlöd ezt a foglalást?');">
+                                                        törlés
+                                                    </button>
+                                                </form>
                                             </td>
                                         </tr>
                                     }
