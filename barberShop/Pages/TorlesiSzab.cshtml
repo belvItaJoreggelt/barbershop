@@ -1,5 +1,28 @@
 ﻿@page
 @model barberShop.Pages.TorlesiSzabModel
 @{
+    ViewData["Title"] = "Foglalási szabályzat ";
 }
-<div class="container py-4"></div>
+<div class="container py-4">
+    <a asp-page="/Privacy" class="bbtn egyGomb px-4 mg-3">vissza</a></p>
+    <h1>Foglalási szabályzat</h1>
+
+    <div class="ps-2">
+        <p class="mt-4">
+            <h3>Foglalásod érvényes ha</h3>
+            <ul>
+                <li>E-mailben vissza igazoltuk.</li>
+                <li>Fodrászunkkal, bizonyíthatóan megbeszélted.</li>
+            </ul>
+        </p>
+
+        <p class="mt-2">
+            <h3>Foglalásod törlése</h3>
+            <span>Az időpontod lemondása legfeljebb két nappal az időpont bekövetkezte előtt kivitelezhető.</span>
+            <ul>
+                <li>ezt megteheted a profilodban az foglalásaid között</li>
+                <li>vagy a kiválasztott fodrászoddal megbeszélve </li>
+            </ul>
+        </p>
+    </div>
+</div>
