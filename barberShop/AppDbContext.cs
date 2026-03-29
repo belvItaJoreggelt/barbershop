@@ -36,6 +36,10 @@ namespace barberShop
                 .HasForeignKey(i => i.SzolgaltatasId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Idopont>()
+                .HasIndex(i => new { i.FodraszId, i.EsedekessegiIdopont })
+                .IsUnique();
+
             modelBuilder.Entity<Fodrasz>()
                 .HasMany(f => f.VallaltSzolgaltatasok)
                 .WithMany()

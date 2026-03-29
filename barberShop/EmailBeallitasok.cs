@@ -40,7 +40,7 @@ namespace barberShop
                 From = new MailAddress(_beallitasok.User, "BestBarberShop"),
                 Subject = targy,
                 Body=body,
-                IsBodyHtml=false
+                IsBodyHtml=true
             };
             mail.To.Add(kinek);
 

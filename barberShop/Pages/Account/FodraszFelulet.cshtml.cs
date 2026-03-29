@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace barberShop.Pages.Account
 {
@@ -11,11 +12,13 @@ namespace barberShop.Pages.Account
     {
         private readonly AppDbContext _context;
         private readonly UserManager<Felhasznalo> _userManager;
+        private readonly IEmailKuldo _emailKuldo;
 
-        public FodraszFeluletModel(AppDbContext context, UserManager<Felhasznalo> userManager)
+        public FodraszFeluletModel(AppDbContext context, UserManager<Felhasznalo> userManager, IEmailKuldo emailKuldo)
         {
             _context = context;
             _userManager = userManager;
+            _emailKuldo= emailKuldo;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -407,6 +410,7 @@ namespace barberShop.Pages.Account
                 return RedirectToPage("/Account/FodraszFelulet", new { section = "foglalasaim" });
 
             var idopont = await _context.Idopontok
+                .Include(i => i.Szolgaltatas)
                 .FirstOrDefaultAsync(i => i.ID == id && i.FodraszId == user.FodraszId.Value);
 
             if (idopont == null)
@@ -429,6 +433,57 @@ namespace barberShop.Pages.Account
             _context.ToroltIdopontok.Add(archiv);
             _context.Remove(idopont);
             await _context.SaveChangesAsync();
+
+            var subject = "BestBarberShop - foglalás törölve";
+            
+            var hu = CultureInfo.GetCultureInfo("hu-HU");
+            var toroltidopont = idopont.EsedekessegiIdopont.ToString("MMMM d. (dddd) HH:mm", hu);
+            var szolgaltatas = idopont.Szolgaltatas?.Nev;
+            var nev = idopont.CustomerNeve;
+
+            var ujidpont_URl = "https://bestbarbershopbookingsystem-djf9c0hch0dqexdt.westeurope-01.azurewebsites.net/";
+            var maps = "https://www.bing.com/maps/search?mepi=72%7ELocal%7EEmbedded%7EEntity_Vertical_List_Card&ty=17&poicount=18&sei=0&FORM=MPSRPL&q=kelenf%C3%B6ld+fodr%C3%A1szat&secq=%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat+kelenfoeld+fodraszat&sece=ypid.YN8081x11846474530400285953&ppois=47.467506408691406_19.035743713378906_%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat_YN8081x11846474530400285953%7E47.46304702758789_19.034894943237305_X%C3%A9nia+Fodr%C3%A1szat_YN8081x14308692530027957564%7E47.46721649169922_19.042898178100586_B%C3%A1rtfai+Sz%C3%A9ps%C3%A9gszalon+most_YN8081x3342422111653719704%7E&segment=Local&cp=47.467179%7E19.036090&lvl=17.7&style=r";
+
+            var body = $@"
+<html lang=""hu"">
+<head>
+    <meta charset=""utf-8"" />
+    <style type=""text/css"">
+        body {{ font-family: Arial, Helvetica, sans-serif; color: #333; }}
+        h2{{color: rgba(191, 162, 122, 0.7);}}
+    </style>
+</head>
+<body>
+<div style=""text-align: center;"">
+    <h2>Kedves {nev}!</h2>
+    <p>Foglalásod törlésre került!</p>
+    <p>részletek:</p>
+    <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
+        <tr>
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191,162,122,0.7), #ffffff);"">
+                {szolgaltatas}<br />
+                {toroltidopont}
+            </td>
+        </tr>
+    </table>
+    <p style=""padding-top: 10px;"">
+        <a href=""{ujidpont_URl}"">
+            <div style=""background:rgba(191, 162, 122, 0.7); margin: 0 auto; padding: 7px 14px; width: fit-content; border-radius: 10px; "">
+                <span style=""text-decoration: none; color: white;"">új foglalás
+            </div>
+        </a>
+    </p>
+    <p style=""padding-top: 20px;"">
+        BestBarbershop<br />
+        <a href=""{maps}"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration:none"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"">+36 30 727 1232</a>
+    </p>
+</div>
+</body>
+</html>";
+
+            await _emailKuldo.SendAsync(idopont.CustomerEmail, subject, body);
 
             return RedirectToPage("/Account/SikerTorles", new {id=archiv.Id});
         }

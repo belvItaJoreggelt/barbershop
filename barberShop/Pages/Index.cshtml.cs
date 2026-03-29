@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
+using System.Net;
 
 namespace barberShop.Pages
 {
@@ -277,16 +278,49 @@ namespace barberShop.Pages
 
 
             var subject = "BestBarberShop - foglalás visszaigazolása";
-            var body = $@"Kedves {UgyfelNev}!
 
-Foglalásodat sikeresen rögzítettük.
 
-Fodrász: {fodr.Nev}
-Szolgáltatás: {szolg.Nev}
-Időpont: {kezdes:yyyy.MM.dd HH:mm}
+            var hu = CultureInfo.GetCultureInfo("hu-HU");
+            var idopontSzoveg = kezdes.ToString("MMMM d. (dddd) HH:mm", hu);
+            var arSzoveg = szolg.Ar.ToString("N0", hu);
+            var nevH = WebUtility.HtmlEncode(UgyfelNev);
+            var szolgNevH = WebUtility.HtmlEncode(szolg.Nev);
 
-Tengermély tisztelettel:
-BestBarberShop";
+            var maps = "https://www.bing.com/maps/search?mepi=72%7ELocal%7EEmbedded%7EEntity_Vertical_List_Card&ty=17&poicount=18&sei=0&FORM=MPSRPL&q=kelenf%C3%B6ld+fodr%C3%A1szat&secq=%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat+kelenfoeld+fodraszat&sece=ypid.YN8081x11846474530400285953&ppois=47.467506408691406_19.035743713378906_%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat_YN8081x11846474530400285953%7E47.46304702758789_19.034894943237305_X%C3%A9nia+Fodr%C3%A1szat_YN8081x14308692530027957564%7E47.46721649169922_19.042898178100586_B%C3%A1rtfai+Sz%C3%A9ps%C3%A9gszalon+most_YN8081x3342422111653719704%7E&segment=Local&cp=47.467179%7E19.036090&lvl=17.7&style=r";
+
+
+            var body = $@"
+<html lang=""hu"">
+<head>
+    <meta charset=""utf-8"" />
+    <style type=""text/css"">
+        body {{ font-family: Arial, Helvetica, sans-serif; color: #333; }}
+        h2{{color: rgba(191, 162, 122, 0.7);}}
+    </style>
+</head>
+<body>
+<div style=""text-align: center;"">
+    <h2>Kedves {nevH}!</h2>
+    <p>Köszönjük, hogy minket választottál!</p>
+    <p>Foglalásod részletei:</p>
+    <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
+        <tr>
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191,162,122,0.7), #ffffff);"">
+                {szolgNevH}<br />
+                {idopontSzoveg}<br />
+                {arSzoveg}Ft
+            </td>
+        </tr>
+    </table>
+    <p style=""padding-top: 20px;"">
+        BestBarbershop<br />
+        <a href=""{maps}"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"">+36 30 727 1232</a>
+    </p>
+</div>
+</body>
+</html>";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
             /*
