@@ -305,7 +305,7 @@ namespace barberShop.Pages
     <p>Foglalásod részletei:</p>
     <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
         <tr>
-            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191,162,122,0.7), rgb(218, 213, 213)); border: solid 0.5px rgb(218, 213, 213);"">
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191, 162, 122, 0.7) 0%, rgb(252, 251, 249) 59%, rgb(255, 255, 255) 100%); border: solid 0.5px #eceae6;"">
                 {szolgNevH}<br />
                 {idopontSzoveg}<br />
                 {arSzoveg}Ft
@@ -314,9 +314,9 @@ namespace barberShop.Pages
     </table>
     <p style=""padding-top: 20px;"">
         BestBarbershop<br />
-        <a href=""{maps}"">1115 Budapest Bártfai utca 38</a><br />
-        <a href=""mailto:szaszakpepe@gmail.com"">szaszakpepe@gmail.com</a><br />
-        <a href=""tel:+36307271232"">+36 30 727 1232</a>
+        <a href=""{maps}"" style=""color: white;"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration: none; color: white;"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"" style=""text-decoration: none; color: white;"">+36 30 727 1232</a>
     </p>
 </div>
 </body>
