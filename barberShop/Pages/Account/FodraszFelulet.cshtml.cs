@@ -469,7 +469,7 @@ namespace barberShop.Pages.Account
     <p style=""padding-top: 10px;"">
         <a href=""{ujidpont_URl}"">
             <div style=""background:rgba(191, 162, 122, 0.7); margin: 0 auto; padding: 7px 14px; width: fit-content; border-radius: 10px; "">
-                <span style=""text-decoration: none; color: white;"">új foglalás
+                <span style=""text-decoration: none; color: white;"">új foglalás</span>
             </div>
         </a>
     </p>
