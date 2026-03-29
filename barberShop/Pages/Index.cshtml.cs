@@ -305,7 +305,7 @@ namespace barberShop.Pages
     <p>Foglalásod részletei:</p>
     <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
         <tr>
-            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191,162,122,0.7), #ffffff);"">
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191,162,122,0.7), rgb(218, 213, 213)); border: solid 0.5px rgb(218, 213, 213);"">
                 {szolgNevH}<br />
                 {idopontSzoveg}<br />
                 {arSzoveg}Ft
