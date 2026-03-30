@@ -272,7 +272,7 @@
                                     @foreach (var ip in Model.MaiFoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@BudapestTime.UtcToBudapest(ip.EsedekessegiIdopont).ToString("HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center" style="color:var(--accent-color); font-size:1.2rem;">
                                                 <span class="nyil">▼</span>
@@ -314,7 +314,7 @@
                                     @foreach (var ip in Model.JovobeliFoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@BudapestTime.UtcToBudapest(ip.EsedekessegiIdopont).ToString("MM.dd HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center accentFont" style="color:var(--accent-color); font-size:1.2rem;">
                                                 <span class="nyil">▼</span>
@@ -357,7 +357,7 @@
                                     @foreach (var ip in Model.Regifoglalasok)
                                     {
                                         <tr class="lathato lenyitoGomb" tabindex="0" style="cursor:pointer">
-                                            <td class="text-center accentFont fw-bold text-nowrap">@ip.EsedekessegiIdopont.ToString("MM.dd HH:mm")</td>
+                                            <td class="text-center accentFont fw-bold text-nowrap">@BudapestTime.UtcToBudapest(ip.EsedekessegiIdopont).ToString("MM.dd HH:mm")</td>
                                             <td class="text-center ezustFont">@ip.Szolgaltatas.Nev</td>
                                             <td class="text-center accentFont" style="color:var(--accent-color); font-size:1.2rem;">
                                                 <span class="nyil">▼</span>

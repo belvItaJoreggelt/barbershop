@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model barberShop.Pages.Account.SikerTorlesModel
 @{
 }
@@ -22,7 +22,7 @@
         </p>
 
         <p class="mt-2">
-            Időpont: <span class="accentFont fw-bold">@Model.Torolt.EsedekessegiIdopont.ToString("yyyy.MM.dd HH:mm")</span>
+            Időpont: <span class="accentFont fw-bold">@BudapestTime.UtcToBudapest(Model.Torolt.EsedekessegiIdopont).ToString("yyyy.MM.dd HH:mm")</span>
             <br />
             Név: <span class="accentFont fw-bold">@Model.Torolt.CustomerNeve</span>
             <br />

@@ -61,26 +61,46 @@ namespace barberShop.Pages.Account
             }
             else if (Section == "foglalasaim")
             {
-                var todayUtc = DBDataTimeHelper.ToUtc(DateTime.Today);
+                var maBudapest = BudapestTime.TodayBudapestDate;
+
+                var maiNapKezdetBudapest = DateTime.SpecifyKind(maBudapest.Date, DateTimeKind.Unspecified);
+                var holnapNapKezdetBudapest = maiNapKezdetBudapest.AddDays(1);
+
+                DateTime maiNapKezdetUtc;
+                DateTime holnapNapKezdetUtc;
+
+                try
+                {
+                    maiNapKezdetUtc = BudapestTime.BudapestLocalToUtc(maiNapKezdetBudapest);
+                    holnapNapKezdetUtc = BudapestTime.BudapestLocalToUtc(holnapNapKezdetBudapest);
+                }
+                catch (ArgumentException)
+                {
+                    Mai_Foglalasaim = new List<Idopont>();
+                    Egyeb_Foglalasaim = new List<Idopont>();
+                    return;
+                }
 
                 var osszes = await _context.Idopontok
                     .Include(f => f.Szolgaltatas)
-                    .Include(f=>f.Fodrasz)
+                    .Include(f => f.Fodrasz)
                     .Where(f => f.CustomerEmail == user.Email)
-                    .OrderByDescending(f=>f.EsedekessegiIdopont)
+                    .OrderByDescending(f => f.EsedekessegiIdopont)
                     .ToListAsync();
 
                 Mai_Foglalasaim = osszes
-                    .Where(f=>f.EsedekessegiIdopont == todayUtc)
+                    .Where(f =>
+                        f.EsedekessegiIdopont >= maiNapKezdetUtc &&
+                        f.EsedekessegiIdopont < holnapNapKezdetUtc)
                     .ToList();
 
                 Egyeb_Foglalasaim = osszes
-                    .Where(f => f.EsedekessegiIdopont != todayUtc)
+                    .Where(f =>
+                        f.EsedekessegiIdopont < maiNapKezdetUtc ||
+                        f.EsedekessegiIdopont >= holnapNapKezdetUtc)
                     .OrderByDescending(f => f.EsedekessegiIdopont)
                     .ToList();
             }
-            
-            
         }
 
         public async Task<IActionResult> OnPostSaveBejelentkezesiAsync()
