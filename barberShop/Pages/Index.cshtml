@@ -1,4 +1,4 @@
-﻿@page
+@page
 @model IndexModel
 
 <div class="py-2">
@@ -307,6 +307,8 @@
                     <input type="hidden" asp-for="FoglalasDatum" />
                     <input type="hidden" asp-for="FoglalasIdo" />
 
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
                     <p>
                         <label asp-for="UgyfelNev" class="form-label ezustFont">Név:</label>
                         <input asp-for="UgyfelNev" class="form-control" />
@@ -331,7 +333,7 @@
                         <label class="form-label ezustFont">
                             <input type="checkbox" asp-for="AdatKezHozzaJ" />
                             Hozzájárulok hogy 
-                            <a asp-page="/Privacy" asp-route-section="foglalas" asp-route-fodraszId="@Model.FodraszId"asp-route-szolgaltatasId="@Model.SzolgaltatasId" asp-route-foglalasDatum="@Model.FoglalasDatum" asp-route-foglalasIdo="@Model.FoglalasIdo">
+                            <a asp-page="/Privacy" asp-route-section="foglalas" asp-route-fodraszId="@Model.FodraszId" asp-route-szolgaltatasId="@Model.SzolgaltatasId" asp-route-foglalasDatum="@Model.FoglalasDatum" asp-route-foglalasIdo="@Model.FoglalasIdo">
                                 adatkezelési tájékoztató
                             </a>
                             ban leírtaknak megfelelően kezelejék az adataimat.

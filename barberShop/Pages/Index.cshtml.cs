@@ -400,6 +400,14 @@ namespace barberShop.Pages
                 CustomerNotes = UgyfelMegjegyzes
             };
 
+            if (await _context.Idopontok.AnyAsync(i=>i.EsedekessegiIdopont == kezdesUtc && i.FodraszId == fodr.ID))
+            {
+                ModelState.AddModelError(string.Empty, "Erre az időpontra már van foglalás.");
+                KivalasztottSzolgaltatas = szolg;
+                KivalasztottF = fodr;
+                return Page();
+            }
+
             _context.Idopontok.Add(idopont);
             await _context.SaveChangesAsync();
 
