@@ -371,7 +371,7 @@ namespace barberShop.Pages
             }
 
             var foglalasVegeUtc = kezdesUtc.AddMinutes(szolg.Idotartam);
-
+            /*
             bool utkozik = await _context.Idopontok
                 .Include(i => i.Szolgaltatas)
                 .AnyAsync(i =>
@@ -381,13 +381,13 @@ namespace barberShop.Pages
 
             if (utkozik)
             {
-                ModelState.AddModelError(string.Empty, "Ez az időpont időközben már foglalt lett.");
+                ModelState.AddModelError(string.Empty, "");
 
                 KivalasztottSzolgaltatas = szolg;
                 KivalasztottF = fodr;
                 return Page();
             }
-
+            */
             var idopont = new Idopont
             {
                 FodraszId = fodr.ID,
@@ -399,15 +399,15 @@ namespace barberShop.Pages
                 CustomerPhone = UgyfelTelefon,
                 CustomerNotes = UgyfelMegjegyzes
             };
-
+            
             if (await _context.Idopontok.AnyAsync(i=>i.EsedekessegiIdopont == kezdesUtc && i.FodraszId == fodr.ID))
             {
-                ModelState.AddModelError(string.Empty, "Erre az időpontra már van foglalás.");
+                ModelState.AddModelError(string.Empty, "Időközben sajnos lefoglalták a kiválasztott időpontot.\nKérlek, lépj vissza és válassz ki egy másikat");
                 KivalasztottSzolgaltatas = szolg;
                 KivalasztottF = fodr;
                 return Page();
             }
-
+           
             _context.Idopontok.Add(idopont);
             await _context.SaveChangesAsync();
 
@@ -444,7 +444,7 @@ namespace barberShop.Pages
             </td>
         </tr>
     </table>
-    <p style=""padding-top: 20px;"">
+    <p>
         BestBarbershop<br />
         <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
         <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration: none; color: black;"">szaszakpepe@gmail.com</a><br />
@@ -456,24 +456,8 @@ namespace barberShop.Pages
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
 
-            /*
             var barberExternalId = $"fodrasz-{fodr.ID}";
-
-            try
-            {
-                await _pushNotificationService.SendBookingToBarberAsync(
-                    barberExternalId,
-                    fodr.Nev,
-                    UgyfelNev,
-                    szolg.Nev,
-                    idopont.EsedekessegiIdopont
-                );
-            }
-            catch
-            {
-                // itt később lehet logolni, de a foglalást ne akadályozza meg
-            }
-            */
+            await _pushNotificationService.SendBookingToBarberAsync(barberExternalId, UgyfelNev, szolg.Nev, idopont.EsedekessegiIdopont);
 
             return RedirectToPage("/Index", new { section = "koszi" });
         }

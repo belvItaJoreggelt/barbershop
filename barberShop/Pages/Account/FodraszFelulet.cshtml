@@ -46,23 +46,22 @@
                     </div>
                 </div>
             </div>
-            @*@if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
+           @if (Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
             {
                 <div class="col-md-4">
                     <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
                         <div class="card-header accentFont fw-bold">Push értesítések</div>
                         <div class="card-body d-flex flex-column flex-grow-1">
                             <p class="ezustFont">
-                                Itt tudsz feliratkozni az új foglalásokról érkező push értesítésekre.
+                                Kapj böngészős értesítést, ha új foglalás érkezik hozzád. Először engedélyezd az értesítéseket ennél az eszköznél.
                             </p>
-
-                           <button type="button" id="onesignal-subscribe-btn" class="btn egyGomb">
-                                Push értesítések bekapcsolása
+                            <button type="button" id="onesignal-subscribe-btn" class="btn egyGomb mt-auto align-self-start">
+                                Értesítések engedélyezése
                             </button>
                         </div>
                     </div>
                 </div>
-            }*@
+            }
         </div>
     }
     else if (Model.Section == "adataim")
@@ -528,29 +527,28 @@
 @if (string.IsNullOrEmpty(Model.Section) && Model.IsFodraszPushAllowed && !string.IsNullOrWhiteSpace(Model.OneSignalExternalId))
 {
     <script>
-        console.log("Push engedélyezve ehhez a fodrászhoz:", "@Model.OneSignalExternalId");
-
-        // Login oldal betöltésekor (async, nem blokkol)
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
-        OneSignalDeferred.push(async function (OneSignal) {
-            try {
-                await OneSignal.login("@Model.OneSignalExternalId");
-                console.log("OneSignal login kész:", "@Model.OneSignalExternalId");
-            } catch (e) {
-                console.error("OneSignal login hiba:", e);
-            }
-        });
-
-        // Safari: requestPermission() AZONNAL kell, user gesture kontextusban – ne OneSignalDeferred!
-        document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
-            const OneSignal = window._oneSignalInstance;
-            if (!OneSignal) {
-                console.warn("OneSignal még nincs betöltve. Frissítsd az oldalt és próbáld újra.");
-                return;
-            }
-            OneSignal.Notifications.requestPermission();  // Nincs await – Safari miatt
-            OneSignal.login("@Model.OneSignalExternalId").catch(function(e) { console.error("OneSignal login hiba:", e); });
-        });
+        (function () {
+            var externalId = "@Model.OneSignalExternalId";
+            window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(async function (OneSignal) {
+                try {
+                    await OneSignal.login(externalId);
+                } catch (e) {
+                    console.error("OneSignal login:", e);
+                }
+            });
+            document.getElementById("onesignal-subscribe-btn")?.addEventListener("click", function () {
+                window.OneSignalDeferred = window.OneSignalDeferred || [];
+                OneSignalDeferred.push(async function (OneSignal) {
+                    try {
+                        await OneSignal.Notifications.requestPermission();
+                        await OneSignal.login(externalId);
+                    } catch (e) {
+                        console.error("OneSignal engedély / login:", e);
+                    }
+                });
+            });
+        })();
     </script>
 }
 <script>

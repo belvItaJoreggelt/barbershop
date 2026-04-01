@@ -131,7 +131,12 @@
                 </div>
             </div>
 
-
+            @if(TempData["Error"] != null)
+            {
+                <div class="alert alert-danger" role="alert">
+                    @TempData["Error"]
+                </div>
+            }
             <div class="col-md-7 card h-100 egyszolgaltatas szolg-kartya foglalasok">
                 <div class="card-header accentFont fw-bold">További foglalások</div>
                 <div class="card-body">
@@ -154,7 +159,13 @@
                                             <span class="ezustFont d-block">Fodrász: <span class="accentFont fw-bold">@idopont.Fodrasz?.Nev</span></span>
                                             <span class="ezustFont d-block">Idő: <span class="ezustFont">@($"{idopont.Szolgaltatas?.Idotartam}perc")</span></span>
                                             <span class="ezustFont d-block">Ár: <span class="accentFont fw-bold">@($"{idopont.Szolgaltatas?.Ar}Ft")</span></span>
-                                            
+                                            <form method="post" asp-page-handler="TorolFoglalas" class="d-inline" onclick="event.stopPropagation();">
+                                                    <input type="hidden" name="id" value="@idopont.ID" />
+                                                    <button type="submit" class="btn btn-sm dangerGomb w-auto mt-2"
+                                                        onclick="event.stopPropagation(); return confirm('Biztosan törlöd ezt a foglalást?');">
+                                                        törlés
+                                                    </button>
+                                            </form>
                                         </td>
                                     </tr>
                                 }

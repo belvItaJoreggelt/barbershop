@@ -294,7 +294,7 @@
         <div class="p-4">
             <a asp-page="/Index" asp-route-section="fodraszok" asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id" class="btn egyGomb px-4">Vissza a fodrászokhoz </a>
 
-            <div class="mt-4 p-2 FoglHatter">
+            <div class="mt-4 px-1 py-2 FoglHatter">
                 <p class="ezustFont">Fodrász: <span class="accentFont fw-bold">@Model.KivalasztottF.Nev</span></p>
                 <p class="ezustFont">Szolgáltatás: <span class="accentFont fw-bold">@Model.KivalasztottSzolgaltatas.Nev</span></p>
                 <p class="ezustFont">Idő: <span class="accentFont fw-bold">@($"{Model.KivalasztottSzolgaltatas.Idotartam}perc")</span></p>
@@ -539,7 +539,9 @@
             color: var( --accent-color) !important;
     }
 </style>
-<script>
+@if (Model.Section == "osszesIdopont")
+{
+    <script>
     (function () {
         var calYear = @DateTime.Now.Year;
         var calMonth = @(DateTime.Now.Month - 1);
@@ -645,6 +647,8 @@
         render();
     })();
 </script>
+}
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }

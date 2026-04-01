@@ -9,10 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 */
 
-builder.Services.Configure<OneSignalOptions>(
-    builder.Configuration.GetSection("OneSignal"));
-
-builder.Services.AddHttpClient<IPushNotificationService, OneSignalPushNotificationService>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -40,6 +36,14 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.Configure<EmailBeallitasok>(
     builder.Configuration.GetSection("Email"));
+
+builder.Services.Configure<OneSignalBeallitasok>(
+    builder.Configuration.GetSection("OneSignal"));
+
+builder.Services.AddHttpClient<IPushNotificationService, OneSignalPushNotificationService>(client =>
+{
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddScoped<IEmailKuldo, SmtpEmailKuldo>();
 

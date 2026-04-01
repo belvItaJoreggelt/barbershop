@@ -574,7 +574,8 @@ namespace barberShop.Pages.Account
                 CustomerEmail = idopont.CustomerEmail,
                 CustomerPhone = idopont.CustomerPhone,
                 CustomerNotes = idopont.CustomerNotes,
-                TorolveUtc = DateTime.UtcNow
+                TorolveUtc = DateTime.UtcNow,
+                KiTorolte = user.Email ?? string.Empty
             };
 
             _context.ToroltIdopontok.Add(archiv);
@@ -615,7 +616,7 @@ namespace barberShop.Pages.Account
             </td>
         </tr>
     </table>
-    <p style=""padding-top: 10px;"">
+    <p>
         <a href=""{ujIdopontUrl}"" style=""text-decoration: none; color: white;"">
             <span style=""background:rgba(191, 162, 122, 0.7); display:inline-block; margin: 0 auto; padding: 7px 14px; border-radius: 10px;"">
                 új foglalás

@@ -23,5 +23,7 @@
         public DateTime TorolveUtc { get; set; }
 
         public Szolgaltatas? Szolgaltatas { get; set; }
+
+        public string KiTorolte {  get; set; }= string.Empty;
     }
 }
