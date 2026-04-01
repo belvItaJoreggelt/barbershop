@@ -418,6 +418,7 @@ namespace barberShop.Pages
             var arSzoveg = szolg.Ar.ToString("N0", hu);
             var nevH = WebUtility.HtmlEncode(UgyfelNev);
             var szolgNevH = WebUtility.HtmlEncode(szolg.Nev);
+            var szolgIdo = WebUtility.HtmlEncode(szolg.Idotartam.ToString());
 
             var maps = "https://www.bing.com/maps/search?mepi=72%7ELocal%7EEmbedded%7EEntity_Vertical_List_Card&ty=17&poicount=18&sei=0&FORM=MPSRPL&q=kelenf%C3%B6ld+fodr%C3%A1szat&secq=%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat+kelenfoeld+fodraszat&sece=ypid.YN8081x11846474530400285953&ppois=47.467506408691406_19.035743713378906_%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat_YN8081x11846474530400285953%7E47.46304702758789_19.034894943237305_X%C3%A9nia+Fodr%C3%A1szat_YN8081x14308692530027957564%7E47.46721649169922_19.042898178100586_B%C3%A1rtfai+Sz%C3%A9ps%C3%A9gszalon+most_YN8081x3342422111653719704%7E&segment=Local&cp=47.467179%7E19.036090&lvl=17.7&style=r";
 
@@ -439,6 +440,7 @@ namespace barberShop.Pages
         <tr>
             <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191, 162, 122, 0.7) 0%, rgb(252, 251, 249) 59%, rgb(255, 255, 255) 100%); border: solid 0.5px #eceae6;"">
                 {szolgNevH}<br />
+                {szolgIdo}perc<br />
                 {idopontSzoveg}<br />
                 {arSzoveg} Ft
             </td>
