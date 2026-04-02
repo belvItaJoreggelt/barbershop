@@ -635,7 +635,7 @@ namespace barberShop.Pages.Account
 
             await _emailKuldo.SendAsync(idopont.CustomerEmail, subject, body);
 
-            return RedirectToPage("/Account/SikerTorles", new { id = archiv.Id });
+            return RedirectToPage("/Account/SikerFodraszTorles", new { id = archiv.Id });
         }
 
         #endregion
