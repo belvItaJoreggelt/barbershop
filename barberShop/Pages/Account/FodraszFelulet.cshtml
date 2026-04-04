@@ -263,7 +263,7 @@
             <div class="d-flex gap-4 flex-column">
                 <div class="card egyszolgaltatas szolg-kartya foglalasok">
                     <div class="card-header accentFont fw-bold">Mai</div>
-                    <div class="card-body">
+                    <div class="card-body AutoOverflowClass">
                         @if (Model.MaiFoglalasok.Any())
                         {
                             <table class="table-borderless foglTabla">
@@ -305,7 +305,7 @@
 
                 <div class="card egyszolgaltatas szolg-kartya foglalasok">
                     <div class="card-header accentFont fw-bold">Jövőbeli</div>
-                    <div class="card-body">
+                    <div class="card-body AutoOverflowClass">
                         @if (Model.JovobeliFoglalasok.Any())
                         {
                             <table class="table-borderless foglTabla">
@@ -348,7 +348,7 @@
 
                 <div class="card egyszolgaltatas szolg-kartya foglalasok">
                     <div class="card-header accentFont fw-bold">Megtörtént</div>
-                    <div class="card-body">
+                    <div class="card-body AutoOverflowClass">
                         @if (Model.Regifoglalasok.Any())
                         {
                             <table class="table-borderless foglTabla">
@@ -409,9 +409,9 @@
 
     .foglalasok{
         max-height: 350px;
-        overflow: auto;
     }
 
+    
     .table {
         border-radius: 20px !important;
     }
