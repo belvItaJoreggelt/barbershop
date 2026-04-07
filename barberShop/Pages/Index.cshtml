@@ -2,7 +2,12 @@
 @model IndexModel
 
 <div class="py-2">
-    @if (Model.Section == "szolgaltatasok")
+    @if (Model.Section == ""){
+        <div class="">
+            Hello Bello
+        </div>
+    }
+    else if (Model.Section == "szolgaltatasok")
     {
         ViewData["Title"] = "Szolgáltatások";
         <h1 class="mb-4 ezustFont">Szolgáltatásaink</h1>

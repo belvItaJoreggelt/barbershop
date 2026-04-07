@@ -28,7 +28,7 @@ namespace barberShop.Pages
         }
 
         [BindProperty(SupportsGet = true)]
-        public string? Section { get; set; } = "szolgaltatasok";
+        public string? Section { get; set; } = "";
 
         public List<Szolgaltatas> Szolgaltatasok { get; set; } = new();
 
