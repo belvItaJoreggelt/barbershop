@@ -462,7 +462,7 @@ namespace barberShop.Pages
         </tr>
     </table>
     <p>A fodrászod:</p>
-    <img src=""{{profilKepUrl}}"" alt=""{{fodr.Nev}}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #e8dcc8;"" />
+    <img src=""{profilKepUrl}"" alt=""{fodr.Nev}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #e8dcc8;"" />
     <p>
         BestBarbershop<br />
         <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
