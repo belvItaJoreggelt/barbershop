@@ -94,7 +94,7 @@
         <div class="mb-4 p-3">
             <a asp-page="/Index" asp-route-section="szolgaltatasok" class="btn egyGomb btn-sm mb-3">Vissza a szolgáltatásokhoz</a>
             <p class="ezustFont mb-3">Szolgáltatás: <strong>@Model.KivalasztottSzolgaltatas.Nev</strong></p>
-
+            <p class="ezustFont mb-3">Várhatő időtartam: <strong>@Model.KivalasztottSzolgaltatas.Idotartam perc</strong></p>
 
             @if (Model.Fodraszok.Count == 0)
             {
@@ -329,6 +329,9 @@
                         <label asp-for="UgyfelMegjegyzes" class="form-label ezustFont">Megjegyzés:</label>
                         <input asp-for="UgyfelMegjegyzes" class="form-control" />
                     </p>
+
+                   <p class="accentFont fw-bold">Lemondási határidő: <span class="ezustFont">@Model.LemondasiHatarido?.ToString("yyyy.MM.dd HH:mm") </span></p>
+
                    <p>
                         <label class="form-label ezustFont">
                             <input type="checkbox" asp-for="AdatKezHozzaJ" />

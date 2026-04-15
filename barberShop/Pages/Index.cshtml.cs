@@ -71,6 +71,16 @@ namespace barberShop.Pages
         [BindProperty]
         public string? UgyfelMegjegyzes { get; set; }
 
+        public DateTime? LemondasiHatarido =>
+    DateTime.TryParseExact(
+        $"{FoglalasDatum} {FoglalasIdo}",
+        "yyyy-MM-dd HH:mm",
+        CultureInfo.InvariantCulture,
+        DateTimeStyles.None,
+        out var dt)
+    ? dt.AddDays(-2)
+    : null;
+
         [BindProperty]
         public bool AdatKezHozzaJ { get; set; }
 
