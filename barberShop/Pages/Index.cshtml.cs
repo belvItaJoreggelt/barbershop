@@ -430,6 +430,11 @@ namespace barberShop.Pages
             var szolgNevH = WebUtility.HtmlEncode(szolg.Nev);
             var szolgIdo = WebUtility.HtmlEncode(szolg.Idotartam.ToString());
 
+            var baseUrl = "https://bestbarbershopbookingsystem-djf9c0hch0dqexdt.westeurope-01.azurewebsites.net/"; // saját domain
+            var profilKepUrl = !string.IsNullOrWhiteSpace(fodr.ProfilkepFajlNeve)
+                ? $"{baseUrl}/kepek/fodraszok/{WebUtility.UrlEncode(fodr.ProfilkepFajlNeve)}"
+                : $"{baseUrl}/kepek/backgrounds/logo.webp";
+
             var maps = "https://www.bing.com/maps/search?mepi=72%7ELocal%7EEmbedded%7EEntity_Vertical_List_Card&ty=17&poicount=18&sei=0&FORM=MPSRPL&q=kelenf%C3%B6ld+fodr%C3%A1szat&secq=%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat+kelenfoeld+fodraszat&sece=ypid.YN8081x11846474530400285953&ppois=47.467506408691406_19.035743713378906_%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat_YN8081x11846474530400285953%7E47.46304702758789_19.034894943237305_X%C3%A9nia+Fodr%C3%A1szat_YN8081x14308692530027957564%7E47.46721649169922_19.042898178100586_B%C3%A1rtfai+Sz%C3%A9ps%C3%A9gszalon+most_YN8081x3342422111653719704%7E&segment=Local&cp=47.467179%7E19.036090&lvl=17.7&style=r";
 
             var body = $@"
@@ -456,6 +461,8 @@ namespace barberShop.Pages
             </td>
         </tr>
     </table>
+    <p>A fodrászod:</p>
+    <img src=""{{profilKepUrl}}"" alt=""{{fodr.Nev}}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #D4AF37;"" />
     <p>
         BestBarbershop<br />
         <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
