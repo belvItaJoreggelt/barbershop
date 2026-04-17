@@ -200,10 +200,10 @@
                     <thead class="">
                         <tr>
                             <th>Név</th>
-                            <th>E-mail</th>
-                            <th>Telefon</th>
-                            <th>Specializáció</th>
-                            <th>Vállalt szolgáltatások</th>
+                            <th class="d-none d-md-table-cell">E-mail</th>
+                            <th class="d-none d-md-table-cell">Telefon</th>
+                            <th class="d-none d-md-table-cell">Specializáció</th>
+                            <th class="d-none d-md-table-cell">Vállalt szolgáltatások</th>
                             <th style="width: 160px;"></th>
                         </tr>
                     </thead>
@@ -222,7 +222,7 @@
                                                 <div class="col-md-2"><label class="form-label small">Telefon</label><input name="EditFodraszTelefon" class="form-control form-control-sm" value="@f.Telefon" /></div>
                                                 <div class="col-md-2"><label class="form-label small">Specializáció</label><input name="EditFodraszSpecializacio" class="form-control form-control-sm" value="@(f.Specializacio ?? "")" /></div>
                                                 <div class="col-md-2">
-                                                    <label class="form-label ezustFont small">Szolgáltatások</label>
+                                                    <label class="form-label ezustFont small">Szolgáltatások</label><br />
                                                     @foreach (var sz in Model.SzolgaltatasLista)
                                                     {
                                                         var checkedAttr = f.VallaltSzolgaltatasok?.Any(v => v.Id == sz.Id) == true ? "checked" : "";
@@ -230,11 +230,12 @@
                                                             <input type="checkbox" name="SelectedSzolgaltatasIds" value="@sz.Id" class="form-check-input" id="edit_@(f.ID)_@(sz.Id)" @checkedAttr />
                                                             <label class="form-check-label ezustFont" for="edit_@(f.ID)_@(sz.Id)">@sz.Nev</label>
                                                         </div>
+                                                        <br />
                                                     }
                                                 </div>
                                                 <div class="col-md-2">
-                                                    <button type="submit" class="btn btn-sm egyGomb">Mentés</button>
                                                     <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" class="btn btn-sm btn-outline-secondary">Mégse</a>
+                                                    <button type="submit" class="btn btn-sm egyGomb">Mentés</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -245,10 +246,10 @@
                             {
                                 <tr>
                                     <td>@f.Nev</td>
-                                    <td>@f.Email</td>
-                                    <td>@f.Telefon</td>
-                                    <td>@(f.Specializacio ?? "")</td>
-                                    <td>@(f.VallaltSzolgaltatasok != null ? string.Join(", ", f.VallaltSzolgaltatasok.Select(s => s.Nev)) : "")</td>
+                                    <td class="d-none d-md-table-cell">@f.Email</td>
+                                    <td class="d-none d-md-table-cell">@f.Telefon</td>
+                                    <td class="d-none d-md-table-cell">@(f.Specializacio ?? "")</td>
+                                    <td class="d-none d-md-table-cell">@(f.VallaltSzolgaltatasok != null ? string.Join(", ", f.VallaltSzolgaltatasok.Select(s => s.Nev)) : "")</td>
                                     <td class="text-center align-middle">
                                         <a asp-page="/Account/AdminFelulet" asp-route-section="fodraszok" asp-route-editId="@f.ID" class="btn btn-sm btn-outline-primary">Szerkeszt</a>
                                         
