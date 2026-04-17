@@ -18,7 +18,7 @@ namespace barberShop.Pages.Account
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IWebHostEnvironment _env;
 
-        private static readonly string[] SzolgKepKiterjesztesek = [".jpg", ".jpeg", ".png", "webp", ".avif"];
+        private static readonly string[] SzolgKepKiterjesztesek = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
         private const long SzolgKepMaxMeretBajt = 5 * 1024 * 1024;
         public AdminFeluletModel(AppDbContext context, UserManager<Felhasznalo> userManager, RoleManager<IdentityRole> roleManager, IWebHostEnvironment env)
         {
@@ -116,7 +116,7 @@ namespace barberShop.Pages.Account
         }
 
         /// <summary>POST Create: új szolgáltatás mentése, majd vissza ugyanerre az oldalra.</summary>
-        public async Task<IActionResult> OnPostCreateAsync(IFormFile? CreateKepSotet, IFormFile? CreateKepVilagos)
+        public async Task<IActionResult> OnPostCreateAsync(IFormFile? CreateKep)
         {
             if (!string.IsNullOrWhiteSpace(CreateNev))
             {
@@ -131,29 +131,30 @@ namespace barberShop.Pages.Account
                 _context.Szolgaltatasok.Add(uj);
                 await _context.SaveChangesAsync();
 
-                var hibak = new List<string>();
-
-                var sotet = await TrySaveSzolgaltatasKepAsync(uj.Id, "sotet", CreateKepSotet, null);
-                if (sotet.Error != null) hibak.Add($"Sötét: {sotet.Error}");
-                else if (sotet.FileName != null) uj.KepFajlNeve = sotet.FileName;
-
-                if (hibak.Count > 0)
-                    TempData["SzolgKepError"] = string.Join(" ", hibak);
-
-                await _context.SaveChangesAsync();
+                if (CreateKep != null && CreateKep.Length > 0)
+                {
+                    var ered = await TrySaveSzolgaltatasKepWebpAsync(uj.Id, CreateKep, null);
+                    if (ered.Error != null)
+                        TempData["SzolgKepError"] = ered.Error;
+                    else if (ered.FileName != null)
+                    {
+                        uj.KepFajlNeve = ered.FileName;
+                        uj.KepFajlNev_Vilagos = ered.FileName;
+                    }
+                    await _context.SaveChangesAsync();
+                }
             }
             return RedirectToPage("/Account/AdminFelulet", new { section = "szolgaltatasok" });
         }
 
         public async Task<IActionResult> OnPostUpdateAsync(
-            int Id,
-            string EditNev,
-            int EditIdotartam,
-            decimal EditAr,
-            string EditLeiras,
-            int EditSorszam,
-            IFormFile? EditKepSotet,
-            IFormFile? EditKepVilagos)
+    int Id,
+    string EditNev,
+    int EditIdotartam,
+    decimal EditAr,
+    string EditLeiras,
+    int EditSorszam,
+    IFormFile? EditKep)
         {
             var hibak = new List<string>();
             var s = await _context.Szolgaltatasok.FindAsync(Id);
@@ -166,11 +167,24 @@ namespace barberShop.Pages.Account
                 s.Leiras = EditLeiras?.Trim() ?? "";
                 s.Sorszam = EditSorszam;
 
-                if (EditKepSotet != null && EditKepSotet.Length > 0)
+                if (EditKep != null && EditKep.Length > 0)
                 {
-                    var ered = await TrySaveSzolgaltatasKepAsync(s.Id, "sotet", EditKepSotet, s.KepFajlNeve);
-                    if (ered.Error != null) hibak.Add($"Sötét: {ered.Error}");
-                    else if (ered.FileName != null) s.KepFajlNeve = ered.FileName;
+                    var regiSotet = s.KepFajlNeve;
+                    var regiVilagos = s.KepFajlNev_Vilagos;
+
+                    var ered = await TrySaveSzolgaltatasKepWebpAsync(s.Id, EditKep, null);
+
+                    if (ered.Error != null)
+                        hibak.Add(ered.Error);
+                    else if (ered.FileName != null)
+                    {
+                        TorolSzolgaltatasKepFajlt(regiSotet);
+                        if (!string.Equals(regiSotet, regiVilagos, StringComparison.OrdinalIgnoreCase))
+                            TorolSzolgaltatasKepFajlt(regiVilagos);
+
+                        s.KepFajlNeve = ered.FileName;
+                        s.KepFajlNev_Vilagos = ered.FileName;
+                    }
                 }
 
                 if (hibak.Count > 0)
@@ -191,7 +205,8 @@ namespace barberShop.Pages.Account
             if (s != null)
             {
                 TorolSzolgaltatasKepFajlt(s.KepFajlNeve);
-                TorolSzolgaltatasKepFajlt(s.KepFajlNev_Vilagos);
+                if (!string.Equals(s.KepFajlNeve, s.KepFajlNev_Vilagos, StringComparison.OrdinalIgnoreCase))
+                    TorolSzolgaltatasKepFajlt(s.KepFajlNev_Vilagos);
                 _context.Szolgaltatasok.Remove(s);
                 await _context.SaveChangesAsync();
             }
@@ -261,7 +276,7 @@ namespace barberShop.Pages.Account
                 _context.Fodraszok.Remove(f);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("Account/AdminFelulet", new { section = "fodraszok" });
+            return RedirectToPage("/Account/AdminFelulet", new { section = "fodraszok" });
         }
 
 
@@ -360,42 +375,31 @@ namespace barberShop.Pages.Account
             return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
         }
 
-        private async Task<(string? Error, string? FileName)> TrySaveSzolgaltatasKepAsync(int szolgId,string variant,IFormFile? file,string? korabbiFajlNeve)
+        private async Task<(string? Error, string? FileName)> TrySaveSzolgaltatasKepWebpAsync(int szolgId,IFormFile file,string? korabbiFajlNeve)
         {
-            if (file == null || file.Length == 0)
+            if (file.Length == 0)
                 return (null, null);
-
             if (file.Length > SzolgKepMaxMeretBajt)
                 return ("max. 5 MB.", null);
-
             var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
             if (string.IsNullOrEmpty(ext) || !SzolgKepKiterjesztesek.Contains(ext))
                 return ("csak jpg/png/webp/avif.", null);
-
             var dir = Path.Combine(_env.WebRootPath, "kepek", "szolgaltatasok");
             Directory.CreateDirectory(dir);
-
-            var ujNev = $"szolg-{szolgId}-{variant}-{Guid.NewGuid():N}{ext}";
+            var ujNev = $"szolg-{szolgId}-{Guid.NewGuid():N}.webp";
             var teljesUt = Path.Combine(dir, ujNev);
-
             try
             {
-                await using(var bemenet = file.OpenReadStream())
-                    using(var image= await Image.LoadAsync(bemenet))
-                    {
-                    var encoder = new WebpEncoder { Quality = 82 };
-                    await image.SaveAsync(teljesUt,encoder);
-                    }
+                await using var bemenet = file.OpenReadStream();
+                using var image = await Image.LoadAsync(bemenet);
+                await image.SaveAsync(teljesUt, new WebpEncoder { Quality = 82 });
             }
-            catch (UnknownImageFormatException)
+            catch (Exception)
             {
-                return ("nem érvényes a kiválasztott kép", null);
+                return ("nem érvényes kép.", null);
             }
-            
-
             if (!string.IsNullOrWhiteSpace(korabbiFajlNeve))
                 TorolSzolgaltatasKepFajlt(korabbiFajlNeve);
-
             return (null, ujNev);
         }
 
