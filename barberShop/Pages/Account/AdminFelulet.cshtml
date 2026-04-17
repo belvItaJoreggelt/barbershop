@@ -78,12 +78,8 @@
                         <input asp-for="CreateAr" class="form-control" type="number" min="0" step="1" />
                     </div>
                     <div class="col-md-3">
-                        <div class="row g-2 align-items-end">
-                            <div class="col-md-4">
-                                <label class="form-label ezustFont small">Kép</label>
-                                <input type="file" name="CreateKepVilagos" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/avif" />
-                            </div>
-                        </div>
+                        <label class="form-label ezustFont small">Kép</label>
+                        <input type="file" name="CreateKepVilagos" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/avif" />
                     </div>
 
                     <div class="col-12">
@@ -106,10 +102,10 @@
                     <thead>
                         <tr>
                             <th>Név</th>
-                            <th>Időtartam</th>
-                            <th>Ár</th>
-                            <th>Leírás</th>
-                            <th class="text-center" style="width:90px">Sorrend</th>
+                            <th class="d-none d-md-table-cell">Időtartam</th>
+                            <th class="d-none d-md-table-cell">Ár</th>
+                            <th class="d-none d-md-table-cell">Leírás</th>
+                            <th class="text-center d-none d-md-table-cell" style="width:90px">Sorrend</th>
                             <th style="width: 160px;"></th>
                         </tr>
                     </thead>
@@ -126,7 +122,6 @@
                                                 <div class="col-md-2 col-sm-8"><label class="form-label small">Név</label><input name="EditNev" class="form-control form-control-sm" value="@s.Nev" /></div>
                                                 <div class="col-md-1 col-sm-8"><label class="form-label small">Perc</label><input name="EditIdotartam" class="form-control form-control-sm" type="number" min="1" value="@s.Idotartam" /></div>
                                                 <div class="col-md-1 col-sm-8"><label class="form-label small">Ár</label><input name="EditAr" class="form-control form-control-sm" type="number" min="0" value="@s.Ar" /></div>
-                                                <div class="col-md-7 col-sm-8"><label class="form-label small">Leírás</label><input name="EditLeiras" class="form-control form-control-sm" value="@(s.Leiras ?? "")" /></div>
                                                 <div class="col-md-1 col-sm-5">
                                                     <label class="form-label small">Sorrend</label>
                                                     <select name="EditSorszam" class="form-select form-select-sm">
@@ -143,7 +138,9 @@
                                                         }
                                                     </select>
                                                 </div>
-                                                <div class="col-md-3 col-sm-8">
+                                                <div class="col-md-8 col-sm-8"><label class="form-label small">Leírás</label><input name="EditLeiras" class="form-control form-control-sm" value="@(s.Leiras ?? "")" /></div>
+                                                
+                                                <div class="col-md-5 col-sm-8">
                                                     <label class="form-label small">Új kép</label>
                                                     <input type="file" name="EditKepVilagos" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/gif" />
                                                 </div>
@@ -169,10 +166,10 @@
                             {
                                 <tr>
                                     <td>@s.Nev</td>
-                                    <td>@s.Idotartam perc</td>
-                                    <td>@s.Ar.ToString("N0") Ft</td>
-                                    <td>@(s.Leiras?.Length > 50 ? s.Leiras.Substring(0, 50) + "…" : (s.Leiras ?? ""))</td>
-                                    <td class="text-center">@s.Sorszam</td>
+                                    <td class="d-none d-md-table-cell">@s.Idotartam perc</td>
+                                    <td class="d-none d-md-table-cell">@s.Ar.ToString("N0") Ft</td>
+                                    <td class="d-none d-md-table-cell">@(s.Leiras?.Length > 50 ? s.Leiras.Substring(0, 50) + "…" : (s.Leiras ?? ""))</td>
+                                    <td class="text-center d-none d-md-table-cell">@s.Sorszam</td>
                                     <td>
                                         <a asp-page="/Account/AdminFelulet" asp-route-editId="@s.Id" asp-route-section="szolgaltatasok" class="btn btn-sm btn-outline-primary">Szerkeszt</a>
                                         <form method="post" asp-page-handler="Delete" asp-route-id="@s.Id" class="d-inline" onsubmit="return confirm('Törölni szeretnéd?');">
