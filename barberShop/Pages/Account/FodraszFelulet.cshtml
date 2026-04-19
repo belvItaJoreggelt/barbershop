@@ -53,7 +53,7 @@
                         <div class="card-header accentFont fw-bold">Push értesítések</div>
                         <div class="card-body d-flex flex-column flex-grow-1">
                             <p class="ezustFont">
-                                Kapj böngészős értesítést, ha új foglalás érkezik hozzád. Először engedélyezd az értesítéseket ennél az eszköznél.
+                                Kattins ide, hogy push értesítést is kapj, ha új foglalás érkezik hozzád.
                             </p>
                             <button type="button" id="onesignal-subscribe-btn" class="btn egyGomb mt-auto align-self-start">
                                 Értesítések engedélyezése
@@ -82,28 +82,43 @@
             <div class="card egyszolgaltatas szolg-kartya">
                 <div class="card-header accentFont fw-bold">Profilomhoz tartozó adatok</div>
                 <div class="card-body">
-                    <form method="post" asp-page-handler="SaveAdataim">
+                    <form method="post" asp-page-handler="SaveAdataim" enctype="multipart/form-data">
                         <div class="row g-3">
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="EditNev" class="form-label fw-bold ezustFont">Név</label>
                                 <input asp-for="EditNev" class="form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="EditEmail" class="form-label fw-bold ezustFont">E-mail</label>
                                 <input asp-for="EditEmail" class="form-control" type="email" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="EditTelefon" class="form-label fw-bold ezustFont">Telefon</label>
                                 <input asp-for="EditTelefon" class="form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-2">
                                 <label asp-for="EditSpecializacio" class="form-label fw-bold ezustFont">Specializáció</label>
                                 <input asp-for="EditSpecializacio" class="form-control" />
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-12">
                                 <label asp-for="UjJelszo" class="form-label ezustFont"><span class="fw-bold">Új jelszó </span> (hagyd üresen, ha nem változtatod)</label>
                                 <input asp-for="UjJelszo" class="form-control" type="password" />
                             </div>
+                            @*
+                            <div class="col-md-5 col-sm-8">
+                                <label class="form-label small">Új kép</label>
+                                <input type="file" name="EditKep" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/avif" />
+                            </div>
+                            <div class="col-md-6 col-sm-8">
+                                <span class="small d-block mb-1">Jelenlegi</span>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    @if (!string.IsNullOrEmpty(f.ProfilkepFajlNeve))
+                                    {
+                                        <img src="~/kepek/fodraszok/@f.ProfilkepFajlNeve" alt="@f.Nev" class="rounded border" style="max-height:72px;object-fit:contain;" />
+                                    }
+                                </div>
+                            </div>
+                            *@
                             <div class="col-12">
                                 <label class="form-label fw-bold ezustFont">Vállalt szolgáltatások</label>
                                 <br />
