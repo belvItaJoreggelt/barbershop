@@ -28,7 +28,6 @@ namespace barberShop.Pages.Account
             _env = env;
         }
 
-        /// <summary>Az oldalon megjelenő szolgáltatások listája.</summary>
         public List<Szolgaltatas> SzolgaltatasLista { get; set; } = new();
 
 
@@ -36,11 +35,10 @@ namespace barberShop.Pages.Account
         public string Section { get; set; } = "";
 
 
-        /// <summary>URL-ből jön: ?editId=5 → az 5-ös id-jű szolgáltatás szerkesztése (sárga sor a nézetben). SupportsGet: GET kérésből is kötődik.</summary>
         [BindProperty(SupportsGet = true)]
         public int? EditId { get; set; }
 
-        /// <summary>Új szolgáltatás űrlap mezői (Create handler kapja).</summary>
+
         [BindProperty(SupportsGet = false)]
         public string CreateNev { get; set; } = "";
         [BindProperty(SupportsGet = false)]
@@ -50,7 +48,7 @@ namespace barberShop.Pages.Account
         [BindProperty(SupportsGet = false)]
         public string CreateLeiras { get; set; } = "";
 
-        /// <summary>GET: lista betöltése; EditId a query/route-ból automatikusan kötődik.</summary>
+
         
 
         // Fodrasz szekció - Props
@@ -115,7 +113,7 @@ namespace barberShop.Pages.Account
             }
         }
 
-        /// <summary>POST Create: új szolgáltatás mentése, majd vissza ugyanerre az oldalra.</summary>
+
         public async Task<IActionResult> OnPostCreateAsync(IFormFile? CreateKep)
         {
             if (!string.IsNullOrWhiteSpace(CreateNev))
@@ -146,15 +144,7 @@ namespace barberShop.Pages.Account
             }
             return RedirectToPage("/Account/AdminFelulet", new { section = "szolgaltatasok" });
         }
-
-        public async Task<IActionResult> OnPostUpdateAsync(
-    int Id,
-    string EditNev,
-    int EditIdotartam,
-    decimal EditAr,
-    string EditLeiras,
-    int EditSorszam,
-    IFormFile? EditKep)
+        public async Task<IActionResult> OnPostUpdateAsync(int Id,string EditNev,int EditIdotartam,decimal EditAr,string EditLeiras,int EditSorszam,IFormFile? EditKep)
         {
             var hibak = new List<string>();
             var s = await _context.Szolgaltatasok.FindAsync(Id);
@@ -198,7 +188,6 @@ namespace barberShop.Pages.Account
 
             return RedirectToPage("/Account/AdminFelulet", new { section = "szolgaltatasok" });
         }
-
         public async Task<IActionResult> OnPostDeleteAsync(int id)
         {
             var s = await _context.Szolgaltatasok.FindAsync(id);
@@ -212,11 +201,9 @@ namespace barberShop.Pages.Account
             }
             return RedirectToPage("/Account/AdminFelulet", new { section = "szolgaltatasok" });
         }
-
         // Fodrasz szekció - Meth
 
-
-        public async Task<IActionResult> OnPostCreateFodraszAsync(int[]? SelectedSzolgaltatasIds)
+        public async Task<IActionResult> OnPostCreateFodraszAsync(int[]? SelectedSzolgaltatasIds, IFormFile FodraszCreateKep)
         {
             if (string.IsNullOrWhiteSpace(CreateFodraszNev))
                 return RedirectToPage("/Account/AdminFelulet", new { section = "fodraszok" });
@@ -239,16 +226,31 @@ namespace barberShop.Pages.Account
             }
             _context.Fodraszok.Add(f);
             await _context.SaveChangesAsync();
+
+            if (FodraszCreateKep != null && FodraszCreateKep.Length > 0)
+            {
+                var ered = await TrySaveFodraszKepWebpAsync(f.ID, FodraszCreateKep, null);
+                if (ered.Error != null)
+                    TempData["FodraszkepError"] = ered.Error;
+                else if (ered.FileName != null)
+                {
+                    f.ProfilkepFajlNeve = ered.FileName;
+                }
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToPage("/Account/AdminFelulet", new { section = "fodraszok" });
 
         }
 
-        public async Task<IActionResult> OnPostUpdateFodraszAsync(int Id, string EditFodraszNev, string EditFodraszEmail, string EditFodraszTelefon, string EditFodraszSpecializacio, int[]? SelectedSzolgaltatasIds)
+        public async Task<IActionResult> OnPostUpdateFodraszAsync(int Id, string EditFodraszNev, string EditFodraszEmail, string EditFodraszTelefon, string EditFodraszSpecializacio, int[]? SelectedSzolgaltatasIds, IFormFile? EditKep)
         {
             var f = await _context.Fodraszok.Include(x => x.VallaltSzolgaltatasok).FirstOrDefaultAsync(x => x.ID == Id);
 
             if(f == null)
                 return RedirectToPage("/Account/AdminFelulet", new { section = "fodraszok" });
+
+            var hibak = new List<string>();
 
             f.Nev = (EditFodraszNev ?? "").Trim();
             f.Email = (EditFodraszEmail ?? "").Trim();
@@ -264,6 +266,26 @@ namespace barberShop.Pages.Account
             {
                 f.VallaltSzolgaltatasok.Add(item);
             }
+
+            if (EditKep != null && EditKep.Length > 0)
+            {
+                var regiKep = f.ProfilkepFajlNeve;
+
+                var ered = await TrySaveFodraszKepWebpAsync(f.ID, EditKep, null);
+
+                if (ered.Error != null)
+                    hibak.Add(ered.Error);
+                else if (ered.FileName != null)
+                {
+                    TorolFodraszKepFajlt(regiKep);
+
+                    f.ProfilkepFajlNeve = ered.FileName;
+                }
+            }
+
+            if (hibak.Count > 0)
+                TempData["FodraszkepError"] = string.Join(" ", hibak);
+
             await _context.SaveChangesAsync();
             return RedirectToPage("/Account/AdminFelulet", new { section = "fodraszok" });
         }
@@ -273,6 +295,7 @@ namespace barberShop.Pages.Account
             var f = await _context.Fodraszok.FindAsync(id);
             if (f != null)
             {
+                TorolFodraszKepFajlt(f.ProfilkepFajlNeve);
                 _context.Fodraszok.Remove(f);
                 await _context.SaveChangesAsync();
             }
@@ -281,7 +304,7 @@ namespace barberShop.Pages.Account
 
 
         // Felhasználók szekció - Meth
-        public async Task<IActionResult> OnPostCreateUserAsync(int[]? SelectedSzolgaltatasIds)
+        public async Task<IActionResult> OnPostCreateUserAsync(int[]? SelectedSzolgaltatasIds, IFormFile? FodraszCreateKep2)
         {
             if (string.IsNullOrWhiteSpace(CreateUserEmail) || string.IsNullOrWhiteSpace(CreateUserPassword) || string.IsNullOrWhiteSpace(CreateUserRole))
             {
@@ -315,6 +338,18 @@ namespace barberShop.Pages.Account
                     EmailConfirmed = true,
                     FodraszId = fodrasz.ID
                 };
+
+                if (FodraszCreateKep2 != null && FodraszCreateKep2.Length > 0)
+                {
+                    var ered = await TrySaveFodraszKepWebpAsync(fodrasz.ID, FodraszCreateKep2, null);
+                    if (ered.Error != null)
+                        TempData["FodraszkepError"] = ered.Error;
+                    else if (ered.FileName != null)
+                    {
+                        fodrasz.ProfilkepFajlNeve = ered.FileName;
+                    }
+                    await _context.SaveChangesAsync();
+                }
             }
             else
             {
@@ -414,6 +449,57 @@ namespace barberShop.Pages.Account
 
             var teljes = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "szolgaltatasok", fajlNevNorm));
             var engedettGyoker = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "szolgaltatasok"));
+
+            if (!teljes.StartsWith(engedettGyoker, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            try
+            {
+                if (System.IO.File.Exists(teljes))
+                    System.IO.File.Delete(teljes);
+            }
+            catch { }
+        }
+
+        private async Task<(string? Error, string? FileName)> TrySaveFodraszKepWebpAsync(int szolgId, IFormFile file, string? korabbiFajlNeve)
+        {
+            if (file.Length == 0)
+                return (null, null);
+            if (file.Length > SzolgKepMaxMeretBajt)
+                return ("max. 5 MB.", null);
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !SzolgKepKiterjesztesek.Contains(ext))
+                return ("csak jpg/png/webp/avif.", null);
+            var dir = Path.Combine(_env.WebRootPath, "kepek", "fodraszok");
+            Directory.CreateDirectory(dir);
+            var ujNev = $"szolg-{szolgId}-{Guid.NewGuid():N}.webp";
+            var teljesUt = Path.Combine(dir, ujNev);
+            try
+            {
+                await using var bemenet = file.OpenReadStream();
+                using var image = await Image.LoadAsync(bemenet);
+                await image.SaveAsync(teljesUt, new WebpEncoder { Quality = 82 });
+            }
+            catch (Exception)
+            {
+                return ("nem érvényes kép.", null);
+            }
+            if (!string.IsNullOrWhiteSpace(korabbiFajlNeve))
+                TorolFodraszKepFajlt(korabbiFajlNeve);
+            return (null, ujNev);
+        }
+
+        private void TorolFodraszKepFajlt(string? fajlNev)
+        {
+            if (string.IsNullOrWhiteSpace(fajlNev))
+                return;
+
+            var fajlNevNorm = Path.GetFileName(fajlNev);
+            if (string.IsNullOrEmpty(fajlNevNorm))
+                return;
+
+            var teljes = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "fodraszok", fajlNevNorm));
+            var engedettGyoker = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "fodraszok"));
 
             if (!teljes.StartsWith(engedettGyoker, StringComparison.OrdinalIgnoreCase))
                 return;
