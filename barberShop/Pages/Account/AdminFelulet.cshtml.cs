@@ -306,81 +306,98 @@ namespace barberShop.Pages.Account
         // Felhasználók szekció - Meth
         public async Task<IActionResult> OnPostCreateUserAsync(int[]? SelectedSzolgaltatasIds, IFormFile? FodraszCreateKep2)
         {
-            if (string.IsNullOrWhiteSpace(CreateUserEmail) || string.IsNullOrWhiteSpace(CreateUserPassword) || string.IsNullOrWhiteSpace(CreateUserRole))
+            if (string.IsNullOrWhiteSpace(CreateUserEmail) ||
+                string.IsNullOrWhiteSpace(CreateUserPassword) ||
+                string.IsNullOrWhiteSpace(CreateUserRole))
             {
                 TempData["UserError"] = "E-mail, jelszó és jogkör megadása kötelező.";
                 return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
             }
 
-            Felhasznalo user;
 
-            if (CreateUserRole == "Fodrasz")
+            var user = new Felhasznalo
             {
-                var fodrasz = new Fodrasz
-                {
-                    Nev = (CreateFodraszNev ?? "").Trim(),
-                    Email = CreateUserEmail.Trim(),
-                    Telefon = (CreateFodraszTelefon ?? "").Trim(),
-                    Specializacio = (CreateFodraszSpecializacio ?? "").Trim()
-                };
-                var szolgLista = await _context.Szolgaltatasok
-                    .Where(s => SelectedSzolgaltatasIds != null && SelectedSzolgaltatasIds.Contains(s.Id))
-                    .ToListAsync();
-                foreach (var s in szolgLista)
-                    fodrasz.VallaltSzolgaltatasok.Add(s);
-                _context.Fodraszok.Add(fodrasz);
-                await _context.SaveChangesAsync();
+                UserName = CreateUserEmail.Trim(),
+                Email = CreateUserEmail.Trim(),
+                EmailConfirmed = true,
+                Nev = CreateUserRole == "Fodrasz" ? (CreateFodraszNev ?? "").Trim() : ""
+            };
 
-                user = new Felhasznalo
-                {
-                    UserName = CreateUserEmail,
-                    Email = CreateUserEmail,
-                    EmailConfirmed = true,
-                    FodraszId = fodrasz.ID
-                };
+            var createUserResult = await _userManager.CreateAsync(user, CreateUserPassword);
+            if (!createUserResult.Succeeded)
+            {
+                TempData["UserError"] = "Hiba: " + string.Join(" ", createUserResult.Errors.Select(e => e.Description));
+                return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
+            }
 
-                if (FodraszCreateKep2 != null && FodraszCreateKep2.Length > 0)
+            var roleExists = await _context.Roles.AnyAsync(r => r.Name == CreateUserRole);
+            if (!roleExists)
+            {
+                await _userManager.DeleteAsync(user); // rollback user
+                TempData["UserError"] = "A kiválasztott jogkör nem létezik.";
+                return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
+            }
+
+            var addRoleResult = await _userManager.AddToRoleAsync(user, CreateUserRole);
+            if (!addRoleResult.Succeeded)
+            {
+                await _userManager.DeleteAsync(user); // rollback user
+                TempData["UserError"] = "Jogkör hozzárendelés hiba: " + string.Join(" ", addRoleResult.Errors.Select(e => e.Description));
+                return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
+            }
+
+
+            if (CreateUserRole != "Fodrasz")
+            {
+                TempData["UserSuccess"] = "Felhasználó létrehozva.";
+                return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
+            }
+
+            var fodrasz = new Fodrasz
+            {
+                Nev = (CreateFodraszNev ?? "").Trim(),
+                Email = CreateUserEmail.Trim(),
+                Telefon = (CreateFodraszTelefon ?? "").Trim(),
+                Specializacio = (CreateFodraszSpecializacio ?? "").Trim()
+            };
+
+            var szolgLista = await _context.Szolgaltatasok
+                .Where(s => SelectedSzolgaltatasIds != null && SelectedSzolgaltatasIds.Contains(s.Id))
+                .ToListAsync();
+
+            foreach (var s in szolgLista)
+                fodrasz.VallaltSzolgaltatasok.Add(s);
+
+            _context.Fodraszok.Add(fodrasz);
+            await _context.SaveChangesAsync();
+
+
+            if (FodraszCreateKep2 != null && FodraszCreateKep2.Length > 0)
+            {
+                var ered = await TrySaveFodraszKepWebpAsync(fodrasz.ID, FodraszCreateKep2, null);
+                if (ered.Error != null)
                 {
-                    var ered = await TrySaveFodraszKepWebpAsync(fodrasz.ID, FodraszCreateKep2, null);
-                    if (ered.Error != null)
-                        TempData["FodraszkepError"] = ered.Error;
-                    else if (ered.FileName != null)
-                    {
-                        fodrasz.ProfilkepFajlNeve = ered.FileName;
-                    }
+                    TempData["UserError"] = "Felhasználó kész, de a kép mentése nem sikerült: " + ered.Error;
+                }
+                else if (ered.FileName != null)
+                {
+                    fodrasz.ProfilkepFajlNeve = ered.FileName;
                     await _context.SaveChangesAsync();
                 }
             }
-            else
+
+            user.FodraszId = fodrasz.ID;
+            var linkResult = await _userManager.UpdateAsync(user);
+            if (!linkResult.Succeeded)
             {
-                user = new Felhasznalo
-                {
-                    UserName = CreateUserEmail,
-                    Email = CreateUserEmail,
-                    EmailConfirmed = true,
-                    Nev = ""
-                };
+                TempData["UserError"] = "Felhasználó létrejött, de a fodrásszal összekötés nem sikerült: " +
+                                        string.Join(" ", linkResult.Errors.Select(e => e.Description));
+                return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
             }
 
-            var result = await _userManager.CreateAsync(user, CreateUserPassword);
-
-            if (result.Succeeded)
-            {
-                var roleExists = await _context.Roles.AnyAsync(r => r.Name == CreateUserRole);
-                if (roleExists)
-                    await _userManager.AddToRoleAsync(user, CreateUserRole);
-                else
-                    TempData["UserError"] = "A kiválasztott jogkör nem létezik.";
-                TempData["UserSuccess"] = "Felhasználó létrehozva.";
-            }
-            else
-            {
-                TempData["UserError"] = "Hiba: " + string.Join(" ", result.Errors.Select(e => e.Description));
-            }
-
+            TempData["UserSuccess"] = "Fodrász felhasználó létrehozva.";
             return RedirectToPage("/Account/AdminFelulet", new { section = "felhasznalok" });
         }
-
         public async Task<IActionResult> OnPostSetPasswordAsync(string userId, string NewPassword)
         {
             if (string.IsNullOrWhiteSpace(userId))
