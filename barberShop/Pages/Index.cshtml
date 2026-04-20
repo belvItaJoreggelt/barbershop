@@ -219,7 +219,7 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 mt-2 mx-auto gap-4">
+                    <div class="col-md-4 mt-2 text-center gap-4">
                         @if (!Model.ReggeliIdopontok.Any() &&!Model.DelutaniIdopontok.Any() && !Model.EstiIdopontok.Any())
                         {
                             <p class="ezustFont text-center small">Erre a napra nincs szabad időpont.</p>
@@ -229,57 +229,97 @@
                             @if (Model.ReggeliIdopontok.Any())
                             {
                                 <span class="accentFont small fw-bold">Délelőtt</span>
-                                <div class="d-flex flex-wrap gap-2">
-                                    @foreach (var idpont in Model.ReggeliIdopontok)
+                                <table class="table table-borderless mb-2 w-auto">
+                                    <tbody>
+                                    @foreach (var oraCsoport in Model.ReggeliIdopontok
+                                        .OrderBy(x => x)
+                                        .GroupBy(x => x.Hour))
                                     {
-                                        <a asp-page="/Index"
-                                           asp-route-section="foglalas"
-                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
-                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
-                                           asp-route-foglalasDatum="@idpont.ToString("yyyy-MM-dd")"
-                                           asp-route-foglalasIdo="@idpont.ToString("HH:mm")"
-                                           class="btn ezustGomb btn-sm text-nowrap">
-                                            @idpont.ToString("HH:mm")
-                                        </a>
+                                        <tr>
+                                            @for (int perc = 0; perc <= 45; perc += 15)
+                                            {
+                                                var idopont = oraCsoport.FirstOrDefault(x => x.Minute == perc);
+                                                <td class="p-0 pe-1 pb-1">
+                                                    @if (idopont != default)
+                                                    {
+                                                        <a asp-page="/Index"
+                                                           asp-route-section="foglalas"
+                                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                                           asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                                           asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                                           class="btn ezustGomb btn-sm text-nowrap">
+                                                            @idopont.ToString("HH:mm")
+                                                        </a>
+                                                    }
+                                                </td>
+                                            }
+                                        </tr>
                                     }
-                                </div>
-                            
+                                    </tbody>
+                                </table>
                             }
                             @if (Model.DelutaniIdopontok.Any())
                             {
                                 <span class="accentFont small fw-bold">Délután</span>
-                                <div class="d-flex flex-wrap gap-2">
-                                    @foreach (var idopont in Model.DelutaniIdopontok)
-                                    {
-                                        <a asp-page="/Index"
-                                           asp-route-section="foglalas"
-                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
-                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
-                                           asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
-                                           asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
-                                           class="btn ezustGomb btn-sm text-nowrap">
-                                            @idopont.ToString("HH:mm")
-                                        </a>
-                                    }
-                                </div>
+                                <table class="table table-borderless mb-2 w-auto">
+                                    <tbody>
+                                        @foreach(var oracsoport in Model.DelutaniIdopontok.OrderBy(x=>x).GroupBy(x=>x.Hour))
+                                        {
+                                            <tr>
+                                                @for(int perc = 0; perc <=45; perc+=15)
+                                                {
+                                                    var idopont = oracsoport.FirstOrDefault(x => x.Minute == perc);
+                                                    <td class="p-0 pe-1 pb-1 align-top">
+                                                        @if(idopont != default)
+                                                        {
+                                                            <a asp-page="/Index"
+                                                               asp-route-section="foglalas"
+                                                               asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                                               asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                                               asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                                               asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                                               class="btn ezustGomb btn-sm text-nowrap">
+                                                                @idopont.ToString("HH:mm")
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             }
                             @if (Model.EstiIdopontok.Any())
                             {
                                 <span class="accentFont small fw-bold">Este</span>
-                                <div class="d-flex flex-wrap gap-2">
-                                    @foreach (var idopont in Model.EstiIdopontok)
-                                    {
-                                        <a asp-page="/Index"
-                                           asp-route-section="foglalas"
-                                           asp-route-FodraszId="@Model.KivalasztottF.ID"
-                                           asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
-                                           asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
-                                           asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
-                                           class="btn ezustGomb btn-sm text-nowrap">
-                                            @idopont.ToString("HH:mm")
-                                        </a>
-                                    }
-                                </div>
+                                <table class="table table-borderless mb-2 w-auto">
+                                    <tbody>
+                                        @foreach(var oracsoport in Model.EstiIdopontok.OrderBy(x=>x).GroupBy(x=>x.Hour))
+                                        {
+                                            <tr>
+                                                @for(int perc = 0; perc <=45; perc+=15)
+                                                {
+                                                    var idopont = oracsoport.FirstOrDefault(x => x.Minute == perc);
+                                                    <td class="p-0 pe-1 pb-1 align-top">
+                                                        @if(idopont != default)
+                                                        {
+                                                            <a asp-page="/Index"
+                                                               asp-route-section="foglalas"
+                                                               asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                                               asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                                               asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                                               asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                                               class="btn ezustGomb btn-sm text-nowrap">
+                                                                @idopont.ToString("HH:mm")
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
                             }
                         }
                     </div>

@@ -480,6 +480,7 @@ namespace barberShop.Pages
             await _pushNotificationService.SendBookingToBarberAsync(barberExternalId, UgyfelNev, szolg.Nev, idopont.EsedekessegiIdopont);
 
             return RedirectToPage("/Index", new { section = "koszi" });
+
         }
 
         public async Task FelhasznAdatokBetolt()
