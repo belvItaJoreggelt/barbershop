@@ -255,7 +255,7 @@ namespace barberShop.Pages.Account
             fodrasz.Telefon = (EditTelefon ?? "").Trim();
             fodrasz.Specializacio = (EditSpecializacio ?? "").Trim();
 
-            if (EditEmail != null && EditKep.Length > 0)
+            if (EditKep != null && EditKep.Length > 0)
             {
                 var (error, fileName) = await TrySaveFodraszKepAsync(fodrasz.ID, EditKep, fodrasz.ProfilkepFajlNeve);
                 if (error != null)

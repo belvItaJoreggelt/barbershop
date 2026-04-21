@@ -116,14 +116,14 @@
                                 <div class="d-flex gap-2 flex-wrap">
                                     @if (!string.IsNullOrEmpty(Model.KepFajlNeve))
                                     {
-                                        <img src="~/kepek/fodraszok/Model.KepFajlNeve" alt="Model.KepFajlNeve" class="rounded border" style="max-height:72px;object-fit:contain;" />
+                                        <img src="~/kepek/fodraszok/@Model.KepFajlNeve" alt="@Model.KepFajlNeve" class="rounded border" style="max-height:72px;object-fit:contain;" />
                                     }
                                 </div>
                             </div>
-                            <div class="col-12 d-flex">
+                            <div class="col-8">
                                 <label class="form-label fw-bold ezustFont">Vállalt szolgáltatások</label>
                                 <br />
-                                <div class="w-auto d-inline-flex align-items-center form-control">
+                                <div class="w-auto d-flex flex-column flex-md-row align-items-md-center form-control gap-1 gap-md-2">
                                     @foreach (var sz in Model.OsszesSzolgaltatas)
                                     {
                                         var checkedAttr = Model.SelectedSzolgaltatasIds?.Contains(sz.Id) == true ? "checked" : "";
