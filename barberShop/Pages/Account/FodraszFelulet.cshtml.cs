@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Webp;
 using System.Globalization;
 using System.Net;
 
@@ -14,15 +16,19 @@ namespace barberShop.Pages.Account
         private readonly AppDbContext _context;
         private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
+        private readonly IWebHostEnvironment _env;
 
+        private static readonly string[] Kiterjesztesek = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
+        private const long MaxMeret = 5 * 1024 * 1024;
         public FodraszFeluletModel(
             AppDbContext context,
             UserManager<Felhasznalo> userManager,
-            IEmailKuldo emailKuldo)
+            IEmailKuldo emailKuldo, IWebHostEnvironment env)
         {
             _context = context;
             _userManager = userManager;
             _emailKuldo = emailKuldo;
+            _env = env;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -49,6 +55,12 @@ namespace barberShop.Pages.Account
 
         [BindProperty]
         public List<int>? SelectedSzolgaltatasIds { get; set; } = new();
+
+        [BindProperty]
+        public IFormFile? EditKep { get; set; }
+
+        [BindProperty]
+        public string? KepFajlNeve { get; set; }
         #endregion
 
         #region Időpontjaim
@@ -109,6 +121,7 @@ namespace barberShop.Pages.Account
                 EditEmail = FodraszProfil.Email;
                 EditTelefon = FodraszProfil.Telefon;
                 EditSpecializacio = FodraszProfil.Specializacio;
+                KepFajlNeve = FodraszProfil.ProfilkepFajlNeve;
                 SelectedSzolgaltatasIds = FodraszProfil.VallaltSzolgaltatasok?
                     .Select(sz => sz.Id)
                     .ToList() ?? new List<int>();
@@ -224,7 +237,7 @@ namespace barberShop.Pages.Account
             return Page();
         }
 
-        public async Task<IActionResult> OnPostSaveAdataimAsync()
+        public async Task<IActionResult> OnPostSaveAdataimAsync(IFormFile? EditKep)
         {
             var user = await _userManager.GetUserAsync(User);
             if (user?.FodraszId == null)
@@ -241,6 +254,19 @@ namespace barberShop.Pages.Account
             fodrasz.Email = (EditEmail ?? "").Trim();
             fodrasz.Telefon = (EditTelefon ?? "").Trim();
             fodrasz.Specializacio = (EditSpecializacio ?? "").Trim();
+
+            if (EditEmail != null && EditKep.Length > 0)
+            {
+                var (error, fileName) = await TrySaveFodraszKepAsync(fodrasz.ID, EditKep, fodrasz.ProfilkepFajlNeve);
+                if (error != null)
+                {
+                    ModelState.AddModelError(string.Empty, $"Kép feltöltési hiba: {error}");
+                    return Page();
+                }
+
+                if (!string.IsNullOrWhiteSpace(fileName))
+                    fodrasz.ProfilkepFajlNeve = fileName;
+            }
 
             fodrasz.VallaltSzolgaltatasok.Clear();
 
@@ -639,5 +665,55 @@ namespace barberShop.Pages.Account
         }
 
         #endregion
+
+        private async Task<(string? Error, string? FileName)> TrySaveFodraszKepAsync(int fodraszId, IFormFile? file, string? korabbFileNev)
+        {
+            if (file.Length == 0)
+                return (null, null);
+            if (file.Length > MaxMeret)
+                return ("max. 5 MB.", null);
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !Kiterjesztesek.Contains(ext))
+                return ("csak jpg/png/webp/avif.", null);
+            var dir = Path.Combine(_env.WebRootPath, "kepek", "fodraszok");
+            Directory.CreateDirectory(dir);
+            var ujNev = $"fodrasz-{fodraszId}-{Guid.NewGuid():N}.webp";
+            var teljesUt = Path.Combine(dir, ujNev);
+            try
+            {
+                await using var bemenet = file.OpenReadStream();
+                using var image = await Image.LoadAsync(bemenet);
+                await image.SaveAsync(teljesUt, new WebpEncoder { Quality = 82 });
+            }
+            catch (Exception)
+            {
+                return ("érvénytelen kép", null);
+            }
+            if(!string.IsNullOrWhiteSpace(korabbFileNev))
+                TorolFodraszKep(korabbFileNev);
+
+            return (null, ujNev);
+        }
+
+        private void TorolFodraszKep(string? fileNev)
+        {
+            if (string.IsNullOrWhiteSpace(fileNev))
+                return;
+
+            var fajlNevNorm = Path.GetFileName(fileNev);
+            if (string.IsNullOrEmpty(fajlNevNorm))
+                return;
+
+            var teljes = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "fodraszok", fajlNevNorm));
+
+            try
+            {
+                if(System.IO.File.Exists(teljes))
+                    System.IO.File.Delete(teljes);
+            }
+            catch
+            {
+            }
+        }
     }
 }

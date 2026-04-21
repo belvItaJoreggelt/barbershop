@@ -107,22 +107,20 @@
                                 <label asp-for="UjJelszo" class="form-label ezustFont"><span class="fw-bold">Új jelszó </span> (hagyd üresen, ha nem változtatod)</label>
                                 <input asp-for="UjJelszo" class="form-control" type="password" />
                             </div>
-                            @*
                             <div class="col-md-5 col-sm-8">
-                                <label class="form-label small">Új kép</label>
+                                <label class="form-label small ezustFont">Új kép</label>
                                 <input type="file" name="EditKep" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/avif" />
                             </div>
                             <div class="col-md-6 col-sm-8">
-                                <span class="small d-block mb-1">Jelenlegi</span>
+                                <span class="small d-block mb-1 ezustFont">Jelenlegi</span>
                                 <div class="d-flex gap-2 flex-wrap">
-                                    @if (!string.IsNullOrEmpty(f.ProfilkepFajlNeve))
+                                    @if (!string.IsNullOrEmpty(Model.KepFajlNeve))
                                     {
-                                        <img src="~/kepek/fodraszok/@f.ProfilkepFajlNeve" alt="@f.Nev" class="rounded border" style="max-height:72px;object-fit:contain;" />
+                                        <img src="~/kepek/fodraszok/Model.KepFajlNeve" alt="Model.KepFajlNeve" class="rounded border" style="max-height:72px;object-fit:contain;" />
                                     }
                                 </div>
                             </div>
-                            *@
-                            <div class="col-12">
+                            <div class="col-12 d-flex">
                                 <label class="form-label fw-bold ezustFont">Vállalt szolgáltatások</label>
                                 <br />
                                 <div class="w-auto d-inline-flex align-items-center form-control">
