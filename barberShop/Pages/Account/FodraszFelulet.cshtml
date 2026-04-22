@@ -17,7 +17,7 @@
                 <div class="card h-100 d-flex flex-column egyszolgaltatas szolg-kartya">
                     <div class="card-header accentFont fw-bold">Foglalásaim</div>
                     <div class="card-body d-flex flex-column flex-grow-1">
-                        <p class="ezustFont">Lefoglalt időpontjaid megtekintése</p>
+                        <p class="ezustFont">Lefoglalt időpontjaid megtekintése és törlése</p>
                         <div class="mt-auto text-end">
                             <a asp-page="/Account/FodraszFelulet" asp-route-section="foglalasaim" class="btn egyGomb btn-sm">tovább</a>
                         </div>
@@ -619,7 +619,7 @@
         var uj = [k, v];
         for (var i = 0; i < szunetek.length; i++) {
             if (atfed(uj, szunetek[i])) {
-                alert('Ne lehet átfedés a szünetek között!');
+                alert('Nem lehet átfedés a szünetek között!');
                 return;
             }
         }
