@@ -236,6 +236,27 @@
                                             .OrderBy(x => x)
                                             .GroupBy(x => x.Hour))
                                         {
+                                            @*
+                                            <tr>
+                                                @for (int perc = 0; perc <= 45; perc += 15)
+                                                {
+                                                    var idopont = oraCsoport.FirstOrDefault(x => x.Minute == perc);
+                                                    <td class="p-0 pe-1 pb-1">
+                                                        @if (idopont != default)
+                                                        {
+                                                            <a asp-page="/Index"
+                                                               asp-route-section="foglalas"
+                                                               asp-route-FodraszId="@Model.KivalasztottF.ID"
+                                                               asp-route-szolgaltatasId="@Model.KivalasztottSzolgaltatas.Id"
+                                                               asp-route-foglalasDatum="@idopont.ToString("yyyy-MM-dd")"
+                                                               asp-route-foglalasIdo="@idopont.ToString("HH:mm")"
+                                                               class="btn ezustGomb btn-sm text-nowrap">
+                                                                @idopont.ToString("HH:mm")
+                                                            </a>
+                                                        }
+                                                    </td>
+                                                }
+                                            </tr>*@
                                             var slots = oraCsoport.OrderBy(x => x.Minute).ToList();
                                                 for (var i = 0; i < slots.Count; i += 4)
                                                 {

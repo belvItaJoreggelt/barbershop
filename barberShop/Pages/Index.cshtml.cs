@@ -14,17 +14,20 @@ namespace barberShop.Pages
         private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
         private readonly IPushNotificationService _pushNotificationService;
+        private readonly IBackgroundTaskQueue _taskQueue;
 
         public IndexModel(
             AppDbContext context,
             UserManager<Felhasznalo> userManager,
             IEmailKuldo emailKuldo,
-            IPushNotificationService pushNotificationService)
+            IPushNotificationService pushNotificationService,
+            IBackgroundTaskQueue taskQueue)
         {
             _context = context;
             _userManager = userManager;
             _emailKuldo = emailKuldo;
             _pushNotificationService = pushNotificationService;
+            _taskQueue = taskQueue;
         }
 
         [BindProperty(SupportsGet = true)]
@@ -463,7 +466,7 @@ namespace barberShop.Pages
         </tr>
     </table>
     <p>{fodrNev}</p>
-    <img src=""{profilKepUrl}"" alt=""{fodr.Nev}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #e8dcc8;"" />
+    <img src=""{profilKepUrl}"" alt=""{fodrNev}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #e8dcc8;"" />
     <p>
         BestBarbershop<br />
         <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
@@ -475,6 +478,47 @@ namespace barberShop.Pages
 </html>";
 
             await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
+
+            
+            var barberSubject =  $"Új foglalás | {idopontSzoveg}";
+            var barberemailBody = $@"
+<html lang=""hu"">
+<head>
+    <meta charset=""utf-8"" />
+    <style type=""text/css"">
+        body {{ font-family: Arial, Helvetica, sans-serif; color: #333; color: black; }}
+        h2 {{ color: rgba(191, 162, 122, 0.7); }}
+    </style>
+</head>
+<body>
+<div style=""text-align: center;"">
+    <h2>Kedves {fodrNev}!</h2>
+    <p>Új foglalásod érkezett!</p>
+    <p>Foglalásod részletei:</p>
+    <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
+        <tr>
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191, 162, 122, 0.7) 0%, rgb(252, 251, 249) 59%, rgb(255, 255, 255) 100%); border: solid 0.5px #eceae6;"">
+                {nevH}<br />
+                {szolgNevH}<br />
+                {idopontSzoveg}<br />
+            </td>
+        </tr>
+    </table>
+    <p>
+        BestBarbershop<br />
+        <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration: none; color: black;"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"" style=""text-decoration: none; color: black;"">+36 30 727 1232</a>
+    </p>
+</div>
+</body>
+</html>";
+
+            await _taskQueue.QueueBackgroundWorkItemAsync(async ct =>
+            {
+                await _emailKuldo.SendAsync(fodr.Email, barberSubject, barberemailBody);
+            });
+
 
             var barberExternalId = $"fodrasz-{fodr.ID}";
             await _pushNotificationService.SendBookingToBarberAsync(barberExternalId, UgyfelNev, szolg.Nev, idopont.EsedekessegiIdopont);

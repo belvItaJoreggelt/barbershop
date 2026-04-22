@@ -40,6 +40,9 @@ builder.Services.Configure<EmailBeallitasok>(
 builder.Services.Configure<OneSignalBeallitasok>(
     builder.Configuration.GetSection("OneSignal"));
 
+builder.Services.AddSingleton<IBackgroundTaskQueue, BackgroundTaskQueue>();
+builder.Services.AddHostedService<QueuedHostedService>();
+
 builder.Services.AddHttpClient<IPushNotificationService, OneSignalPushNotificationService>(client =>
 {
     client.Timeout = TimeSpan.FromSeconds(30);
