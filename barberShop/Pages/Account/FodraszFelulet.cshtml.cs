@@ -34,6 +34,8 @@ namespace barberShop.Pages.Account
             _userManager = userManager;
             _emailKuldo = emailKuldo;
             _env = env;
+            _pushNotificationService = pushNotificationService; 
+            _taskQueue = taskQueue;
         }
 
         [BindProperty(SupportsGet = true)]
