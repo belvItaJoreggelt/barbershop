@@ -384,23 +384,7 @@ namespace barberShop.Pages
             }
 
             var foglalasVegeUtc = kezdesUtc.AddMinutes(szolg.Idotartam);
-            /*
-            bool utkozik = await _context.Idopontok
-                .Include(i => i.Szolgaltatas)
-                .AnyAsync(i =>
-                    i.FodraszId == fodr.ID &&
-                    i.EsedekessegiIdopont < foglalasVegeUtc &&
-                    i.EsedekessegiIdopont.AddMinutes(i.Szolgaltatas.Idotartam) > kezdesUtc);
-
-            if (utkozik)
-            {
-                ModelState.AddModelError(string.Empty, "");
-
-                KivalasztottSzolgaltatas = szolg;
-                KivalasztottF = fodr;
-                return Page();
-            }
-            */
+            
             var idopont = new Idopont
             {
                 FodraszId = fodr.ID,

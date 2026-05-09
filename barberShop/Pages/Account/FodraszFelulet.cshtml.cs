@@ -7,6 +7,7 @@ using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Webp;
 using System.Globalization;
 using System.Net;
+using static barberShop.Pages.Account.FodraszFeluletModel;
 
 namespace barberShop.Pages.Account
 {
@@ -17,13 +18,17 @@ namespace barberShop.Pages.Account
         private readonly UserManager<Felhasznalo> _userManager;
         private readonly IEmailKuldo _emailKuldo;
         private readonly IWebHostEnvironment _env;
+        private readonly IPushNotificationService _pushNotificationService;
+        private readonly IBackgroundTaskQueue _taskQueue;
 
         private static readonly string[] Kiterjesztesek = [".jpg", ".jpeg", ".png", ".webp", ".avif"];
         private const long MaxMeret = 5 * 1024 * 1024;
         public FodraszFeluletModel(
             AppDbContext context,
             UserManager<Felhasznalo> userManager,
-            IEmailKuldo emailKuldo, IWebHostEnvironment env)
+            IEmailKuldo emailKuldo, IWebHostEnvironment env,
+            IPushNotificationService pushNotificationService,
+            IBackgroundTaskQueue taskQueue)
         {
             _context = context;
             _userManager = userManager;
@@ -92,6 +97,35 @@ namespace barberShop.Pages.Account
         public List<Idopont> MaiFoglalasok { get; set; } = new();
         public List<Idopont> JovobeliFoglalasok { get; set; } = new();
         public List<Idopont> Regifoglalasok { get; set; } = new();
+
+        public List<Szolgaltatas> Szolgaltatasok { get; set; } = new();
+        public List<KorabbiUgyfelVM> KorabbiUgyfelek { get; set; } = new();
+
+        public class KorabbiUgyfelVM
+        {
+            public string Nev { get; set; } = "";
+            public string Email { get; set; } = "";
+            public string? Telefon { get; set; }
+            public DateTime UtolsoFoglalas { get; set; }
+        }
+
+        public bool FoglalasKartyaNyitva { get; set; } = false;
+
+        [BindProperty]
+        public string? UgyfelEmail { get; set; }
+
+        [BindProperty]
+        public int? SzolgaltatasId { get; set; }
+        [BindProperty]
+        public string? FoglDatum { get; set; }
+        [BindProperty]
+        public string? FoglIdopont { get; set; }
+        [BindProperty]
+        public string? UgyfelNev { get; set; }
+        [BindProperty]
+        public string? UgyfelTelefon { get; set; }
+        [BindProperty]
+        public string? UgyfelMegjegyzes { get; set; }
         #endregion
 
         #region PushErtesitesek
@@ -189,6 +223,7 @@ namespace barberShop.Pages.Account
                         s.Datum < kovetkezoNapKezdetUtc)
                     .OrderBy(s => s.KezdoIdo)
                     .ToListAsync();
+                
             }
 
             if (Section == "foglalasaim")
@@ -231,6 +266,36 @@ namespace barberShop.Pages.Account
                 Regifoglalasok = osszes
                     .Where(i => i.EsedekessegiIdopont < maiNapKezdetUtc)
                     .OrderByDescending(i => i.EsedekessegiIdopont)
+                    .ToList();
+
+                Szolgaltatasok = await _context.Szolgaltatasok
+                    .OrderBy(x => x.Sorszam)
+                    .OrderBy(x => x.Nev)
+                    .ToListAsync();
+
+                var alap = await _context.Idopontok
+                    .AsNoTracking()
+                    .Where(i => i.FodraszId == user.FodraszId && !string.IsNullOrWhiteSpace(i.CustomerEmail))
+                    .Select(i => new
+                    {
+                        i.CustomerEmail,
+                        i.CustomerPhone,
+                        i.CustomerNeve,
+                        i.FoglalasiIdopont
+                    })
+                    .ToListAsync();
+
+                KorabbiUgyfelek = alap
+                    .GroupBy(i => i.CustomerEmail)
+                    .Select(g => g.OrderByDescending(x => x.FoglalasiIdopont).First())
+                    .Select(x => new KorabbiUgyfelVM
+                    {
+                        Nev = x.CustomerNeve ?? "",
+                        Email = x.CustomerEmail ?? "",
+                        Telefon = x.CustomerPhone,
+                        UtolsoFoglalas = x.FoglalasiIdopont
+                    })
+                    .OrderBy(x => x.Nev)
                     .ToList();
             }
 
@@ -574,6 +639,188 @@ namespace barberShop.Pages.Account
         #endregion
 
         #region Foglalasaim
+
+       
+        public async Task<IActionResult> OnPostManualFoglalasAsync()
+        {
+            Section = "foglalasaim";
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user?.FodraszId == null)
+            {
+                TempData["Error"] = "Nem található a fodrász felhasználó!";
+                return RedirectToPage("/Account/FodraszFelulet", new { section = "foglalasaim" });
+            }
+
+            if (!SzolgaltatasId.HasValue || string.IsNullOrWhiteSpace(FoglDatum) ||string.IsNullOrWhiteSpace(FoglIdopont) || string.IsNullOrWhiteSpace(UgyfelNev) || string.IsNullOrWhiteSpace(UgyfelEmail) 
+                || string.IsNullOrWhiteSpace(UgyfelTelefon))
+            {
+                ModelState.AddModelError(string.Empty, "Hiányzó kötelező mező! (szolgáltatás, dátum, időpont, név, email)");
+                FoglalasKartyaNyitva = true;
+                await OnGetAsync();
+                return Page();
+            }
+
+            if (!DateTime.TryParseExact($"{FoglDatum} {FoglIdopont}", "yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, out var kezdesBudapest))
+            {
+                ModelState.AddModelError(string.Empty, "Hibás dátum/idő formátum!");
+                FoglalasKartyaNyitva = true;
+                await OnGetAsync();
+                return Page();
+            }
+
+            DateTime kezdesUtc;
+            try
+            {
+                kezdesUtc = BudapestTime.BudapestLocalToUtc(DateTime.SpecifyKind(kezdesBudapest, DateTimeKind.Unspecified));
+            }
+            catch (ArgumentException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                await OnGetAsync();
+                return Page();
+            }
+
+            var szolg = await _context.Szolgaltatasok.FindAsync(SzolgaltatasId.Value);
+            if (szolg == null)
+            {
+                ModelState.AddModelError(string.Empty, "A megadott szolgáltatás nem található!");
+                FoglalasKartyaNyitva = true;
+                await OnGetAsync();
+                return Page();
+            }
+
+            if (await _context.Idopontok.AnyAsync(i =>
+        i.FodraszId == user.FodraszId.Value &&
+        i.EsedekessegiIdopont == kezdesUtc))
+            {
+                ModelState.AddModelError(string.Empty, "Erre az időpontra már van foglalás!");
+                FoglalasKartyaNyitva = true;
+                await OnGetAsync();
+                return Page();
+            }
+
+            var idopont = new Idopont
+            {
+                FodraszId = user.FodraszId.Value,
+                SzolgaltatasId = szolg.Id,
+                EsedekessegiIdopont = kezdesUtc,
+                FoglalasiIdopont = DateTime.UtcNow,
+                CustomerNeve= UgyfelNev.Trim(),
+                CustomerEmail = UgyfelEmail.Trim(),
+                CustomerPhone = UgyfelTelefon.Trim(),
+                CustomerNotes = string.IsNullOrWhiteSpace(UgyfelMegjegyzes) ? null : UgyfelMegjegyzes.Trim()
+            };
+
+
+            _context.Idopontok.Add(idopont);
+            await _context.SaveChangesAsync();
+
+            var fodr = await _context.Fodraszok.FindAsync(user.FodraszId.Value);
+
+            var subject = "BestBarberShop - foglalás visszaigazolása";
+
+            var hu = CultureInfo.GetCultureInfo("hu-HU");
+            var idopontSzoveg = kezdesBudapest.ToString("MMMM d. (dddd) HH:mm", hu);
+            var arSzoveg = szolg.Ar.ToString("N0", hu);
+            var nevH = WebUtility.HtmlEncode(UgyfelNev);
+            var szolgNevH = WebUtility.HtmlEncode(szolg.Nev);
+            var szolgIdo = WebUtility.HtmlEncode(szolg.Idotartam.ToString());
+
+            var baseUrl = "https://bestbarbershopbookingsystem-djf9c0hch0dqexdt.westeurope-01.azurewebsites.net/"; // saját domain
+            var profilKepUrl = !string.IsNullOrWhiteSpace(fodr.ProfilkepFajlNeve)
+                ? $"{baseUrl}/kepek/fodraszok/{WebUtility.UrlEncode(fodr.ProfilkepFajlNeve)}"
+                : $"{baseUrl}/kepek/backgrounds/logo.webp";
+            var fodrNev = WebUtility.HtmlDecode(fodr.Nev);
+
+            var maps = "https://www.bing.com/maps/search?mepi=72%7ELocal%7EEmbedded%7EEntity_Vertical_List_Card&ty=17&poicount=18&sei=0&FORM=MPSRPL&q=kelenf%C3%B6ld+fodr%C3%A1szat&secq=%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat+kelenfoeld+fodraszat&sece=ypid.YN8081x11846474530400285953&ppois=47.467506408691406_19.035743713378906_%C3%9Ajhull%C3%A1m+Fodr%C3%A1szat_YN8081x11846474530400285953%7E47.46304702758789_19.034894943237305_X%C3%A9nia+Fodr%C3%A1szat_YN8081x14308692530027957564%7E47.46721649169922_19.042898178100586_B%C3%A1rtfai+Sz%C3%A9ps%C3%A9gszalon+most_YN8081x3342422111653719704%7E&segment=Local&cp=47.467179%7E19.036090&lvl=17.7&style=r";
+
+            var body = $@"
+<html lang=""hu"">
+<head>
+    <meta charset=""utf-8"" />
+    <style type=""text/css"">
+        body {{ font-family: Arial, Helvetica, sans-serif; color: #333; color: black; }}
+        h2 {{ color: rgba(191, 162, 122, 0.7); }}
+    </style>
+</head>
+<body>
+<div style=""text-align: center;"">
+    <h2>Kedves {nevH}!</h2>
+    <p>Köszönjük, hogy minket választottál!</p>
+    <p>Foglalásod részletei:</p>
+    <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
+        <tr>
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191, 162, 122, 0.7) 0%, rgb(252, 251, 249) 59%, rgb(255, 255, 255) 100%); border: solid 0.5px #eceae6;"">
+                {szolgNevH}<br />
+                {szolgIdo}perc<br />
+                {idopontSzoveg}<br />
+                {arSzoveg} Ft
+            </td>
+        </tr>
+    </table>
+    <p>{fodrNev}</p>
+    <img src=""{profilKepUrl}"" alt=""{fodrNev}"" style=""width:120px;height:120px;object-fit:cover;border-radius:50%;border:2px solid #e8dcc8;"" />
+    <p>
+        BestBarbershop<br />
+        <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration: none; color: black;"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"" style=""text-decoration: none; color: black;"">+36 30 727 1232</a>
+    </p>
+</div>
+</body>
+</html>";
+
+            await _emailKuldo.SendAsync(UgyfelEmail, subject, body);
+
+
+            var barberSubject = $"Új foglalás | {idopontSzoveg}";
+            var barberemailBody = $@"
+<html lang=""hu"">
+<head>
+    <meta charset=""utf-8"" />
+    <style type=""text/css"">
+        body {{ font-family: Arial, Helvetica, sans-serif; color: #333; color: black; }}
+        h2 {{ color: rgba(191, 162, 122, 0.7); }}
+    </style>
+</head>
+<body>
+<div style=""text-align: center;"">
+    <h2>Kedves {fodrNev}!</h2>
+    <p>Új foglalásod érkezett!</p>
+    <p>Foglalásod részletei:</p>
+    <table role=""presentation"" width=""100%"" cellspacing=""0"" cellpadding=""0"" style=""margin: 0 auto; max-width: 320px;"">
+        <tr>
+            <td style=""padding: 10px 18px; text-align: center; border-radius: 15px; background-color: #e8dcc8; background-image: linear-gradient(to top right, rgba(191, 162, 122, 0.7) 0%, rgb(252, 251, 249) 59%, rgb(255, 255, 255) 100%); border: solid 0.5px #eceae6;"">
+                {nevH}<br />
+                {szolgNevH}<br />
+                {idopontSzoveg}<br />
+            </td>
+        </tr>
+    </table>
+    <p>
+        BestBarbershop<br />
+        <a href=""{maps}"" style=""color: black;"">1115 Budapest Bártfai utca 38</a><br />
+        <a href=""mailto:szaszakpepe@gmail.com"" style=""text-decoration: none; color: black;"">szaszakpepe@gmail.com</a><br />
+        <a href=""tel:+36307271232"" style=""text-decoration: none; color: black;"">+36 30 727 1232</a>
+    </p>
+</div>
+</body>
+</html>";
+
+            await _taskQueue.QueueBackgroundWorkItemAsync(async ct =>
+            {
+                await _emailKuldo.SendAsync(fodr.Email, barberSubject, barberemailBody);
+            });
+
+
+            var barberExternalId = $"fodrasz-{fodr.ID}";
+            await _pushNotificationService.SendBookingToBarberAsync(barberExternalId, UgyfelNev, szolg.Nev, idopont.EsedekessegiIdopont);
+
+            TempData["Success"] = "Foglalás sikeresen rögzítve!";
+            return RedirectToPage("/Account/FodraszFelulet", new { section = "foglalasaim" });
+        }
+
 
         public async Task<IActionResult> OnPostTorolFoglalasAsync(int id)
         {

@@ -148,6 +148,7 @@
         <p class="mb-2">
             <a asp-page="/Account/FodraszFelulet" class="btn egyGomb px-4">Vissza</a>
         </p>
+
         @if (TempData["Info"] is string info && !string.IsNullOrWhiteSpace(info))
         {
             <div class="alert alert-info mb-3">@Html.Raw(info)</div>
@@ -268,7 +269,13 @@
     }
     else if (Model.Section == "foglalasaim")
     {
-        <p class="mb-3"><a asp-page="/Account/FodraszFelulet" class="btn egyGomb px-4">Vissza</a></p>
+        <div class="mb-3 d-flex justify-content-between">
+            <p><a asp-page="/Account/FodraszFelulet" class="btn egyGomb px-4">Vissza</a></p>
+            <p>
+                <button id="foglalasGomb" class="btn egyGomb px-4">Hozzáadás +</button>
+            </p>
+        </div>
+        
         @if (!Model.MaiFoglalasok.Any() && !Model.JovobeliFoglalasok.Any() && !Model.Regifoglalasok.Any())
         {
             <p class="ezustFont">Jelenleg nincsenek foglalások.</p>
@@ -277,6 +284,67 @@
         {
 
             <div class="d-flex gap-4 flex-column">
+
+                <div id="foglalasKartya" class="@(Model.FoglalasKartyaNyitva ? "" : "d-none") card egyszolgaltatas szolg-kartya mt-3">
+                    <div class="card-header accentFont fw-bold">Új foglalás rögzítése</div>
+                    <div class="card-body">
+                        <form method="post" asp-page-handler="ManualFoglalas">
+                            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                            <div class="row g-2">
+                                <select id="ValasztottUgyfelEmail" name="ValasztottUgyfelEmail" class="form-control">
+                                    <option value="">Ügyfél kiválasztása</option>
+                                    @foreach (var ugyfel in Model.KorabbiUgyfelek)
+                                    {
+                                        <option value="@ugyfel.Email" data-nev="@ugyfel.Nev" data-tel="@ugyfel.Telefon">@ugyfel.Nev (@ugyfel.Email)</option>
+                                    }
+                                </select>
+                                <select asp-for="SzolgaltatasId" class="form-control mb-2">
+                                    <option value="">Szolgáltatás kiválasztása</option>
+                                    @foreach (var szolg in Model.Szolgaltatasok)
+                                    {
+                                        <option value="@szolg.Id">@szolg.Nev</option>
+                                    }
+                                </select>
+
+                                <p>
+                                    <label asp-for="FoglDatum" class="form-label accentFont">Dátum</label>
+                                    <input asp-for="FoglDatum" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" class="form-control" />
+                                    <span asp-validation-for="FoglDatum" class="text-danger"></span>
+                                </p>
+
+                                <p>
+                                    <label asp-for="FoglIdopont" class="form-label accentFont">Időpont</label>
+                                    <input asp-for="FoglIdopont" type="time" step="900" class="form-control" />
+                                    <span asp-validation-for="FoglIdopont" class="text-danger"></span>
+                                </p>
+
+                                <p>
+                                    <label asp-for="UgyfelNev" class="form-label accentFont">Név</label>
+                                    <input asp-for="UgyfelNev" id="UgyfelNev" class="form-control" />
+                                    <span asp-validation-for="UgyfelNev" class="text-danger"></span>
+                                </p>
+                                <p>
+                                    <label asp-for="UgyfelEmail" class="form-label accentFont">Email</label>
+                                    <input asp-for="UgyfelEmail" id="UgyfelEmail" class="form-control" />
+                                    <span asp-validation-for="UgyfelEmail" class="text-danger"></span>
+                                </p>
+                                <p>
+                                    <label asp-for="UgyfelTelefon " class="form-label accentFont">Telefon</label>
+                                    <input asp-for="UgyfelTelefon " id="UgyfelTelefon" class="form-control" />
+                                    <span asp-validation-for="UgyfelTelefon" class="text-danger"></span>
+                                </p>
+                                <p>
+                                    <label asp-for="UgyfelMegjegyzes" class="form-label accentFont">Megjegyzés</label>
+                                    <input asp-for="UgyfelMegjegyzes" class="form-control" />
+                                    <span asp-validation-for="UgyfelMegjegyzes" class="text-danger"></span>
+                                </p>
+                                <div class="text-end mt-3 me-2">
+                                    <button type="submit" class="btn speckoGomb">Foglalás elküldése</button>
+                                </div>
+                            </div>   
+                        </form>
+                    </div>
+                </div>
                 <div class="card egyszolgaltatas szolg-kartya foglalasok">
                     <div class="card-header accentFont fw-bold">Mai</div>
                     <div class="card-body AutoOverflowClass">
@@ -629,4 +697,41 @@
 
     frissit();
 })();
+</script>
+<script>
+    (function (){
+        const sel = document.getElementById('ValasztottUgyfelEmail');
+        const nev = document.getElementById('UgyfelNev');
+        const email = document.getElementById('UgyfelEmail');
+        const tel = document.getElementById('UgyfelTelefon');
+
+        if(!sel || !nev || !email || !tel)
+            return;
+
+        sel.addEventListener('change', function() {
+            const opt = sel.options[sel.selectedIndex];
+
+            if(!opt || !opt.value){
+                nev.value = '';
+                email.value = '';
+                tel.value = '';
+                return;
+            }
+            nev.value = opt.dataset.nev || '';
+            email.value = opt.value ||'';
+            tel.value = opt.dataset.tel || '';
+        })
+    })();
+
+    (function (){
+        const hozzadGomb = document.getElementById('foglalasGomb');
+        const foglalasKartya = document.getElementById('foglalasKartya');
+
+        if(!hozzadGomb || !foglalasKartya)
+            return;
+
+        hozzadGomb.addEventListener('click', function() {
+            foglalasKartya.classList.toggle('d-none');
+        });
+    })();
 </script>
