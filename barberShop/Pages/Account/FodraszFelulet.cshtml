@@ -108,7 +108,7 @@
                                 <input asp-for="UjJelszo" class="form-control" type="password" />
                             </div>
                             <div class="col-md-5 col-sm-8">
-                                <label class="form-label small ezustFont">Új kép</label>
+                                <label class="form-label small ezustFont fw-bold">Új profilkép</label>
                                 <input type="file" name="EditKep" class="form-control form-control-sm" accept="image/jpeg,image/png,image/webp,image/avif" />
                             </div>
                             <div class="col-md-6 col-sm-8">
@@ -120,21 +120,36 @@
                                     }
                                 </div>
                             </div>
-                            <div class="col-8">
-                                <label class="form-label fw-bold ezustFont">Vállalt szolgáltatások</label>
-                                <br />
-                                <div class="w-auto d-flex flex-column flex-md-row align-items-md-center form-control gap-1 gap-md-2">
-                                    @foreach (var sz in Model.OsszesSzolgaltatas)
+                            <div class="col-md-10 col-sm-8">
+                                <label class="form-label small ezustFont fw-bold">Jelenlegi referenciaképek</label>
+                                <div class="d-flex gap-2 flex-wrap mb-3">
+                                    @if (Model.Referenciafotok.Any())
                                     {
-                                        var checkedAttr = Model.SelectedSzolgaltatasIds?.Contains(sz.Id) == true ? "checked" : "";
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" name="SelectedSzolgaltatasIds" value="@sz.Id" class="form-check-input" id="sz_@sz.Id" @checkedAttr />
-                                            <label class="form-check-label" for="sz_@sz.Id">@sz.Nev</label>
-                                        </div>
-                                    }
+                                        @foreach (var refFoto in Model.Referenciafotok)
+                                        {
+                                            <div class="d-flex flex-column">
+                                                <img src="~/kepek/referenciak/@refFoto.Fajlnev" alt="referencia" class="rounded border" style="width:72px;height:72px;object-fit:cover;" />
+                                                <button type="button" class="" style="color:#ef4444; font-size:2rem;">
+                                                    🗑️
+                                                </button>
+                                            </div>
+                                            
+                                        }
+                                        }
+                                        else
+                                        {
+                                            <span class="small ezustFont" id="nincsReferenciaSzoveg">Még nincs feltöltve referenciafotód.</span>
+                                        }
                                 </div>
-                            </div>
-                            <div class="col-12 mt-3 text-center">
+
+                                <label class="form-label small ezustFont fw-bold">Új referenciaképek</label>
+                                <br />
+                                <input type="file" asp-for="UjReferenciaKepek" id="ujReferenciaInput" multiple accept="image/jpeg,image/png,image/webp,image/avif" class="form-control form-control-sm mb-2" />
+                                <div id="ujReferenciaElonezet" class="d-flex gap-2 flex-wrap"></div>
+
+                            </div>                            
+                            <div class="col-12 mt-3 d-flex g-3 justify-content-center align-items-center">
+                                <button type="button" id="referenciaMegseGomb" class="btn egyGomb d-none">mégse</button>
                                 <button type="submit" class="btn speckoGomb">mentés</button>
                             </div>
                         </div>
@@ -732,6 +747,45 @@
 
         hozzadGomb.addEventListener('click', function() {
             foglalasKartya.classList.toggle('d-none');
+        });
+    })();
+</script>
+<script>
+    (function () {
+        const input = document.getElementById('ujReferenciaInput');
+        const preview = document.getElementById('ujReferenciaElonezet');
+        const megseGomb = document.getElementById('referenciaMegseGomb');
+
+        if (!input || !preview || !megseGomb) return;
+
+        function frissitGombok() {
+            const vanKivalasztott = input.files && input.files.length > 0;
+            megseGomb.classList.toggle('d-none', !vanKivalasztott);
+        }
+
+
+        input.addEventListener('change', function () {
+            preview.innerHTML = '';
+
+            Array.from(input.files || []).forEach(function (file) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = file.name;
+                img.className = 'rounded border';
+                img.style.width = '72px';
+                img.style.height = '72px';
+                img.style.objectFit = 'cover';
+                img.onload = function () { URL.revokeObjectURL(img.src); };
+                preview.appendChild(img);
+            });
+
+            frissitGombok();
+        });
+
+        megseGomb.addEventListener('click', function () {
+            input.value = '';
+            preview.innerHTML = '';
+            frissitGombok();
         });
     })();
 </script>

@@ -68,6 +68,11 @@ namespace barberShop.Pages.Account
 
         [BindProperty]
         public string? KepFajlNeve { get; set; }
+
+        public List<FodraszReferenciaFoto> Referenciafotok { get; set; } = new();
+
+        [BindProperty]
+        public List<IFormFile>? UjReferenciaKepek { get; set; }
         #endregion
 
         #region Időpontjaim
@@ -165,6 +170,11 @@ namespace barberShop.Pages.Account
 
             OsszesSzolgaltatas = await _context.Szolgaltatasok
                 .OrderBy(sz => sz.Nev)
+                .ToListAsync();
+
+            Referenciafotok = await _context.FodraszReferenciaFotok
+                .Where(f => f.FodraszId == user.FodraszId.Value)
+                .OrderByDescending(d => d.FeltoltveUtc)
                 .ToListAsync();
 
             if (Section == "idopontjaim")
@@ -343,6 +353,34 @@ namespace barberShop.Pages.Account
 
             foreach (var s in szolgLista)
                 fodrasz.VallaltSzolgaltatasok.Add(s);
+
+            if (UjReferenciaKepek != null && UjReferenciaKepek.Count > 0)
+            {
+                const int maxDb = 10;
+                var jelenlegi = await _context.FodraszReferenciaFotok
+                    .CountAsync(f => f.FodraszId == fodrasz.ID);
+
+                foreach (var file in UjReferenciaKepek)
+                {
+                    if (jelenlegi >= maxDb) break;
+                    if (file == null || file.Length == 0) continue;
+                    var (error, fileName) = await TrySaveReferenciaKepAsync(fodrasz.ID, file, null);
+                    if (error != null)
+                    {
+                        ModelState.AddModelError(string.Empty, $"Referencia: {error}");
+                        Section = "adataim";
+                        await OnGetAsync();  // Referenciafotok újratöltése hiba esetén
+                        return Page();
+                    }
+                    if (fileName == null) continue;
+                    _context.FodraszReferenciaFotok.Add(new FodraszReferenciaFoto
+                    {
+                        FodraszId = fodrasz.ID,
+                        Fajlnev = fileName
+                    });
+                    jelenlegi++;
+                }
+            }
 
             await _context.SaveChangesAsync();
 
@@ -963,6 +1001,67 @@ namespace barberShop.Pages.Account
             catch
             {
             }
+        }
+
+
+
+        private async Task<(string? Error, string? FileName)> TrySaveReferenciaKepAsync(int fodraszId, IFormFile? file, string? korabbFileNev)
+        {
+            if (file == null || file.Length == 0)
+                return (null, null);
+            if (file.Length > MaxMeret)
+                return ("max. 5 MB.", null);
+            var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+            if (string.IsNullOrEmpty(ext) || !Kiterjesztesek.Contains(ext))
+                return ("csak jpg/png/webp/avif.", null);
+            var dir = Path.Combine(_env.WebRootPath, "kepek", "referenciak");
+            Directory.CreateDirectory(dir);
+            var ujNev = $"refkep-{fodraszId}-{Guid.NewGuid():N}.webp";
+            var teljesUt = Path.Combine(dir, ujNev);
+            try
+            {
+                await using var bemenet = file.OpenReadStream();
+                using var image = await Image.LoadAsync(bemenet);
+                await image.SaveAsync(teljesUt, new WebpEncoder { Quality = 82 });
+            }
+            catch (Exception)
+            {
+                return ("érvénytelen kép", null);
+            }
+
+            return (null, ujNev);
+        }
+
+
+        public async Task<IActionResult> OnPostReferenciaFeltoltesAsync()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user?.FodraszId == null)
+                return RedirectToPage(new { section = "adataim" });
+            const int maxDb = 10;
+            var jelenlegi = await _context.FodraszReferenciaFotok
+                .CountAsync(f => f.FodraszId == user.FodraszId.Value);
+            if (UjReferenciaKepek == null || UjReferenciaKepek.Count == 0)
+            {
+                TempData["Error"] = "Nincs kiválasztott kép.";
+                return RedirectToPage(new { section = "adataim" });
+            }
+            foreach (var file in UjReferenciaKepek)
+            {
+                if (jelenlegi >= maxDb) break;
+                var (error, fileName) = await TrySaveReferenciaKepAsync(user.FodraszId.Value, file, null);
+                if (error != null) { TempData["Error"] = error; continue; }
+                if (fileName == null) continue;
+                _context.FodraszReferenciaFotok.Add(new FodraszReferenciaFoto
+                {
+                    FodraszId = user.FodraszId.Value,
+                    Fajlnev = fileName
+                });
+                jelenlegi++;
+            }
+            await _context.SaveChangesAsync();
+            TempData["Success"] = "Referenciafotók feltöltve.";
+            return RedirectToPage(new { section = "adataim" });
         }
     }
 }

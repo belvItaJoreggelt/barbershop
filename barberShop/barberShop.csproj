@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Migrations\" />
+    <Folder Include="wwwroot\kepek\referenciak\" />
   </ItemGroup>
 
 </Project>

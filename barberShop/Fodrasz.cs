@@ -13,7 +13,8 @@
         public ICollection<Szolgaltatas> VallaltSzolgaltatasok { get; set; } = new  List<Szolgaltatas>();
         public ICollection<FodraszMunkaIdo> FodraszMunkaidok { get; set; }
         public ICollection<FodraszSzunet> FodraszSzunetek { get; set; }
-        public ICollection<Idopont> Idopontok { get; set; } = new List<Idopont>();  
+        public ICollection<Idopont> Idopontok { get; set; } = new List<Idopont>();
+        public ICollection<FodraszReferenciaFoto> ReferenciaFotok { get; set; } = new List<FodraszReferenciaFoto>();
 
         //public ICollection<SzabadSav> SzabadSavak { get; set; } = new List<SzabadSav>();
     }

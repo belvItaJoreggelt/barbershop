@@ -8,6 +8,7 @@ namespace barberShop
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Fodrasz> Fodraszok { get; set; }
+        public DbSet<FodraszReferenciaFoto> FodraszReferenciaFotok { get; set; }
         public DbSet<Szolgaltatas> Szolgaltatasok { get; set; }
         public DbSet<Idopont> Idopontok { get; set; }
 
