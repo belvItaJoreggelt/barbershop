@@ -157,8 +157,8 @@
                                 <div id="ujReferenciaElonezet" class="d-flex gap-2 flex-wrap"></div>
 
                             </div>                            
-                            <div class="col-12 mt-3 d-flex g-3 justify-content-center align-items-center">
-                                <a href="/Account/FodraszFelutet" asp-route-section="adataim" id="referenciaMegseGomb" class="btn egyGomb d-none">mégse</a>
+                            <div class="col-12 mt-3 d-flex gap-3 justify-content-center align-items-center">
+                                <button type="button" id="referenciaMegseGomb" class="btn egyGomb d-none">mégse</button>
                                 <button type="submit" class="btn speckoGomb">mentés</button>
                             </div>
                         </div>
@@ -768,18 +768,21 @@
         const input = document.getElementById('ujReferenciaInput');
         const preview = document.getElementById('ujReferenciaElonezet');
         const megseGomb = document.getElementById('referenciaMegseGomb');
-
         if (!input || !preview || !megseGomb) return;
 
-        function frissitGombok() {
-            const vanKivalasztott = input.files && input.files.length > 0;
-            megseGomb.classList.toggle('d-none', !vanKivalasztott);
+        function vanFuggobenLevoValtozas() {
+            const vanUjKep = input.files && input.files.length > 0;
+            const vanTorlesJelolve = document.querySelectorAll('.ref-foto-sor.torlesre-jelolve').length > 0;
+            return vanUjKep || vanTorlesJelolve;
         }
 
+        function frissitGombok() {
+            megseGomb.classList.toggle('d-none', !vanFuggobenLevoValtozas());
+        }
 
+        // Új kép kiválasztása
         input.addEventListener('change', function () {
             preview.innerHTML = '';
-
             Array.from(input.files || []).forEach(function (file) {
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
@@ -791,27 +794,34 @@
                 img.onload = function () { URL.revokeObjectURL(img.src); };
                 preview.appendChild(img);
             });
-
             frissitGombok();
         });
 
-        megseGomb.addEventListener('click', function () {
-            input.value = '';
-            preview.innerHTML = '';
-            frissitGombok();
-        });
-    })();
-</script>
-<script>
-    (function () {
+        // X – meglévő kép törlésre jelölése
         document.querySelectorAll('.ref-foto-sor').forEach(function (sor) {
             const gomb = sor.querySelector('.ref-foto-torol');
             const jelolo = sor.querySelector('.torles-jelolo');
             if (!gomb || !jelolo) return;
+
             gomb.addEventListener('click', function () {
                 const jelolve = sor.classList.toggle('torlesre-jelolve');
-                jelolo.disabled = !jelolve;   // jelölve → POST-ban benne lesz
+                jelolo.disabled = !jelolve;
+                frissitGombok();   // ← itt jelenik meg a mégse
             });
+        });
+
+        // Mégse – mindent visszavon
+        megseGomb.addEventListener('click', function () {
+            input.value = '';
+            preview.innerHTML = '';
+
+            document.querySelectorAll('.ref-foto-sor.torlesre-jelolve').forEach(function (sor) {
+                sor.classList.remove('torlesre-jelolve');
+                const jelolo = sor.querySelector('.torles-jelolo');
+                if (jelolo) jelolo.disabled = true;
+            });
+
+            frissitGombok();
         });
     })();
 </script>

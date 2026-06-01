@@ -357,6 +357,20 @@ namespace barberShop.Pages.Account
             foreach (var s in szolgLista)
                 fodrasz.VallaltSzolgaltatasok.Add(s);
 
+            if (TorlendoReferenciaIds !=null && TorlendoReferenciaIds.Count>0)
+            {
+                foreach (var fotoId in TorlendoReferenciaIds.Distinct())
+                {
+                    var foto = await _context.FodraszReferenciaFotok
+                        .FirstOrDefaultAsync(f => f.Id == fotoId && f.FodraszId == fodrasz.ID);
+
+                    if (foto == null) continue;
+
+                    TorolReferenciaKepFajl(foto.Fajlnev);
+                    _context.FodraszReferenciaFotok.Remove(foto);
+                }
+            }
+
             if (UjReferenciaKepek != null && UjReferenciaKepek.Count > 0)
             {
                 const int maxDb = 10;
@@ -1066,5 +1080,25 @@ namespace barberShop.Pages.Account
             TempData["Success"] = "Referenciafotók feltöltve.";
             return RedirectToPage(new { section = "adataim" });
         }
+
+        private void TorolReferenciaKepFajl(string? fileNev)
+        {
+            if (string.IsNullOrWhiteSpace(fileNev))
+                return;
+
+            var fajlNevNorm = Path.GetFileName(fileNev);
+            if (string.IsNullOrEmpty(fajlNevNorm)) return;
+
+            var teljes = Path.GetFullPath(Path.Combine(_env.WebRootPath, "kepek", "referenciak", fajlNevNorm));
+
+            try
+            {
+                if (System.IO.File.Exists(teljes))
+                    System.IO.File.Delete(teljes);
+            }
+            catch{}
+        }
+
+
     }
 }
