@@ -320,6 +320,67 @@ namespace barberShop.Pages
             }
         }
 
+        public async Task<IActionResult> OnGetSzabadIdopontokAsync(int szolgaltatasId, int fodraszId, string naptarDatum)
+        {
+            SzolgaltatasId = szolgaltatasId;
+            FodraszId = fodraszId;
+            NaptarDatum = naptarDatum;
+
+            KivalasztottSzolgaltatas = await _context.Szolgaltatasok.FindAsync(szolgaltatasId);
+            KivalasztottF = await _context.Fodraszok.FindAsync(fodraszId);
+
+            if (KivalasztottSzolgaltatas == null || KivalasztottF == null)
+            {
+                return new JsonResult(new
+                {
+                    ok = false,
+                    error = "Hibás fodrász vagy szolgáltatás!"
+                });
+            }
+            await LoadNapraSzabadIdopontokAsync();
+
+            return new JsonResult(new
+            {
+                ok = true,
+                naptarDatum = NaptarDatum,
+                reggeli = ReggeliIdopontok.Select(x => x.ToString("HH:mm")).ToList(),
+                delutani = DelutaniIdopontok.Select(x => x.ToString("HH:mm")).ToList(),
+                esti = EstiIdopontok.Select(x => x.ToString("HH:mm")).ToList()
+            });
+        }
+
+        public async Task<IActionResult> OnGetSzabadNapokAsync(
+    int szolgaltatasId, int fodraszId, int ev, int honap)
+        {
+            SzolgaltatasId = szolgaltatasId;
+            FodraszId = fodraszId;
+
+            KivalasztottSzolgaltatas = await _context.Szolgaltatasok.FindAsync(szolgaltatasId);
+            KivalasztottF = await _context.Fodraszok.FindAsync(fodraszId);
+
+            if (KivalasztottSzolgaltatas == null || KivalasztottF == null)
+                return new JsonResult(new { ok = false, error = "Hibás fodrász vagy szolgáltatás!" });
+
+            var honapKezdet = new DateTime(ev, honap, 1);
+            var honapVege = honapKezdet.AddMonths(1);
+            var ma = BudapestTime.TodayBudapestDate;
+
+            var napok = new List<string>();
+
+            for (var nap = honapKezdet; nap < honapVege; nap = nap.AddDays(1))
+            {
+                if (nap.Date < ma) continue; // múlt: opcionálisan külön kezeled
+
+                NaptarDatum = nap.ToString("yyyy-MM-dd");
+                await LoadNapraSzabadIdopontokAsync();
+
+                if (ReggeliIdopontok.Any() || DelutaniIdopontok.Any() || EstiIdopontok.Any())
+                    napok.Add(NaptarDatum);
+            }
+
+            return new JsonResult(new { ok = true, ev, honap, napok });
+        }
+
         public async Task<IActionResult> OnPostFoglalasAsync()
         {
             Section = "foglalas";

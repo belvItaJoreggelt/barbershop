@@ -228,10 +228,10 @@
                         </div>
                     </div>
 
-                    <div class="col-md-4 mt-2 text-center gap-4">
+                    <div class="col-md-4 mt-2 text-center gap-4" id="idopontokContainer">
                         @if (!Model.ReggeliIdopontok.Any() &&!Model.DelutaniIdopontok.Any() && !Model.EstiIdopontok.Any())
                         {
-                            <p class="ezustFont text-center small">Erre a napra nincs szabad időpont.</p>
+                            <p class="ezustFont text-center small w-100">Erre a napra nincs szabad időpont.</p>
                         }
                         else
                         {
@@ -625,117 +625,272 @@
             background: white !important;
             color: var( --accent-color) !important;
     }
+
+    .idopontok-wrap {
+        width: 100%;
+        max-width: 320px; /* ugyanannyi, mint a naptár */
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 140px;
+    }
+
+        .idopontok-wrap .idopont-szakasz {
+            width: 100%;
+            text-align: center;
+        }
+
+            .idopontok-wrap .idopont-szakasz table {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .idopontok-wrap .idopont-szakasz td {
+                vertical-align: top;
+            }
 </style>
 @if (Model.Section == "osszesIdopont")
 {
     <script>
-    (function () {
-        var calYear = @DateTime.Now.Year;
-        var calMonth = @(DateTime.Now.Month - 1);
-        var selectedDate = null;
-        var monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
+        (function () {
+            var calYear = @DateTime.Now.Year;
+            var calMonth = @(DateTime.Now.Month - 1);
+            var selectedDate = null;
+            var monthNames = ['Január', 'Február', 'Március', 'Április', 'Május', 'Június', 'Július', 'Augusztus', 'Szeptember', 'Október', 'November', 'December'];
 
-        // Kezdő dátum beállítása a Model.NaptarDatum alapján (ha van)
-        var initialDate = '@Model.NaptarDatum';
-        if (initialDate) {
-            var p = initialDate.split('-');
-            if (p.length === 3) {
-                calYear = parseInt(p[0], 10);
-                calMonth = parseInt(p[1], 10) - 1;
-                selectedDate = new Date(calYear, calMonth, parseInt(p[2], 10));
+            var initialDate = '@Model.NaptarDatum';
+            if (initialDate) {
+                var p = initialDate.split('-');
+                if (p.length === 3) {
+                    calYear = parseInt(p[0], 10);
+                    calMonth = parseInt(p[1], 10) - 1;
+                    selectedDate = new Date(calYear, calMonth, parseInt(p[2], 10));
+                }
             }
+
+            function getCalendarMeta() {
+                var cw = document.querySelector('.calendar-widget[data-szolgaltatas-id]');
+                if (!cw) return null;
+                return {
+                    sid: cw.getAttribute('data-szolgaltatas-id'),
+                    fid: cw.getAttribute('data-fodrasz-id')
+                };
+            }
+
+            function buildOsszesIdopontUrl(dateStr) {
+                var meta = getCalendarMeta();
+                var params = new URLSearchParams();
+                params.set('section', 'osszesIdopont');
+                params.set('naptarDatum', dateStr);
+                if (meta) {
+                    if (meta.sid) params.set('szolgaltatasId', meta.sid);
+                    if (meta.fid) params.set('FodraszId', meta.fid);
+                }
+                return '?' + params.toString();
+            }
+
+            function buildFoglalasUrl(dateStr, idoStr) {
+                var meta = getCalendarMeta();
+                if (!meta || !meta.sid || !meta.fid) return '#';
+                var params = new URLSearchParams();
+                params.set('section', 'foglalas');
+                params.set('szolgaltatasId', meta.sid);
+                params.set('FodraszId', meta.fid);
+                params.set('foglalasDatum', dateStr);
+                params.set('foglalasIdo', idoStr);
+                return '?' + params.toString();
+            }
+
+                    function renderOraSorok(idopontok, dateStr) {
+            var byHour = {};
+
+            idopontok.forEach(function (ido) {
+                var hour = ido.split(':')[0];
+                if (!byHour[hour]) byHour[hour] = [];
+                byHour[hour].push(ido);
+            });
+
+            var hours = Object.keys(byHour).sort();
+            var html = '';
+
+            hours.forEach(function (hour) {
+                var slots = byHour[hour].sort();
+                var cells = slots.map(function (ido) {
+                    return '<td class="p-0 pe-1 pb-1 align-top">' +
+                        '<a href="' + buildFoglalasUrl(dateStr, ido) + '" class="btn ezustGomb btn-sm text-nowrap">' + ido + '</a>' +
+                        '</td>';
+                }).join('');
+                html += '<tr>' + cells + '</tr>';
+            });
+
+            return html;
         }
 
-        function buildOsszesIdopontUrl(dateStr) {
-            var cw = document.querySelector('.calendar-widget[data-szolgaltatas-id]');
-            var params = 'section=osszesIdopont&naptarDatum=' + dateStr;
-            if (cw) {
-                var sid = cw.getAttribute('data-szolgaltatas-id');
-                var fid = cw.getAttribute('data-fodrasz-id');
-                if (sid) params += '&szolgaltatasId=' + sid;
-                if (fid) params += '&FodraszId=' + fid;
-            }
-            return '?' + params;
-        }
+            function renderSzakasz(cim, idopontok, dateStr) {
+                if (!idopontok || idopontok.length === 0) return '';
 
-        function render() {
-            var first = new Date(calYear, calMonth, 1);
-            var last = new Date(calYear, calMonth + 1, 0);
-            var startPad = (first.getDay() + 6) % 7;
-            var days = last.getDate();
-            var today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            document.getElementById('calendarMonthYear').textContent = calYear + '. ' + monthNames[calMonth];
-            var tbody = document.getElementById('calendarBody');
-            tbody.innerHTML = '';
-            var row = document.createElement('tr');
-
-            for (var i = 0; i < startPad; i++) {
-                var cell = document.createElement('td');
-                cell.className = 'text-muted';
-                cell.textContent = '';
-                row.appendChild(cell);
+                return '<div class="idopont-szakasz mb-3">' +
+                            '<div class="d-flex text-start" style="margin-left: -5px;">' +
+                                '<span class="accentFont small fw-bold d-block mb-1">' + cim + '</span>' +
+                            '</div>' +
+                                '<table class="table-borderless mb-2">' +
+                                    '<tbody>' + renderOraSorok(idopontok, dateStr) + '</tbody>' +
+                                '</table>' +
+                    '</div>';
             }
 
-            for (var d = 1; d <= days; d++) {
-                if (row.children.length === 7) {
-                    tbody.appendChild(row);
-                    row = document.createElement('tr');
-                }
-                var cell = document.createElement('td');
-                cell.className = 'text-center';
-                cell.style.cursor = 'pointer';
-                cell.textContent = d;
+            function renderIdopontok(data, dateStr) {
+                var container = document.getElementById('idopontokContainer');
+                if (!container) return;
 
-                var dObj = new Date(calYear, calMonth, d);
-                if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
-                    cell.classList.add('naptarKivalasztott');
-                }
-                if (dObj.getTime() === today.getTime()) {
-                    cell.classList.add('border-primary');
+                var reggeli = data.reggeli || [];
+                var delutani = data.delutani || [];
+                var esti = data.esti || [];
+                var osszes = reggeli.length + delutani.length + esti.length;
+
+                if (osszes === 0) {
+                    container.innerHTML =
+                    '<div class="idopont-empty d-flex justify-content-center align-items-center" style="width:100vw;">' +
+                    '<p class="ezustFont text-center small mb-0">Erre a napra nincs szabad időpont.</p>' +
+                    '</div>';
+                    return;
                 }
 
-                cell.addEventListener('click', function () {
-                    var day = parseInt(this.textContent, 10);
-                    var dateStr = calYear + '-' + String(calMonth + 1).padStart(2, '0') + '-' + String(day).padStart(2, '0');
-                    window.location = buildOsszesIdopontUrl(dateStr);
-                });
-
-                row.appendChild(cell);
+                container.innerHTML =
+                    renderSzakasz('Délelőtt', reggeli, dateStr) +
+                    renderSzakasz('Délután', delutani, dateStr) +
+                    renderSzakasz('Este', esti, dateStr);
             }
 
-            while (row.children.length > 0 && row.children.length < 7) {
-                var emptyCell = document.createElement('td');
-                emptyCell.className = 'text-muted';
-                row.appendChild(emptyCell);
-            }
-            if (row.children.length) tbody.appendChild(row);
-        }
+            async function loadIdopontok(dateStr, pushUrl) {
+                var meta = getCalendarMeta();
+                if (!meta || !meta.sid || !meta.fid) return;
 
-        document.getElementById('calPrev').addEventListener('click', function () {
-            calMonth--;
-            if (calMonth < 0) { calMonth = 11; calYear--; }
+                var container = document.getElementById('idopontokContainer');
+                if (container) {
+                    container.innerHTML = '<p class="ezustFont text-center small">Betöltés...</p>';
+                }
+
+                try {
+                    var qs = new URLSearchParams();
+                    qs.set('handler', 'SzabadIdopontok');
+                    qs.set('szolgaltatasId', meta.sid);
+                    qs.set('fodraszId', meta.fid);
+                    qs.set('naptarDatum', dateStr);
+
+                    var resp = await fetch('?' + qs.toString(), {
+                        headers: { 'Accept': 'application/json' }
+                    });
+                    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+
+                    var data = await resp.json();
+                    if (!data.ok) throw new Error(data.error || 'Ismeretlen hiba');
+
+                    var parts = dateStr.split('-');
+                    selectedDate = new Date(
+                        parseInt(parts[0], 10),
+                        parseInt(parts[1], 10) - 1,
+                        parseInt(parts[2], 10)
+                    );
+
+                    render();
+                    renderIdopontok(data, dateStr);
+
+                    var hidden = document.getElementById('naptarDatum');
+                    if (hidden) hidden.value = dateStr;
+
+                    if (pushUrl) {
+                        history.replaceState(null, '', buildOsszesIdopontUrl(dateStr));
+                    }
+                } catch (e) {
+                    console.error('Időpont lekérés hiba:', e);
+                    if (container) {
+                        container.innerHTML = '<p class="text-danger text-center small">Nem sikerült betölteni az időpontokat.</p>';
+                    }
+                }
+            }
+
+            function render() {
+                var first = new Date(calYear, calMonth, 1);
+                var last = new Date(calYear, calMonth + 1, 0);
+                var startPad = (first.getDay() + 6) % 7;
+                var days = last.getDate();
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                document.getElementById('calendarMonthYear').textContent = calYear + '. ' + monthNames[calMonth];
+                var tbody = document.getElementById('calendarBody');
+                tbody.innerHTML = '';
+                var row = document.createElement('tr');
+
+                for (var i = 0; i < startPad; i++) {
+                    var cell = document.createElement('td');
+                    cell.className = 'text-muted';
+                    cell.textContent = '';
+                    row.appendChild(cell);
+                }
+
+                for (var d = 1; d <= days; d++) {
+                    if (row.children.length === 7) {
+                        tbody.appendChild(row);
+                        row = document.createElement('tr');
+                    }
+
+                    var cell = document.createElement('td');
+                    cell.className = 'text-center';
+                    cell.style.cursor = 'pointer';
+                    cell.textContent = d;
+
+                    var dObj = new Date(calYear, calMonth, d);
+                    if (selectedDate && selectedDate.getTime() === dObj.getTime()) {
+                        cell.classList.add('naptarKivalasztott');
+                    }
+                    if (dObj.getTime() === today.getTime()) {
+                        cell.classList.add('border-primary');
+                    }
+
+                    cell.addEventListener('click', function () {
+                        var day = parseInt(this.textContent, 10);
+                        var dateStr = calYear + '-' +
+                            String(calMonth + 1).padStart(2, '0') + '-' +
+                            String(day).padStart(2, '0');
+                        loadIdopontok(dateStr, true);
+                    });
+
+                    row.appendChild(cell);
+                }
+
+                while (row.children.length > 0 && row.children.length < 7) {
+                    var emptyCell = document.createElement('td');
+                    emptyCell.className = 'text-muted';
+                    row.appendChild(emptyCell);
+                }
+                if (row.children.length) tbody.appendChild(row);
+            }
+
+            document.getElementById('calPrev').addEventListener('click', function () {
+                calMonth--;
+                if (calMonth < 0) { calMonth = 11; calYear--; }
+                render();
+            });
+
+            document.getElementById('calNext').addEventListener('click', function () {
+                calMonth++;
+                if (calMonth > 11) { calMonth = 0; calYear++; }
+                render();
+            });
+
+            document.getElementById('calToday').addEventListener('click', function () {
+                var t = new Date();
+                var dateStr = t.getFullYear() + '-' +
+                    String(t.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(t.getDate()).padStart(2, '0');
+                loadIdopontok(dateStr, true);
+            });
+
             render();
-        });
-
-        document.getElementById('calNext').addEventListener('click', function () {
-            calMonth++;
-            if (calMonth > 11) { calMonth = 0; calYear++; }
-            render();
-        });
-
-        document.getElementById('calToday').addEventListener('click', function () {
-            var t = new Date();
-            var dateStr = t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' + String(t.getDate()).padStart(2, '0');
-            window.location = buildOsszesIdopontUrl(dateStr);
-        });
-
-        render();
-    })();
-</script>
+        })();
+    </script>
 }
-
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
