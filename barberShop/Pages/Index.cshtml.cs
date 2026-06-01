@@ -127,6 +127,7 @@ namespace barberShop.Pages
                 .Include(f => f.Idopontok)
                     .ThenInclude(i => i.Szolgaltatas)
                 .Include(f => f.FodraszMunkaidok)
+                .Include(f=>f.ReferenciaFotok)
                 .ToListAsync();
 
             if (FodraszId.HasValue)

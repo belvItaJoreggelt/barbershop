@@ -156,7 +156,16 @@
                                     Összes időpont
                                 </a>
                             </div>
-
+                            @if (fodrasz.ReferenciaFotok.Any())
+                            {
+                                <div class="d-flex flex-wrap gap-2 justify-content-center mt-2">
+                                    @foreach (var foto in fodrasz.ReferenciaFotok.OrderByDescending(r=>r.FeltoltveUtc).Take(6))
+                                    {
+                                        <img src="~/kepek/referenciak/@foto.Fajlnev" alt="Referencia – @fodrasz.Nev" class="rounded border" style="width:64px;height:64px;object-fit:cover;" />
+                                    }
+                                </div>
+                            }
+                            
                         </div>
                     </div>
                     fodraszIndex++;
