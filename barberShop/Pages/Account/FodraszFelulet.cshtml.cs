@@ -73,6 +73,9 @@ namespace barberShop.Pages.Account
 
         [BindProperty]
         public List<IFormFile>? UjReferenciaKepek { get; set; }
+
+        [BindProperty]
+        public List<int>? TorlendoReferenciaIds { get; set; }
         #endregion
 
         #region Időpontjaim

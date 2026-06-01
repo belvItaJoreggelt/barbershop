@@ -104,6 +104,10 @@ namespace barberShop.Pages
 
             SzamoldLegkorabbiSzabadSlotokat();
 
+            Fodraszok = Fodraszok
+                .Where(f => FodraszLegkorabbiSzabadIdopontok.TryGetValue(f.ID, out var slotok) && slotok.Count > 0)
+                .ToList();
+
             if (Section == "osszesIdopont" && KivalasztottF != null)
                 await LoadNapraSzabadIdopontokAsync();
 

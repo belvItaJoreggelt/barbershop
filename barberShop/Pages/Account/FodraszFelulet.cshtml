@@ -127,11 +127,20 @@
                                     {
                                         @foreach (var refFoto in Model.Referenciafotok)
                                         {
-                                            <div class="d-flex flex-column">
-                                                <img src="~/kepek/referenciak/@refFoto.Fajlnev" alt="referencia" class="rounded border" style="width:72px;height:72px;object-fit:cover;" />
-                                                <button type="button" class="" style="color:#ef4444; font-size:2rem;">
-                                                    🗑️
+                                            <div class="position-relative d-inline-block ref-foto-sor">
+                                                <img src="~/kepek/referenciak/@refFoto.Fajlnev"
+                                                     alt="referencia"
+                                                     class="rounded border ref-foto-img"
+                                                     style="width:72px;height:72px;object-fit:cover;display:block;" />
+
+                                                <button type="button"
+                                                        class=" ref-foto-torol position-absolute border-0 rounded-circle p-0 d-flex align-items-center justify-content-center"
+                                                        style="width:22px;height:22px;right:-6px;bottom:-6px;background:#ef4444;color:#fff;font-size:14px;line-height:1;z-index:10;"
+                                                        aria-label="Törlés">
+                                                    ×
                                                 </button>
+
+                                                <input type="hidden" name="TorlendoReferenciaIds" value="@refFoto.Id" disabled class="torles-jelolo" />
                                             </div>
                                             
                                         }
@@ -149,7 +158,7 @@
 
                             </div>                            
                             <div class="col-12 mt-3 d-flex g-3 justify-content-center align-items-center">
-                                <button type="button" id="referenciaMegseGomb" class="btn egyGomb d-none">mégse</button>
+                                <a href="/Account/FodraszFelutet" asp-route-section="adataim" id="referenciaMegseGomb" class="btn egyGomb d-none">mégse</a>
                                 <button type="submit" class="btn speckoGomb">mentés</button>
                             </div>
                         </div>
@@ -529,6 +538,10 @@
         display: inline-block;
     }
 
+    .ref-foto-sor.torlesre-jelolve .ref-foto-img {
+        opacity: 0.35;
+        filter: grayscale(30%);
+    }
 </style>
 <script>
     (function () {
@@ -786,6 +799,19 @@
             input.value = '';
             preview.innerHTML = '';
             frissitGombok();
+        });
+    })();
+</script>
+<script>
+    (function () {
+        document.querySelectorAll('.ref-foto-sor').forEach(function (sor) {
+            const gomb = sor.querySelector('.ref-foto-torol');
+            const jelolo = sor.querySelector('.torles-jelolo');
+            if (!gomb || !jelolo) return;
+            gomb.addEventListener('click', function () {
+                const jelolve = sor.classList.toggle('torlesre-jelolve');
+                jelolo.disabled = !jelolve;   // jelölve → POST-ban benne lesz
+            });
         });
     })();
 </script>
